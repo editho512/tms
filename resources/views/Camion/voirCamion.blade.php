@@ -266,7 +266,11 @@
     </div>
 </div>
 
+<<<<<<< HEAD
 <!---- modal pour ajouter carburants --->
+=======
+<!---- modal pour ajouter camions --->
+>>>>>>> migration
 <div class="modal fade" id="modal-carburant">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -301,7 +305,10 @@
                             <input type="number" class="form-control" name="quantite" required>
                         </div>
                     </div>
+<<<<<<< HEAD
 
+=======
+>>>>>>> migration
                     <div class="row" style="margin-top: 3px; ">
                         <div class="col-sm-4">
                             <label for="flux">Flux :</label>
@@ -309,11 +316,19 @@
                         <div class="col-sm-8">
                             <select name="flux" class="form-control" id="">
                                 <option value=0 selected>Entrée</option>
+<<<<<<< HEAD
                                 {{-- <option value=1>Sortie</option> --}}
+=======
+                                <option value=1>Sortie</option>
+>>>>>>> migration
                             </select>
                         </div>
                     </div>
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> migration
                 </form>
             </div>
             <div class="modal-footer justify-content-between">
@@ -524,7 +539,11 @@
                             <label for="etat">Status :</label>
                         </div>
                         <div class="col-sm-8">
+<<<<<<< HEAD
                             <select name="etat" class="form-control" id="etat" onchange="checkCarburant(this, '{{ App\Models\Trajet::getEtat(2) }}')" required>
+=======
+                            <select name="etat" class="form-control" id="etat" required>
+>>>>>>> migration
                                 <option value="">Selectionner le status</option>
                                 @foreach (App\Models\Trajet::getEtat() as $status)
                                 <option value="{{ $status }}">{{ $status }}</option>
@@ -533,6 +552,7 @@
                         </div>
                     </div>
 
+<<<<<<< HEAD
                     <div class="row mb-3 mt-3 d-none" id="carburant">
                         <div class="col-sm-4">
                             <label for="carburant-restant">Carburant restant :</label>
@@ -542,6 +562,8 @@
                         </div>
                     </div>
 
+=======
+>>>>>>> migration
                     {{-- Bloc pour gerer les itinéraires --}}
                     <div id="content-itineraire" class="mb-3">
                         <input type="hidden" name="itineraire" class="itineraire_data" value="">
@@ -964,6 +986,7 @@
     })
 
 
+<<<<<<< HEAD
     const checkCarburant = function (select, wantStatus) {
         let etat = select.value
         let carburant = document.getElementById('carburant')
@@ -975,6 +998,8 @@
         }
     }
 
+=======
+>>>>>>> migration
 </script>
 
 @endsection

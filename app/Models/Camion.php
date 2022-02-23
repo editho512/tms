@@ -86,6 +86,7 @@ class Camion extends Model
     {
         return $this->trajets()->where('etat', Trajet::getEtat(0))->count();
     }
+<<<<<<< HEAD
 
 
     /**
@@ -97,4 +98,6 @@ class Camion extends Model
     {
         return $this->carburants()->where('flux', 0)->sum('quantite') - $this->carburants()->where('flux', 1)->sum('quantite');
     }
+=======
+>>>>>>> migration
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+<<<<<<< HEAD
 use Carbon\Carbon;
 use App\Models\Carburant;
 use Illuminate\Http\Request;
@@ -50,6 +51,30 @@ class CarburantController extends Controller
             dd("Une erreur est survenu, contactez l'administrateur. Message d'erreur : " , $e->getMessage());
         }
 
+=======
+use Session;
+use App\Models\Carburant;
+use Illuminate\Http\Request;
+
+class CarburantController extends Controller
+{
+    //
+    public function add(Request $request){
+
+        $data = $request->except("_token");
+        if(isset($data['quantite']) && intval($data['quantite']) >= 0 && isset($data['date']) && isset($data['flux']) ){
+            $data["date"] = date("Y-m-d", strtotime($data["date"]));
+            
+            Carburant::create($data);
+            Session::put("notification", ["value" => "Carburant ajouté" ,
+                        "status" => "success"
+            ]);
+        }else{
+            Session::put("notification", ["value" => "echec d'ajout" ,
+                        "status" => "error"
+            ]);
+        }
+>>>>>>> migration
         return redirect()->back();
     }
 
@@ -69,6 +94,7 @@ class CarburantController extends Controller
             $carburant->camion_id = $data["camion_id"];
             $carburant->update();
             Session::put("notification", ["value" => "Carburant modifié" ,
+<<<<<<< HEAD
             "status" => "success"
         ]);
     }else{
@@ -88,4 +114,25 @@ public function delete(Carburant $carburant){
 return redirect()->back();
 
 }
+=======
+                        "status" => "success"
+            ]);
+        }else{
+            Session::put("notification", ["value" => "echec d'ajout" ,
+                        "status" => "error"
+            ]);
+        }
+        return redirect()->back();
+
+    }
+
+    public function delete(Carburant $carburant){
+        $carburant->delete();
+        Session::put("notification", ["value" => "Carburant supprimé" ,
+                    "status" => "success"
+            ]);
+        return redirect()->back();
+
+    }
+>>>>>>> migration
 }
