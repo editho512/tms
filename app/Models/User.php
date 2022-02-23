@@ -19,10 +19,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'email',
-        'type',
-        'password',
+        'name', 'email', 'type', 'password',
     ];
 
 
@@ -75,5 +72,15 @@ class User extends Authenticatable
     public function estSuperAdmin() : bool
     {
         return $this->type === 'superAdmin';
+    }
+
+
+    public function isClient() : bool
+    {
+        if ($this->type === 'client')
+        {
+            return true;
+        }
+        return false;
     }
 }

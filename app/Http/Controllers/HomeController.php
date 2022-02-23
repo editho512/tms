@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
@@ -18,6 +19,14 @@ class HomeController extends Controller
         $this->middleware('auth');
     }
 
+
+    public function main() : View
+    {
+        $user = auth()->user();
+
+        return view('client.search');
+    }
+
     /**
      * Show the application dashboard.
      *
@@ -25,6 +34,8 @@ class HomeController extends Controller
      */
     public function index()
     {
+        dd(auth()->user());
+
         // Verifier si l'utilisateur peut acceder au dashboard ou non en fonction de son type
         if (!Gate::allows('acceder-dashboard'))
         {
