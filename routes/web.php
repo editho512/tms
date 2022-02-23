@@ -1,9 +1,7 @@
 <?php
 
-<<<<<<< HEAD
+use App\Http\Controllers\Client\ClientController;
 use App\Http\Controllers\HomeController;
-=======
->>>>>>> migration
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,20 +15,23 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-<<<<<<< HEAD
 Route::get('/', [App\Http\Controllers\HomeController::class, 'main'])->name('index');
-=======
-Route::get('/', function () {
-    return view('accueil');
-
-})->name('index');
->>>>>>> migration
 
 
 
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+// Route pour les clients
+
+Route::prefix('client')->group(function() {
+
+    Route::get('/', [ClientController::class, 'search'])->name('client.search');
+    Route::post('/do-search', [ClientController::class, 'doSearch'])->name('client.do-search');
+
+});
+
 
 // --------------------- CARBURANTS ---------------//
 

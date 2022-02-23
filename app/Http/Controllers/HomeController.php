@@ -2,49 +2,44 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-<<<<<<< HEAD
 use Illuminate\Contracts\View\View;
-=======
->>>>>>> migration
-use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Gate;
 
 class HomeController extends Controller
 {
     /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
+    * Create a new controller instance.
+    *
+    * @return void
+    */
     public function __construct()
     {
         $this->middleware('auth');
     }
 
-<<<<<<< HEAD
 
-    public function main() : View
+    public function main() : RedirectResponse
     {
         $user = auth()->user();
 
-        return view('client.search');
+        return redirect()->route('client.search');
     }
 
-=======
->>>>>>> migration
     /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
+    * Show the application dashboard.
+    *
+    * @return \Illuminate\Contracts\Support\Renderable
+    */
     public function index()
     {
-<<<<<<< HEAD
-        dd(auth()->user());
+        $user = auth()->user();
 
-=======
->>>>>>> migration
+        if ($user->isClient())
+        {
+            return redirect()->route('client.search');
+        }
+
         // Verifier si l'utilisateur peut acceder au dashboard ou non en fonction de son type
         if (!Gate::allows('acceder-dashboard'))
         {
