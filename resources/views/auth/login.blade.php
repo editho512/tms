@@ -27,9 +27,6 @@
     <div class="content">
         <div class="container">
             <div class="row justify-content-center">
-                <!-- <div class="col-md-6 order-md-2">
-                    <img src="images/undraw_file_sync_ot38.svg" alt="Image" class="img-fluid">
-                </div> -->
                 <div class="col-md-6 contents">
                     {{-- Message d'erreurs --}}
                     @if ($errors->any())
@@ -74,7 +71,7 @@
                                             <input type="checkbox" checked="checked"/>
                                             <div class="control__indicator"></div>
                                         </label>
-                                        <span class="ml-auto"><a href="#" class="forgot-pass d-none">Mot de passe publié ?</a></span>
+                                        <span class="ml-auto"><a href="#" class="forgot-pass d-none">Mot de passe oublié ?</a></span>
                                     </div>
 
                                     <input type="submit" value="Connexion" class="btn btn-pill text-white btn-block btn-dark">

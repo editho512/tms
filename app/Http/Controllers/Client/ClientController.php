@@ -2,17 +2,23 @@
 
 namespace App\Http\Controllers\Client;
 
+use Carbon\Carbon;
 use App\Models\Region;
 use App\Models\Commune;
 use App\Models\District;
 use App\Models\Province;
+use App\Models\Categorie;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
 
 class ClientController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     /**
      * Renvoyer la page de recherche pour le client
@@ -21,14 +27,6 @@ class ClientController extends Controller
      */
     public function search() : View
     {
-        /*$lettre = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        for ($i=0; $i < strlen($lettre); $i++)
-        {
-            Categorie::create([
-                'nom' => $lettre[$i]
-            ]);
-        }*/
-
         $provinces = Province::orderBy('nom', 'asc')->get();
         $regions = Region::orderBy('nom', 'asc')->get();
         $districts = District::orderBy('nom', 'asc')->get();
@@ -134,7 +132,7 @@ class ClientController extends Controller
 
     public function postSearch(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             "province-depart" => ['required', 'numeric', 'exists:provinces,id'],
             "region-depart" => ['required', 'numeric', 'exists:regions,id'],
             "district-depart" => ['required', 'numeric', 'exists:districts,id'],
@@ -145,10 +143,15 @@ class ClientController extends Controller
             "district-arrivee" => ['required', 'numeric', 'exists:districts,id'],
             "commune-arrivee" => ['required', 'numeric', 'exists:communes,id'],
             "date_depart" => ['required', 'date', 'after_or_equal:' . Carbon::now()->toDateString()],
-            "heure_depart" => ['required', 'date', 'after_or_equal:' . Carbon::now()->toTimeString()],
+            "heure_depart" => ['required'],
         ]);
 
-        dd($request->all());
+        if ($validator->fails())
+        {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        return Categorie::all();
     }
 
 }

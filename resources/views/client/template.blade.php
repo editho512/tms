@@ -6,7 +6,7 @@
     <title>@yield('title')</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" type="image/png" href="{{asset('assets/images/logo/favicon.ico')}}"/>
+    <link rel="icon" type="image/png" href=""/>
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -118,7 +118,7 @@
         <aside class="main-sidebar sidebar-dark-primary elevation-4" style="background-color: #023047">
             <!-- Brand Logo -->
             <a href="" class="brand-link">
-                <img src="{{asset('assets/images/logo/logo-tsaravidy.jpg')}}" alt="Tsaravidy Logo" class="brand-image img-circle elevation-3"
+                <img src="{{asset('assets/images/logo/logo.png')}}" alt="Tsaravidy Logo" class="brand-image img-circle elevation-3"
                 style="opacity: .8">
                 <span class="brand-text font-weight-light">{{ config('app.name') }} V1.0</span>
             </a>

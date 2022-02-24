@@ -6,6 +6,26 @@
 
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
+<style>
+    .select2-selection__rendered {
+        padding: 0!important;
+        margin: 0!important;
+    }
+
+    .select2-container .select2-selection--single {
+        display: flex;
+        justify-content: flex-start;
+        align-content: center;
+        align-items: center;
+    }
+
+    .error {
+        border: 1px solid red!important;
+        border-radius: 5px!important;
+    }
+
+</style>
+
 @endsection
 
 @section('content')
@@ -32,7 +52,7 @@
 
     <section class="content">
         <div class="container-fluid">
-            <form action="{{ route('client.post.search') }}" method="post">
+            <form onsubmit="search()" action="{{ route('client.post.search') }}" method="post">
 
                 @csrf
 
@@ -57,33 +77,33 @@
                                             @endforeach
                                         </select>
                                         @error('province-depart')
-                                            <span class="text-danger mt-2">{{ $message }}</span>
+                                        <span class="text-danger mt-2">{{ $message }}</span>
                                         @enderror
                                     </div>
 
                                     <div class="col-sm-3">
                                         <label for="region-depart" class="form-label">Région</label>
-                                        <select onchange="//updateDepart(this, 1)" autocomplete="off" name="region-depart" id="region-depart" class="form-control select-destination select-search-depart" data-index=1>
+                                        <select autocomplete="off" name="region-depart" id="region-depart" class="form-control select-destination select-search-depart" data-index=1>
                                             <option value="">Selectionner</option>
                                             @foreach ($regions as $region)
                                             <option value="{{ $region->id }}">{{ $region->nom }}</option>
                                             @endforeach
                                         </select>
                                         @error('region-depart')
-                                            <span class="text-danger mt-2">{{ $message }}</span>
+                                        <span class="text-danger mt-2">{{ $message }}</span>
                                         @enderror
                                     </div>
 
                                     <div class="col-sm-3">
                                         <label for="district-depart" class="form-label">District</label>
-                                        <select onchange="//updateDepart(this, 2)" autocomplete="off" name="district-depart" id="district-depart" class="form-control select-destination select-search-depart"  data-index=2>
+                                        <select autocomplete="off" name="district-depart" id="district-depart" class="form-control select-destination select-search-depart"  data-index=2>
                                             <option value="">Selectionner</option>
                                             @foreach ($districts as $district)
                                             <option value="{{ $district->id }}">{{ $district->nom }}</option>
                                             @endforeach
                                         </select>
                                         @error('district-depart')
-                                            <span class="text-danger mt-2">{{ $message }}</span>
+                                        <span class="text-danger mt-2">{{ $message }}</span>
                                         @enderror
                                     </div>
 
@@ -96,7 +116,7 @@
                                             @endforeach
                                         </select>
                                         @error('commune-depart')
-                                            <span class="text-danger mt-2">{{ $message }}</span>
+                                        <span class="text-danger mt-2">{{ $message }}</span>
                                         @enderror
                                     </div>
                                 </div>
@@ -129,7 +149,7 @@
                                             @endforeach
                                         </select>
                                         @error('province-arrivee')
-                                            <span class="text-danger mt-2">{{ $message }}</span>
+                                        <span class="text-danger mt-2">{{ $message }}</span>
                                         @enderror
                                     </div>
 
@@ -142,7 +162,7 @@
                                             @endforeach
                                         </select>
                                         @error('region-arrivee')
-                                            <span class="text-danger mt-2">{{ $message }}</span>
+                                        <span class="text-danger mt-2">{{ $message }}</span>
                                         @enderror
                                     </div>
 
@@ -155,7 +175,7 @@
                                             @endforeach
                                         </select>
                                         @error('district-arrivee')
-                                            <span class="text-danger mt-2">{{ $message }}</span>
+                                        <span class="text-danger mt-2">{{ $message }}</span>
                                         @enderror
                                     </div>
 
@@ -168,7 +188,7 @@
                                             @endforeach
                                         </select>
                                         @error('commune-arrivee')
-                                            <span class="text-danger mt-2">{{ $message }}</span>
+                                        <span class="text-danger mt-2">{{ $message }}</span>
                                         @enderror
                                     </div>
                                 </div>
@@ -194,23 +214,25 @@
                                     <div class="col-md-8 d-flex">
                                         <div class="mr-2 w-100">
                                             <label for="" class="form-label">Date</label>
-                                            <input type="date" name="date_depart" id="" class="form-control">
+                                            <input onchange="removeRedBorder(this)" type="date" name="date_depart" id="" class="form-control">
                                             @error('date_depart')
-                                                <span class="text-danger mt-2">{{ $message }}</span>
+                                            <span class="text-danger mt-2">{{ $message }}</span>
                                             @enderror
                                         </div>
                                         <div class="w-100">
                                             <label for="" class="form-label">Heure</label>
-                                            <input type="time" name="heure_depart" id="" class="form-control">
+                                            <input onchange="removeRedBorder(this)" type="time" name="heure_depart" id="" class="form-control">
                                             @error('heure_depart')
-                                                <span class="text-danger mt-2">{{ $message }}</span>
+                                            <span class="text-danger mt-2">{{ $message }}</span>
                                             @enderror
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <label for="" class="form-la">&nbsp;</label>
-                                        <button type="submit" class="btn btn-primary w-100">
-                                            <i class="fa fa-search me-3"></i>
+                                        <button id="search-btn" type="submit" class="btn btn-primary w-100 d-flex justify-content-center align-item-center">
+                                            <div id="icon" class="mr-3">
+                                                <i class="fa fa-search"></i>
+                                            </div>
                                             <span>Rechercher mon transporteur</span>
                                         </button>
                                     </div>
@@ -222,8 +244,12 @@
                 </div>
             </form>
 
+            <div class="alert alert-danger d-none" id="errors">
+
+            </div>
+
             <div class="card card-outline card-info">
-                <div class="card-header">
+                <div class="card-header d-flex justify-content-between">
                     <h5 class="text-uppercase text-info">Liste des transporteurs disponibles</h5>
                 </div>
                 <div class="card-body">
@@ -236,18 +262,18 @@
                                 <th>Prix</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="transporteur">
                             @forelse ($transporteurs as $transporteurs)
-                                <tr>
-                                    <td>1</td>
-                                    <td>Test</td>
-                                    <td>Disponible</td>
-                                    <td>50 000 Ar</td>
-                                </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>Test</td>
+                                <td>Disponible</td>
+                                <td>50 000 Ar</td>
+                            </tr>
                             @empty
-                                <tr>
-                                    <td colspan="4" class="text-center">Aucun transporteur pour l'instant</td>
-                                </tr>
+                            <tr>
+                                <td colspan="4" class="text-center">Aucun transporteur pour l'instant</td>
+                            </tr>
                             @endforelse
                         </tbody>
                         <tfoot>
@@ -282,13 +308,74 @@
 
 <script type="text/javascript">
 
+    const removeRedBorder = (input) => {
+        input.classList.remove('error')
+    }
+
+    const search = () => {
+        window.event.preventDefault()
+        let form = window.event.target;
+        let url = form.getAttribute('action')
+        let method = form.getAttribute('method')
+        let data = new FormData(form)
+
+        let loading = document.getElementById('icon')
+        let btn = document.getElementById('search-btn')
+        loading.innerHTML = '<div class="spinner-grow spinner-grow-sm" role="status"><span class="sr-only">Loading...</span></div>'
+        btn.disabled = true
+
+        fetch(url, {
+            method: method,
+            body: data
+        })
+        .then(response => {
+            loading.innerHTML = '<i class="fa fa-search"></i>'
+            btn.disabled = false
+            return response.json()
+        })
+        .then(data => {
+            if (data.errors) {
+                Object.keys(data.errors).forEach(key => {
+                    let field = document.getElementsByName(key).item(0)
+                    if (key == 'date_depart' || key == 'heure_depart') field.classList.add('error')
+                    else field.parentElement.children.item(2).classList.add('error')
+                })
+            } else {
+                let tbody = document.getElementById('transporteur')
+
+                if (data.length > 0) tbody.innerHTML = ''
+
+                data.forEach(transporteur => {
+                    let tr = document.createElement('tr')
+                    let id = document.createElement('td')
+                    let nom = document.createElement('td')
+                    let status = document.createElement('td')
+                    let prix = document.createElement('td')
+
+                    id.innerHTML = transporteur.id
+                    nom.innerHTML = transporteur.nom
+                    status.innerHTML = 'Disponible'
+                    prix.innerHTML = 50000
+                    tr.appendChild(id)
+                    tr.appendChild(nom)
+                    tr.appendChild(status)
+                    tr.appendChild(prix)
+
+                    tbody.appendChild(tr)
+                })
+            }
+        })
+    }
+
     $(document).on("change", ".select-search-depart", function(e){
         let index = parseInt($(this).attr("data-index"));
+        e.currentTarget.classList.remove('error')
         updateDepart(e.currentTarget, index);
     });
 
     $(document).on("change", ".select-search-arrivee", function(e){
         let index = parseInt($(this).attr("data-index"));
+        e.currentTarget.classList.remove('error')
         updateArrivee(e.currentTarget, index);
     });
 
@@ -330,8 +417,8 @@
             {
                 regionDepart.innerHTML = null
 
-                $('#district-depart').val('Selectionner').select2()
-                $('#commune-depart').val('Selectionner').select2()
+                $('#district-depart').prop('selectedIndex', 0).select2()
+                $('#commune-depart').prop('selectedIndex', 0).select2()
 
                 updateSelect(data.regions, regionDepart)
             }
@@ -339,7 +426,7 @@
             {
                 districtDepart.innerHTML = null
 
-                $('#commune-depart').val("Selectionner").select2()
+                $('#commune-depart').prop('selectedIndex', 0).select2()
 
                 updateSelect(data.districts, districtDepart)
 
@@ -413,8 +500,8 @@
             if (type === 0) // Pour la selection des provinces
             {
                 regionArrivee.innerHTML = null
-                $('#district-arrivee').val('Selectionner').select2()
-                $('#commune-arrivee').val('Selectionner').select2()
+                $('#district-arrivee').prop('selectedIndex', 0).select2()
+                $('#commune-arrivee').prop('selectedIndex', 0).select2()
 
                 updateSelect(data.regions, regionArrivee)
             }
@@ -422,7 +509,7 @@
             {
                 districtArrivee.innerHTML = null
 
-                $('#commune-arrivee').val("Selectionner").select2()
+                $('#commune-arrivee').prop('selectedIndex', 0).select2()
 
                 updateSelect(data.districts, districtArrivee)
 
