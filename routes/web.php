@@ -27,8 +27,16 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::prefix('client')->group(function() {
 
+    // Page de recherche de transport
     Route::get('/', [ClientController::class, 'search'])->name('client.search');
+
+    // Faire un recherche sql dans la base de données pour afficher les transporteurs disponibles
+    Route::post('/',[ClientController::class, 'postSearch'])->name('client.post.search');
+
+    // Gerer la listes des villes pour que le client puisse facilement les selectionner
     Route::post('/do-search', [ClientController::class, 'doSearch'])->name('client.do-search');
+
+    Route::get('/mes-historiques-transport', [ClientController::class, 'historique'])->name('client.transport.history');
 
 });
 

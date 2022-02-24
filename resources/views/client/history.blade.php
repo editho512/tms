@@ -1,5 +1,6 @@
 @extends('client.template')
 
+@section('title', 'Mes historiques de transport')
 
 @section('content')
 
@@ -10,11 +11,11 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Rechercher un transporteur</h1>
+                    <h1>Mes historiques de transport</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <a href="{{route('camion.liste')}}">
+                        <a href="{{route('client.search')}}">
                             <button class="btn btn-default" style="color:gray;"><span class="fa fa-arrow-left"></span>&nbsp;Retour</button>
                         </a>
                     </ol>
@@ -29,8 +30,8 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header" >
-                            <h3 class="card-title">Rechercher un transporteur</h3>
-                            <button class="btn  float-right" style="background: #007bff;color:white;" data-toggle="modal" id="nouveau-camion" data-target="#modal-ajouter-camion"><span class="fa fa-plus"></span>&nbsp;Ajouter</button>
+                            <h3 class="card-title">Mes hisoriques de transports</h3>
+                            <a href="{{ route('client.search') }}" class="btn float-right btn-primary"><span class="fa fa-search"></span>&nbsp;Faire un recherche</a>
 
                         </div>
                         <!-- /.card-header -->

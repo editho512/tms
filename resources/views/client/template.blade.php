@@ -140,30 +140,29 @@
                 <!-- Sidebar Menu -->
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-
                         <li class="nav-item has-treeview">
-                            <a href="" class="nav-link active">
+                            <a href="{{ route('client.search') }}" class="nav-link @if ($active === 0) active @endif">
                                 <i class="nav-icon fas fa-search"></i>
                                 <p>Rechercher transporteurs</p>
                             </a>
                         </li>
 
                         <li class="nav-item has-treeview">
-                            <a href="" class="nav-link">
+                            <a href="{{ route('client.transport.history') }}" class="nav-link  @if ($active === 1) active @endif">
                                 <i class="nav-icon fas fa-list"></i>
                                 <p>Mes transports</p>
                             </a>
                         </li>
 
                         <li class="nav-item has-treeview">
-                            <a href="" class="nav-link">
+                            <a href="" class="nav-link @if ($active === 2) active @endif">
                                 <i class="nav-icon fas fa-truck"></i>
                                 <p>Mes transporteurs favoris</p>
                             </a>
                         </li>
 
                         <li class="nav-item has-treeview">
-                            <a href="" class="nav-link">
+                            <a href="" class="nav-link @if ($active === 3) active @endif">
                                 <i class="nav-icon fas fa-wrench"></i>
                                 <p>Autres trucs</p>
                             </a>
@@ -175,7 +174,9 @@
             <!-- /.sidebar -->
         </aside>
 
-        @yield('content')
+        <div id="content">
+            @yield('content')
+        </div>
 
         @include('layouts.footer')
 
