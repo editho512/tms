@@ -9,10 +9,6 @@
           }
     }
 </style>
-<<<<<<< HEAD
-
-=======
->>>>>>> migration
 <!-- Main Sidebar Container -->
 <aside class="main-sidebar sidebar-dark-primary elevation-4" style="background-color: #023047">
     <!-- Brand Logo -->
@@ -82,6 +78,25 @@
                 </li>
 
                @can("viewAny" ,auth()->user())
+               <li class="nav-item has-treeview @if(isset($active_tarif_index)) menu-open @endif">
+                        <a href="{{route('tarif')}}" class="nav-link @if(isset($active_tarif_index)) {{$active_tarif_index}} @endif">
+                            <i class="nav-icon fas fa-money-bill"></i>
+                            <p>
+                                Tarifs
+                                {{--<i class="right fas fa-angle-left"></i>--}}
+                            </p>
+                        </a>
+                </li>
+                <li class="nav-item has-treeview @if(isset($active_zone_index)) menu-open @endif">
+                        <a href="{{route('zone')}}" class="nav-link @if(isset($active_zone_index)) {{$active_zone_index}} @endif">
+                            <i class="nav-icon fa fa-road"></i>
+                            <p>
+                                Zone de travail
+                                {{--<i class="right fas fa-angle-left"></i>--}}
+                            </p>
+                        </a>
+                </li>
+
                 <li class="nav-item has-treeview @if(isset($active_parametre_index) || isset($active_utilisateur) ) menu-open @endif">
                     <a href="#" class="nav-link @if(isset($active_parametre_index)|| isset($active_utilisateur) ) active @endif">
                         <i class="nav-icon fas fa-cogs"></i>

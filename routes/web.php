@@ -1,9 +1,6 @@
 <?php
 
-<<<<<<< HEAD
 use App\Http\Controllers\HomeController;
-=======
->>>>>>> migration
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,20 +14,52 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-<<<<<<< HEAD
 Route::get('/', [App\Http\Controllers\HomeController::class, 'main'])->name('index');
-=======
-Route::get('/', function () {
-    return view('accueil');
-
-})->name('index');
->>>>>>> migration
 
 
 
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+// --------------------- TARIFS --------------------//
+
+Route::get('/Tarif/voir/{ZoneTransporteur}', [App\Http\Controllers\TarifController::class, 'voirZoneTransporteur'])->name('tarif.voir');
+
+Route::get('/Tarif/supprimer/{ZoneTransporteur}', [App\Http\Controllers\TarifController::class, 'supprimer'])->name('tarif.supprimer');
+
+Route::get('/Tarif/modifier/{ZoneTransporteur}', [App\Http\Controllers\TarifController::class, 'modifier'])->name('tarif.modifier');
+
+Route::post('/Tarif/ajouter', [App\Http\Controllers\TarifController::class, 'ajouter'])->name('tarif.ajouter');
+
+Route::get('/Tarif', [App\Http\Controllers\TarifController::class, 'index'])->name('tarif');
+
+
+// --------------------- TARIFS --------------------//
+
+// --------------------- ZONE DE TRAVAIL -----------//
+Route::get('/Zone-travail/categorie/supprimer/{departCategorie}', [App\Http\Controllers\ZoneController::class, 'supprimerCategorie'])->name('zone.categorie.supprimer');
+
+Route::post('/Zone-travail/categorie/modifier/{departCategorie}', [App\Http\Controllers\ZoneController::class, 'modifierCategorie'])->name('zone.categorie.modifier');
+
+Route::get('/Zone-travail/categorie/trouver/{departCategorie}', [App\Http\Controllers\ZoneController::class, 'trouverItineraire'])->name('zone.categorie.trouver');
+
+Route::post('/Zone-travail/categorie/ajouter', [App\Http\Controllers\ZoneController::class, 'ajouterCategorie'])->name('zone.categorie.ajouter');
+
+Route::get('/Zone-travail/voir/{zone}', [App\Http\Controllers\ZoneController::class, 'voirZone'])->name('zone.voir');
+
+Route::get('/Zone-travail/supprimer/{zone}', [App\Http\Controllers\ZoneController::class, 'supprimer'])->name('zone.supprimer');
+
+Route::post('/Zone-travail/edit/{zone}', [App\Http\Controllers\ZoneController::class, 'edit'])->name('zone.edit');
+
+Route::get('/Zone-travail/modifier/{zone}', [App\Http\Controllers\ZoneController::class, 'modifier'])->name('zone.modifier');
+
+Route::post('/Zone-travail/ajouter', [App\Http\Controllers\ZoneController::class, 'ajouter'])->name('zone.ajouter');
+
+Route::get('/Zone-travail', [App\Http\Controllers\ZoneController::class, 'index'])->name('zone');
+
+
+// --------------------- ZONE DE TRAVAIL -----------//
 
 // --------------------- CARBURANTS ---------------//
 

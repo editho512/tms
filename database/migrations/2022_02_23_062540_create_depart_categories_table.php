@@ -17,6 +17,7 @@ class CreateDepartCategoriesTable extends Migration
             $table->id();
             $table->bigInteger("depart_id");
             $table->bigInteger("categorie_id");
+            $table->bigInteger("id_district");
         });
     }
 

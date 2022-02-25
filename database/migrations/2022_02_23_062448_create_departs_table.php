@@ -15,7 +15,7 @@ class CreateDepartsTable extends Migration
     {
         Schema::create('departs', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger("commune_id");        
+            $table->bigInteger("district_id");        
         });
     }
 
