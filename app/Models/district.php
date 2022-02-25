@@ -10,14 +10,13 @@ class District extends Model
     use HasFactory;
 
 
-    public function region()
-    {
-        return $this->belongsTo(Region::class);
-    }
-
-
     public function communes()
     {
         return $this->hasMany(Commune::class);
+    }
+
+    public function region()
+    {
+        return $this->belongsTo(Region::class);
     }
 }
