@@ -21,7 +21,7 @@ class CamionController extends Controller
     */
     public function __construct()
     {
-        $this->middleware('super-admin')->except(['add', 'index', 'voir']);
+        $this->middleware('super-admin');
     }
 
 
@@ -30,11 +30,7 @@ class CamionController extends Controller
     *
     * @return View
     */
-<<<<<<< HEAD
     public function index()
-=======
-    public function index() : View
->>>>>>> migration
     {
         // Verifier si l'utilisateur peut acceder au dashboard
         if (!Gate::allows('acceder-dashboard'))

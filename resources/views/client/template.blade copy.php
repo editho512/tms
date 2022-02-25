@@ -53,6 +53,24 @@
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css"/>
 
     <style>
+        .modal-footer{
+            background: rgba(0,0,0,.03);
+        }
+
+        .modal-header-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .modal-header-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .modal-header-danger {
+            background: #dc3545;
+            color: white;
+        }
 
         .font-xx-large {
             font-size: xx-large;
@@ -85,61 +103,19 @@
                 display: none !important;
             }
         }
-
-        .main-header {
-            margin: 0!important;
-        }
-
-        .flex {
-            display: flex!important;
-            justify-content: center!important;
-            align-items: center!important;
-            align-content: center!important;
-            transition: all;
-            transition-duration: 0.5s;
-        }
-
-        .flex:hover {
-            color: #1fafca!important;
-        }
-
-        .header-fixed {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            width: 100%;
-            box-shadow: 2px 2px 2px #34b5cc;
-        }
-
-        .logo {
-            width: 10%;
-            height: auto;
-        }
-
-        .active {
-            color: #0093ad!important;
-        }
-
-        .content-wrapper {
-            margin-left: 100px!important;
-            margin-right: 100px!important;
-        }
-
     </style>
 
     @yield('styles')
 
 </head>
-
 <body class="hold-transition sidebar-mini layout-fixed">
 
     <div class="wrapper">
 
-        @include('client.header')
+        @include('layouts.header')
 
         <!-- Main Sidebar Container -->
-        {{-- <aside class="main-sidebar sidebar-dark-primary elevation-4" style="background-color: #023047">
+        <aside class="main-sidebar sidebar-dark-primary elevation-4" style="background-color: #023047">
             <!-- Brand Logo -->
             <a href="" class="brand-link">
                 <img src="{{asset('assets/images/logo/logo.png')}}" alt="Tsaravidy Logo" class="brand-image img-circle elevation-3"
@@ -197,9 +173,8 @@
             </div>
             <!-- /.sidebar -->
         </aside>
-        --}}
 
-        <div id="content" style="margin-top: 15vh">
+        <div id="content">
             @yield('content')
         </div>
 

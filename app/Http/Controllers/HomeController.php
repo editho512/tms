@@ -23,8 +23,11 @@ class HomeController extends Controller
     public function main() : RedirectResponse
     {
         $user = auth()->user();
-
-        return redirect()->route('client.search');
+        if ($user->isClient())
+        {
+            return redirect()->route('client.search');
+        }
+        return redirect()->route('camion.liste');
     }
 
     /**

@@ -7,8 +7,8 @@
     <!-- Tell the browser to be responsive to screen width -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/png" href="{{asset('assets/images/logo/favicon.ico')}}"/>
-    
-    
+
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="{{asset('assets/adminlte/plugins/fontawesome-free/css/all.min.css')}}">
     <!-- Ionicons -->
@@ -33,23 +33,23 @@
     <link rel="stylesheet" href="{{asset('assets/adminlte/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css')}}">
     <link rel="stylesheet" href="{{asset('assets/adminlte/plugins/datatables-responsive/css/responsive.bootstrap4.min.css')}}">
     <!-- include the style
-    
+
         <link rel="stylesheet" href="{{asset('assets/alertifyjs/css/alertify.min.css')}}" />
     -->
-    <!-- include a theme 
+    <!-- include a theme
         <link rel="stylesheet" href="{{asset('assets/alertifyjs/css/themes/default.min.css')}}" />
     -->
-    <!-- include the script 
+    <!-- include the script
         <script src="{{asset('assets/alertifyjs/alertify.min.js')}}"></script>
     -->
 
     <!-- JavaScript -->
-<script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
 
-<!-- CSS -->
-<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
-<!-- Default theme -->
-<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css"/>
+    <!-- CSS -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
+    <!-- Default theme -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css"/>
 
     <style>
         .modal-footer{
@@ -93,8 +93,20 @@
             background: #17a2b8 linear-gradient(180deg,#3ab0c3,#17a2b8) repeat-x !important;
             color: white;
         }
+
+        .select2-selection__rendered {
+            padding: 0!important;
+            margin: 0!important;
+        }
+
+        .select2-container .select2-selection--single {
+            display: flex;
+            justify-content: flex-start;
+            align-content: center;
+            align-items: center;
+        }
     </style>
-   
+
     @yield('styles')
 
 </head>
@@ -105,7 +117,7 @@
         @include('layouts.header')
 
         @include('layouts.sidebar')
-        
+
         @yield('content')
 
         @include('layouts.footer')
@@ -115,7 +127,7 @@
 
     @yield('modals')
 
-    
+
 
     <!-- jQuery -->
     <script src="{{asset('assets/adminlte/plugins/jquery/jquery.min.js')}}"></script>
@@ -149,33 +161,33 @@
     <!-- AdminLTE App -->
     <script src="{{asset('assets/adminlte/dist/js/adminlte.js')}}"></script>
     {{--<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-    <script src="{{asset('assets/adminlte/dist/js/pages/dashboard.js')}}"></script>
-    <!-- AdminLTE for demo purposes -->
-    <script src="{{asset('assets/adminlte/dist/js/demo.js')}}"></script>--}}
+        <script src="{{asset('assets/adminlte/dist/js/pages/dashboard.js')}}"></script>
+        <!-- AdminLTE for demo purposes -->
+        <script src="{{asset('assets/adminlte/dist/js/demo.js')}}"></script>--}}
         @php
-            $notification = Session::has("notification") === true ? Session::get("notification") : null;
-            Session::forget("notification");
+        $notification = Session::has("notification") === true ? Session::get("notification") : null;
+        Session::forget("notification");
         @endphp
         @if (isset($notification) === true && $notification != null)
-            <script>
-                    $(document).ready(function () {
-                        let notif = {
-                            status : "{{$notification['status']}}" ,
-                            value :  "{{$notification['value']}}"
-                        }
-                      
-                        alertify.set('notifier','position', 'bottom-right');
-                        if(notif.status == "success"){
-                            alertify.success(notif.value);
-                        }else{
-                            alertify.error(notif.value);
-                        }
-                    })
-            
-            </script>
-           
-        @endif
-    @yield('scripts')
+        <script>
+            $(document).ready(function () {
+                let notif = {
+                    status : "{{$notification['status']}}" ,
+                    value :  "{{$notification['value']}}"
+                }
 
-</body>
-</html>
+                alertify.set('notifier','position', 'bottom-right');
+                if(notif.status == "success"){
+                    alertify.success(notif.value);
+                }else{
+                    alertify.error(notif.value);
+                }
+            })
+
+        </script>
+
+        @endif
+        @yield('scripts')
+
+    </body>
+    </html>

@@ -4,22 +4,13 @@
 
 @section('content')
 
-<div class="content-wrapper teste" style="min-height: inherit!important;">
+<div class="content-wrapper" style="min-height: inherit!important;">
 
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1>Mes historiques de transport</h1>
-                </div>
-                <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                        <a href="{{route('client.search')}}">
-                            <button class="btn btn-default" style="color:gray;"><span class="fa fa-arrow-left"></span>&nbsp;Retour</button>
-                        </a>
-                    </ol>
-                </div>
+            <div class="row mb-3">
+                <h1>Mes historiques de transport</h1>
             </div>
         </div><!-- /.container-fluid -->
     </section>

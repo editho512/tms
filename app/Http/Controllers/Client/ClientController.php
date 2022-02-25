@@ -25,8 +25,12 @@ class ClientController extends Controller
      *
      * @return View
      */
-    public function search() : View
+    public function search()
     {
+        if (!auth()->user()->isClient()) {
+            return redirect()->route('camion.liste');
+        }
+
         $provinces = Province::orderBy('nom', 'asc')->get();
         $regions = Region::orderBy('nom', 'asc')->get();
         $districts = District::orderBy('nom', 'asc')->get();
@@ -51,6 +55,10 @@ class ClientController extends Controller
      */
     public function historique() : View
     {
+        if (!auth()->user()->isClient()) {
+            return redirect()->route('camion.liste');
+        }
+        
         return view('client.history', [
             'active' => 1,
         ]);
