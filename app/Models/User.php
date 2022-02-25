@@ -75,6 +75,17 @@ class User extends Authenticatable
     }
 
 
+    /**
+     * Verifier si l'utilisateur est un admin
+     *
+     * @return boolean true: super admin, false: autres
+     */
+    public function isAdmin() : bool
+    {
+        return $this->type === 'admin';
+    }
+
+
     public function isClient() : bool
     {
         if ($this->type === 'client')
@@ -82,5 +93,10 @@ class User extends Authenticatable
             return true;
         }
         return false;
+    }
+
+    public function camions()
+    {
+        return $this->hasMany(Camion::class);
     }
 }

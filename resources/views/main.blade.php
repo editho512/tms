@@ -8,7 +8,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/png" href="{{asset('assets/images/logo/favicon.ico')}}"/>
 
-
     <!-- Font Awesome -->
     <link rel="stylesheet" href="{{asset('assets/adminlte/plugins/fontawesome-free/css/all.min.css')}}">
     <!-- Ionicons -->
@@ -128,7 +127,6 @@
     @yield('modals')
 
 
-
     <!-- jQuery -->
     <script src="{{asset('assets/adminlte/plugins/jquery/jquery.min.js')}}"></script>
     <!-- jQuery UI 1.11.4 -->
@@ -161,33 +159,33 @@
     <!-- AdminLTE App -->
     <script src="{{asset('assets/adminlte/dist/js/adminlte.js')}}"></script>
     {{--<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-        <script src="{{asset('assets/adminlte/dist/js/pages/dashboard.js')}}"></script>
-        <!-- AdminLTE for demo purposes -->
-        <script src="{{asset('assets/adminlte/dist/js/demo.js')}}"></script>--}}
+    <script src="{{asset('assets/adminlte/dist/js/pages/dashboard.js')}}"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script src="{{asset('assets/adminlte/dist/js/demo.js')}}"></script>--}}
         @php
-        $notification = Session::has("notification") === true ? Session::get("notification") : null;
-        Session::forget("notification");
+            $notification = Session::has("notification") === true ? Session::get("notification") : null;
+            Session::forget("notification");
         @endphp
         @if (isset($notification) === true && $notification != null)
-        <script>
-            $(document).ready(function () {
-                let notif = {
-                    status : "{{$notification['status']}}" ,
-                    value :  "{{$notification['value']}}"
-                }
+            <script>
+                    $(document).ready(function () {
+                        let notif = {
+                            status : "{{$notification['status']}}" ,
+                            value :  "{{$notification['value']}}"
+                        }
 
-                alertify.set('notifier','position', 'bottom-right');
-                if(notif.status == "success"){
-                    alertify.success(notif.value);
-                }else{
-                    alertify.error(notif.value);
-                }
-            })
+                        alertify.set('notifier','position', 'bottom-right');
+                        if(notif.status == "success"){
+                            alertify.success(notif.value);
+                        }else{
+                            alertify.error(notif.value);
+                        }
+                    })
 
-        </script>
+            </script>
 
         @endif
-        @yield('scripts')
+    @yield('scripts')
 
-    </body>
-    </html>
+</body>
+</html>

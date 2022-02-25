@@ -4,18 +4,16 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use App\Models\Camion;
-<<<<<<< HEAD
-use App\Models\Carburant;
-=======
->>>>>>> migration
 use App\Models\Trajet;
+use App\Models\Carburant;
+use App\Models\Carburant;
 use App\Models\Chauffeur;
 use App\Models\Itineraire;
-use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Database\QueryException;
 
 class TrajetController extends Controller
 {
@@ -28,20 +26,14 @@ class TrajetController extends Controller
     public function add(Request $request) : RedirectResponse
     {
         // Validation des données reçues
-<<<<<<< HEAD
+
         $data = $request->validate([
-=======
-        $request->validate([
->>>>>>> migration
             "camion_id" => ['required', 'numeric', 'exists:camions,id'],
             "etat" => ['required', Rule::in(Trajet::getEtat())],
             "chauffeur" => ['nullable', 'exists:chauffeurs,id'],
             "date_heure_depart" => ['required', 'date'],
             "date_heure_arrivee" => ['nullable', 'date'],
-<<<<<<< HEAD
             "carburantRestant" => ['nullable', 'numeric', 'min:1', 'max:500'],
-=======
->>>>>>> migration
         ]);
 
         $date_depart = Carbon::parse($request->date_heure_depart, 'EAT');
@@ -147,8 +139,6 @@ class TrajetController extends Controller
             return redirect()->back();
         }
 
-<<<<<<< HEAD
-
         // Verifier si la status est terminé et que la carbburant restant n'est pas nulle
         if ($request->etat === Trajet::getEtat(2) AND $request->carburantRestant === null)
         {
@@ -160,8 +150,6 @@ class TrajetController extends Controller
             return redirect()->back();
         }
 
-=======
->>>>>>> migration
         $depart = ucfirst($itineraires[0]['nom_itineraire']);
         $arrivee = ucfirst(end($itineraires)['nom_itineraire']);
 
@@ -177,13 +165,10 @@ class TrajetController extends Controller
 
         if ($trajet->save())
         {
-<<<<<<< HEAD
             /*$Carburant = Carburant::create([
                 'quantite' =>
             ]);*/
 
-=======
->>>>>>> migration
             // Enregistrement de tous les itinéraires
             foreach ($itineraires as $itineraire)
             {

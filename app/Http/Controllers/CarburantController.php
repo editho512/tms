@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-<<<<<<< HEAD
 use Carbon\Carbon;
 use App\Models\Carburant;
 use Illuminate\Http\Request;
@@ -51,6 +50,7 @@ class CarburantController extends Controller
             dd("Une erreur est survenu, contactez l'administrateur. Message d'erreur : " , $e->getMessage());
         }
 
+<<<<<<< HEAD
 =======
 use Session;
 use App\Models\Carburant;
@@ -64,7 +64,7 @@ class CarburantController extends Controller
         $data = $request->except("_token");
         if(isset($data['quantite']) && intval($data['quantite']) >= 0 && isset($data['date']) && isset($data['flux']) ){
             $data["date"] = date("Y-m-d", strtotime($data["date"]));
-            
+
             Carburant::create($data);
             Session::put("notification", ["value" => "Carburant ajouté" ,
                         "status" => "success"
@@ -75,6 +75,8 @@ class CarburantController extends Controller
             ]);
         }
 >>>>>>> migration
+=======
+>>>>>>> origin/endZone
         return redirect()->back();
     }
 
@@ -95,6 +97,9 @@ class CarburantController extends Controller
             $carburant->update();
             Session::put("notification", ["value" => "Carburant modifié" ,
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/endZone
             "status" => "success"
         ]);
     }else{
@@ -114,6 +119,7 @@ public function delete(Carburant $carburant){
 return redirect()->back();
 
 }
+<<<<<<< HEAD
 =======
                         "status" => "success"
             ]);
@@ -135,4 +141,6 @@ return redirect()->back();
 
     }
 >>>>>>> migration
+=======
+>>>>>>> origin/endZone
 }

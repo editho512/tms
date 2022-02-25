@@ -58,7 +58,7 @@ class ClientController extends Controller
         if (!auth()->user()->isClient()) {
             return redirect()->route('camion.liste');
         }
-        
+
         return view('client.history', [
             'active' => 1,
         ]);
@@ -69,7 +69,6 @@ class ClientController extends Controller
     {
         $type = intval($request->type);
         $id = $request->id;
-
 
         if ($type === 0)
         {
@@ -158,6 +157,11 @@ class ClientController extends Controller
         {
             return response()->json(['errors' => $validator->errors()], 422);
         }
+
+        $districtDepart = intval($request->get('district-depart'));
+        $districtArrivee = intval($request->get('district-arrivee'));
+
+        dd($districtDepart, $districtArrivee);
 
         return Categorie::all();
     }

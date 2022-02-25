@@ -5,7 +5,7 @@ namespace App\Http\Middleware\User;
 use Closure;
 use Illuminate\Http\Request;
 
-class SuperAdmin
+class Admin
 {
     /**
      * Handle an incoming request.
@@ -16,12 +16,15 @@ class SuperAdmin
      */
     public function handle(Request $request, Closure $next)
     {
-        $user = auth()->user();
+        if (!auth()->user())
+        {
+            return redirect(null, 301)->route('login');
+        }
 
-        if (!$user) return redirect(null, 301)->route('login');
-
-        if (!$user->estSuperAdmin()) return redirect()->route('home');
-
+        if (!auth()->user()->isAdmin()) {
+            return redirect()->route('client.search');
+        }
+        dd(true);
         return $next($request);
     }
 }

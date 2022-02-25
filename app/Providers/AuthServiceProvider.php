@@ -36,7 +36,7 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('acceder-dashboard', function(User $user) {
             $typeUtilisateurs = $user->getTypeUtilisateurs();
 
-            if ($user->type !== null AND in_array($user->type, $typeUtilisateurs)) return true;
+            if ($user->type !== null AND $user->isClient() === false AND in_array($user->type, $typeUtilisateurs)) return true;
             else return false;
         });
     }

@@ -1,16 +1,37 @@
 @extends('client.template')
 
+<<<<<<< HEAD
 @section('title', 'Mes historiques de transport')
 
 @section('content')
 
 <div class="content-wrapper" style="min-height: inherit!important;">
+=======
+
+@section('content')
+
+<div class="content-wrapper teste" style="min-height: inherit!important;">
+>>>>>>> origin/endZone
 
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <div class="container-fluid">
+<<<<<<< HEAD
             <div class="row mb-3">
                 <h1>Mes historiques de transport</h1>
+=======
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Rechercher un transporteur</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <a href="{{route('camion.liste')}}">
+                            <button class="btn btn-default" style="color:gray;"><span class="fa fa-arrow-left"></span>&nbsp;Retour</button>
+                        </a>
+                    </ol>
+                </div>
+>>>>>>> origin/endZone
             </div>
         </div><!-- /.container-fluid -->
     </section>
@@ -21,8 +42,13 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header" >
+<<<<<<< HEAD
                             <h3 class="card-title">Mes hisoriques de transports</h3>
                             <a href="{{ route('client.search') }}" class="btn float-right btn-primary"><span class="fa fa-search"></span>&nbsp;Faire un recherche</a>
+=======
+                            <h3 class="card-title">Rechercher un transporteur</h3>
+                            <button class="btn  float-right" style="background: #007bff;color:white;" data-toggle="modal" id="nouveau-camion" data-target="#modal-ajouter-camion"><span class="fa fa-plus"></span>&nbsp;Ajouter</button>
+>>>>>>> origin/endZone
 
                         </div>
                         <!-- /.card-header -->

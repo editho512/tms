@@ -19,19 +19,8 @@ class HomeController extends Controller
         $this->middleware('auth');
     }
 
-
-    public function main() : RedirectResponse
-    {
-        $user = auth()->user();
-        if ($user->isClient())
-        {
-            return redirect()->route('client.search');
-        }
-        return redirect()->route('camion.liste');
-    }
-
     /**
-    * Show the application dashboard.
+    * Afficher la dashboard
     *
     * @return \Illuminate\Contracts\Support\Renderable
     */
@@ -44,12 +33,11 @@ class HomeController extends Controller
             return redirect()->route('client.search');
         }
 
-        // Verifier si l'utilisateur peut acceder au dashboard ou non en fonction de son type
-        if (!Gate::allows('acceder-dashboard'))
+        if ($user->isAdmin())
         {
-            return redirect()->route('index');
+            return redirect()->route('camion.liste');
         }
 
-        return redirect()->route('camion.liste');
+        return view('accueil');
     }
 }

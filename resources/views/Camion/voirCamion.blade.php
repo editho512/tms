@@ -267,10 +267,14 @@
 </div>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 <!---- modal pour ajouter carburants --->
 =======
 <!---- modal pour ajouter camions --->
 >>>>>>> migration
+=======
+<!---- modal pour ajouter carburants --->
+>>>>>>> origin/endZone
 <div class="modal fade" id="modal-carburant">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -306,9 +310,12 @@
                         </div>
                     </div>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> migration
+=======
+>>>>>>> origin/endZone
                     <div class="row" style="margin-top: 3px; ">
                         <div class="col-sm-4">
                             <label for="flux">Flux :</label>
@@ -317,18 +324,25 @@
                             <select name="flux" class="form-control" id="">
                                 <option value=0 selected>Entrée</option>
 <<<<<<< HEAD
+<<<<<<< HEAD
                                 {{-- <option value=1>Sortie</option> --}}
 =======
                                 <option value=1>Sortie</option>
 >>>>>>> migration
+=======
+                                {{-- <option value=1>Sortie</option> --}}
+>>>>>>> origin/endZone
                             </select>
                         </div>
                     </div>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> migration
+=======
+>>>>>>> origin/endZone
                 </form>
             </div>
             <div class="modal-footer justify-content-between">
@@ -540,10 +554,14 @@
                         </div>
                         <div class="col-sm-8">
 <<<<<<< HEAD
+<<<<<<< HEAD
                             <select name="etat" class="form-control" id="etat" onchange="checkCarburant(this, '{{ App\Models\Trajet::getEtat(2) }}')" required>
 =======
                             <select name="etat" class="form-control" id="etat" required>
 >>>>>>> migration
+=======
+                            <select name="etat" class="form-control" id="etat" onchange="checkCarburant(this, '{{ App\Models\Trajet::getEtat(2) }}')" required>
+>>>>>>> origin/endZone
                                 <option value="">Selectionner le status</option>
                                 @foreach (App\Models\Trajet::getEtat() as $status)
                                 <option value="{{ $status }}">{{ $status }}</option>
@@ -553,6 +571,9 @@
                     </div>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/endZone
                     <div class="row mb-3 mt-3 d-none" id="carburant">
                         <div class="col-sm-4">
                             <label for="carburant-restant">Carburant restant :</label>
@@ -562,8 +583,11 @@
                         </div>
                     </div>
 
+<<<<<<< HEAD
 =======
 >>>>>>> migration
+=======
+>>>>>>> origin/endZone
                     {{-- Bloc pour gerer les itinéraires --}}
                     <div id="content-itineraire" class="mb-3">
                         <input type="hidden" name="itineraire" class="itineraire_data" value="">
@@ -987,6 +1011,9 @@
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/endZone
     const checkCarburant = function (select, wantStatus) {
         let etat = select.value
         let carburant = document.getElementById('carburant')
@@ -998,8 +1025,11 @@
         }
     }
 
+<<<<<<< HEAD
 =======
 >>>>>>> migration
+=======
+>>>>>>> origin/endZone
 </script>
 
 @endsection
