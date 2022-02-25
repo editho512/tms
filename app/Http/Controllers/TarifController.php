@@ -16,7 +16,7 @@ class TarifController extends Controller
     */
     public function __construct()
     {
-        $this->middleware('super-admin');
+        $this->middleware('admin');
     }
 
     public function index(){
@@ -61,7 +61,7 @@ class TarifController extends Controller
 
     public function supprimer(ZoneTransporteur $ZoneTransporteur){
         $ZoneTransporteur->delete();
-        
+
         Session::put("notification", ["value" => "Zone de transporteur supprimée" , "status" => "success" ]);
 
         return redirect()->back();
@@ -75,9 +75,9 @@ class TarifController extends Controller
     public function ajouter(Request $request){
         $data = $request->all();
 
-        if(isset($data['zone']) === true 
-            && isset(Zone::find($data['zone'])->id) === true 
-            && ZoneTransporteur::isSetZone($data['zone']) === false 
+        if(isset($data['zone']) === true
+            && isset(Zone::find($data['zone'])->id) === true
+            && ZoneTransporteur::isSetZone($data['zone']) === false
         ){
             ZoneTransporteur::create(['zone_id' => $data['zone'], 'user_id' => auth()->user()->id]);
             Session::put("notification", ["value" => "Zone de transporteur ajoutée" , "status" => "success" ]);

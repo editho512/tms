@@ -18,5 +18,5 @@ class Depart extends Model
         return $this->hasOne(District::class, "id", "district_id");
     }
 
-   
+
 }

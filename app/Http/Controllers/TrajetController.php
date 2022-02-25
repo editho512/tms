@@ -4,15 +4,16 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use App\Models\Camion;
-use App\Models\Carburant;
 use App\Models\Trajet;
+use App\Models\Carburant;
+use App\Models\Carburant;
 use App\Models\Chauffeur;
 use App\Models\Itineraire;
-use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Database\QueryException;
 
 class TrajetController extends Controller
 {
@@ -25,6 +26,7 @@ class TrajetController extends Controller
     public function add(Request $request) : RedirectResponse
     {
         // Validation des données reçues
+
         $data = $request->validate([
             "camion_id" => ['required', 'numeric', 'exists:camions,id'],
             "etat" => ['required', Rule::in(Trajet::getEtat())],
@@ -136,7 +138,6 @@ class TrajetController extends Controller
 
             return redirect()->back();
         }
-
 
         // Verifier si la status est terminé et que la carbburant restant n'est pas nulle
         if ($request->etat === Trajet::getEtat(2) AND $request->carburantRestant === null)

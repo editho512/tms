@@ -16,8 +16,8 @@ class Zone extends Model
 
     public function getDistrictId(){
         $district = ZoneDistrict::where('zone_id', $this->id)->get();
-       
+
         return isset($district[0]->district_id) === true ?  $district->pluck("district_id") : [];
     }
-    
+
 }

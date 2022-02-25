@@ -2,14 +2,15 @@
 
 namespace App\Models;
 
-use App\Models\Depart;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use App\Models\Depart;
+
 
 class DepartCategorie extends Model
 {
     use HasFactory;
-    
+
     protected $fillable = ["depart_id", "id_district", "categorie_id"];
 
     public $timestamps = false;
@@ -22,7 +23,7 @@ class DepartCategorie extends Model
         return $this->hasOne(Categorie::class, "id", "categorie_id");
     }
 
-  
+
     public function district(){
         return $this->hasOne(District::class, "id", "id_district");
     }

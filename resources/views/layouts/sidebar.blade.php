@@ -4,17 +4,18 @@
         background-color: #3490c1 !important;
     }
     @media screen and (min-width: 576px) {
-          #tableau_bord {
+        #tableau_bord {
             display: none !important;
-          }
+        }
     }
 </style>
+
 <!-- Main Sidebar Container -->
 <aside class="main-sidebar sidebar-dark-primary elevation-4" style="background-color: #023047">
     <!-- Brand Logo -->
     <a href="" class="brand-link">
         <img src="{{asset('assets/images/logo/logo-tsaravidy.jpg')}}" alt="Tsaravidy Logo" class="brand-image img-circle elevation-3"
-             style="opacity: .8">
+        style="opacity: .8">
         <span class="brand-text font-weight-light">{{ config('app.name') }} V1.0</span>
     </a>
 
@@ -85,24 +86,23 @@
                     </a>
                 </li>
 
-               @can("viewAny" ,auth()->user())
-               <li class="nav-item has-treeview @if(isset($active_tarif_index)) menu-open @endif">
-                        <a href="{{route('tarif')}}" class="nav-link @if(isset($active_tarif_index)) {{$active_tarif_index}} @endif">
-                            <i class="nav-icon fas fa-money-bill"></i>
-                            <p>
-                                Tarifs
-                                {{--<i class="right fas fa-angle-left"></i>--}}
-                            </p>
-                        </a>
+                <li class="nav-item has-treeview @if(isset($active_tarif_index)) menu-open @endif">
+                    <a href="{{route('tarif')}}" class="nav-link @if(isset($active_tarif_index)) {{$active_tarif_index}} @endif">
+                        <i class="nav-icon fas fa-money-bill"></i>
+                        <p>
+                            Tarifs
+                            {{--<i class="right fas fa-angle-left"></i>--}}
+                        </p>
+                    </a>
                 </li>
                 <li class="nav-item has-treeview @if(isset($active_zone_index)) menu-open @endif">
-                        <a href="{{route('zone')}}" class="nav-link @if(isset($active_zone_index)) {{$active_zone_index}} @endif">
-                            <i class="nav-icon fa fa-road"></i>
-                            <p>
-                                Zone de travail
-                                {{--<i class="right fas fa-angle-left"></i>--}}
-                            </p>
-                        </a>
+                    <a href="{{route('zone')}}" class="nav-link @if(isset($active_zone_index)) {{$active_zone_index}} @endif">
+                        <i class="nav-icon fa fa-road"></i>
+                        <p>
+                            Zone de travail
+                            {{--<i class="right fas fa-angle-left"></i>--}}
+                        </p>
+                    </a>
                 </li>
 
                 <li class="nav-item has-treeview @if(isset($active_parametre_index) || isset($active_utilisateur) ) menu-open @endif">
@@ -122,7 +122,6 @@
                         </li>
                     </ul>
                 </li>
-                @endcan
             </ul>
         </nav>
         <!-- /.sidebar-menu -->

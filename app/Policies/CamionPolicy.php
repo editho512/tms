@@ -53,7 +53,7 @@ class CamionPolicy
      */
     public function update(User $user, Camion $camion)
     {
-        if ($user->estSuperAdmin()) return true;
+        if ($user->estSuperAdmin() OR $user->isAdmin()) return true;
         else return false;
     }
 
@@ -66,7 +66,7 @@ class CamionPolicy
      */
     public function delete(User $user, Camion $camion)
     {
-        if ($user->estSuperAdmin()) return true;
+        if ($user->estSuperAdmin() OR $user->isAdmin()) return true;
         else return false;
     }
 

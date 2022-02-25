@@ -3,11 +3,12 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    @yield('title')
+    <title>@yield('title')</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" type="image/png" href="{{asset('assets/images/logo/favicon.ico')}}"/>
+    <link rel="icon" type="image/png" href="{{ asset('assets/images/logo/favicon.ico') }}"/>
 
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="{{asset('assets/adminlte/plugins/fontawesome-free/css/all.min.css')}}">
@@ -52,24 +53,6 @@
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css"/>
 
     <style>
-        .modal-footer{
-            background: rgba(0,0,0,.03);
-        }
-
-        .modal-header-success {
-            background: #28a745;
-            color: white;
-        }
-
-        .modal-header-primary {
-            background: #007bff;
-            color: white;
-        }
-
-        .modal-header-danger {
-            background: #dc3545;
-            color: white;
-        }
 
         .font-xx-large {
             font-size: xx-large;
@@ -102,6 +85,47 @@
                 display: none !important;
             }
         }
+
+        .main-header {
+            margin: 0!important;
+        }
+
+        .flex {
+            display: flex!important;
+            justify-content: center!important;
+            align-items: center!important;
+            align-content: center!important;
+            transition: all;
+            transition-duration: 0.5s;
+        }
+
+        .flex:hover {
+            color: #1fafca!important;
+        }
+
+        .header-fixed {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            box-shadow: 2px 2px 2px #34b5cc;
+        }
+
+        .logo {
+            width: 10%;
+            height: auto;
+        }
+
+        .active {
+            color: #0093ad!important;
+        }
+
+        .content-wrapper {
+            margin-left: 100px!important;
+            margin-right: 100px!important;
+        }
+
     </style>
 
     @yield('styles')
@@ -111,13 +135,13 @@
 
     <div class="wrapper">
 
-        @include('layouts.header')
+        @include('client.header')
 
         <!-- Main Sidebar Container -->
-        <aside class="main-sidebar sidebar-dark-primary elevation-4" style="background-color: #023047">
+        {{-- <aside class="main-sidebar sidebar-dark-primary elevation-4" style="background-color: #023047">
             <!-- Brand Logo -->
             <a href="" class="brand-link">
-                <img src="{{asset('assets/images/logo/logo-tsaravidy.jpg')}}" alt="Tsaravidy Logo" class="brand-image img-circle elevation-3"
+                <img src="{{asset('assets/images/logo/logo.png')}}" alt="Tsaravidy Logo" class="brand-image img-circle elevation-3"
                 style="opacity: .8">
                 <span class="brand-text font-weight-light">{{ config('app.name') }} V1.0</span>
             </a>
@@ -139,30 +163,29 @@
                 <!-- Sidebar Menu -->
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-
                         <li class="nav-item has-treeview">
-                            <a href="" class="nav-link active">
+                            <a href="{{ route('client.search') }}" class="nav-link @if ($active === 0) active @endif">
                                 <i class="nav-icon fas fa-search"></i>
                                 <p>Rechercher transporteurs</p>
                             </a>
                         </li>
 
                         <li class="nav-item has-treeview">
-                            <a href="" class="nav-link">
+                            <a href="{{ route('client.transport.history') }}" class="nav-link  @if ($active === 1) active @endif">
                                 <i class="nav-icon fas fa-list"></i>
                                 <p>Mes transports</p>
                             </a>
                         </li>
 
                         <li class="nav-item has-treeview">
-                            <a href="" class="nav-link">
+                            <a href="" class="nav-link @if ($active === 2) active @endif">
                                 <i class="nav-icon fas fa-truck"></i>
                                 <p>Mes transporteurs favoris</p>
                             </a>
                         </li>
 
                         <li class="nav-item has-treeview">
-                            <a href="" class="nav-link">
+                            <a href="" class="nav-link @if ($active === 3) active @endif">
                                 <i class="nav-icon fas fa-wrench"></i>
                                 <p>Autres trucs</p>
                             </a>
@@ -173,8 +196,11 @@
             </div>
             <!-- /.sidebar -->
         </aside>
+        --}}
 
-        @yield('content')
+        <div id="content" style="margin-top: 15vh">
+            @yield('content')
+        </div>
 
         @include('layouts.footer')
 
@@ -182,7 +208,6 @@
     <!-- ./wrapper -->
 
     @yield('modals')
-
 
 
     <!-- jQuery -->

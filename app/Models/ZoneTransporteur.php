@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class ZoneTransporteur extends Model
 {
     use HasFactory;
-    
+
     protected $fillable = ["zone_id", "user_id"];
 
     public $timestamps = false;

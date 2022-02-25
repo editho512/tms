@@ -266,6 +266,7 @@
     </div>
 </div>
 
+
 <!---- modal pour ajouter carburants --->
 <div class="modal fade" id="modal-carburant">
     <div class="modal-dialog">
@@ -301,6 +302,7 @@
                             <input type="number" class="form-control" name="quantite" required>
                         </div>
                     </div>
+
                     <div class="row" style="margin-top: 3px; ">
                         <div class="col-sm-4">
                             <label for="flux">Flux :</label>
@@ -308,11 +310,13 @@
                         <div class="col-sm-8">
                             <select name="flux" class="form-control" id="">
                                 <option value=0 selected>Entrée</option>
+
+                                <option value=1>Sortie</option>
+
                                 {{-- <option value=1>Sortie</option> --}}
                             </select>
                         </div>
                     </div>
-
                 </form>
             </div>
             <div class="modal-footer justify-content-between">
@@ -523,6 +527,7 @@
                             <label for="etat">Status :</label>
                         </div>
                         <div class="col-sm-8">
+
                             <select name="etat" class="form-control" id="etat" onchange="checkCarburant(this, '{{ App\Models\Trajet::getEtat(2) }}')" required>
                                 <option value="">Selectionner le status</option>
                                 @foreach (App\Models\Trajet::getEtat() as $status)
@@ -532,6 +537,7 @@
                         </div>
                     </div>
 
+
                     <div class="row mb-3 mt-3 d-none" id="carburant">
                         <div class="col-sm-4">
                             <label for="carburant-restant">Carburant restant :</label>
@@ -540,6 +546,7 @@
                             <input type="number" class="form-control" name="carburantRestant" id="carburant-restant" placeholder="Quantité de carburant restant">
                         </div>
                     </div>
+
 
                     {{-- Bloc pour gerer les itinéraires --}}
                     <div id="content-itineraire" class="mb-3">
@@ -973,6 +980,7 @@
             carburant.classList.add('d-none')
         }
     }
+
 
 </script>
 

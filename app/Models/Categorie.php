@@ -16,4 +16,7 @@ class Categorie extends Model
         return isset($prix[0]->id) === true ? $prix[0]->montant : 0;
     }
 
+    protected $fillable = ['nom'];
+
+    public $timestamps = false;
 }

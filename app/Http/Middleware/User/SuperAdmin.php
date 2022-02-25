@@ -16,14 +16,11 @@ class SuperAdmin
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!auth()->user())
-        {
-            return redirect(null, 301)->route('login');
-        }
+        $user = auth()->user();
 
-        if (!auth()->user()->estSuperAdmin()) {
-            return redirect()->route('home');
-        }
+        if (!$user) return redirect(null, 301)->route('login');
+
+        if (!$user->estSuperAdmin()) return redirect()->route('home');
 
         return $next($request);
     }

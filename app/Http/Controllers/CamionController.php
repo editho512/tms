@@ -5,12 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Camion;
 use App\Models\Carburant;
 use App\Models\Chauffeur;
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
@@ -21,7 +21,7 @@ class CamionController extends Controller
     */
     public function __construct()
     {
-        $this->middleware('super-admin')->except(['add', 'index', 'voir']);
+        $this->middleware('auth');
     }
 
 
@@ -35,10 +35,10 @@ class CamionController extends Controller
         // Verifier si l'utilisateur peut acceder au dashboard
         if (!Gate::allows('acceder-dashboard'))
         {
-            return redirect()->route('index');
+            return redirect()->route('home');
         }
 
-        $camions = Camion::all();
+        $camions = auth()->user()->camions;
         $active_camion_index = "active";
 
         return view("Camion.camionIndex", compact("active_camion_index", "camions"));
@@ -54,6 +54,7 @@ class CamionController extends Controller
     public function add(Request $request) : RedirectResponse
     {
         $data = $request->except("photo");
+        $data['id_user'] = auth()->user()->id;
         $camion = Camion::create($data);
 
         if( $request->file('photo') !== null){
@@ -75,41 +76,37 @@ class CamionController extends Controller
                 $camion->photo = $path;
                 $camion->update();
             }
-
-
         }
 
         $request->session()->flash("notification", [
             "value" => "Camion ajouté" ,
             "status" => "success"
-            ]
-        );
+        ]);
 
         return redirect()->back();
     }
 
 
     /**
-     * Methode pour modifier un camion
-     *
-     * @param Camion $camion
-     * @return JsonResponse
-     */
+    * Methode pour modifier un camion
+    *
+    * @param Camion $camion
+    * @return JsonResponse
+    */
     public function modifier(Camion $camion) : JsonResponse
     {
         return response()->json($camion);
     }
 
     /**
-     * Enregistrer les modifications d'un camion
-     *
-     * @param Request $request
-     * @param Camion $camion
-     * @return void
-     */
+    * Enregistrer les modifications d'un camion
+    *
+    * @param Request $request
+    * @param Camion $camion
+    * @return void
+    */
     public function update(Request $request, Camion $camion)
     {
-
         $data = $request->except("photo");
         $camion->name = $data["name"];
         $camion->marque = $data["marque"];
@@ -117,9 +114,7 @@ class CamionController extends Controller
         $camion->annee = $data["annee"];
         $camion->numero_chassis = $data["numero_chassis"];
 
-
         if( $request->file('photo') !== null){
-
 
             $validator = Validator::make($request->all(), [
                 'photo' => 'mimes:jpeg,png,bmp,tiff |max:4096',

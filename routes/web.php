@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Client\ClientController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
@@ -14,9 +15,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [App\Http\Controllers\HomeController::class, 'main'])->name('index');
-
-
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Auth::routes();
 
@@ -72,6 +71,24 @@ Route::get('/Zone-travail', [App\Http\Controllers\ZoneController::class, 'index'
 
 
 // --------------------- ZONE DE TRAVAIL -----------//
+
+// Route pour les clients
+
+Route::prefix('client')->group(function() {
+
+    // Page de recherche de transport
+    Route::get('/', [ClientController::class, 'search'])->name('client.search');
+
+    // Faire un recherche sql dans la base de données pour afficher les transporteurs disponibles
+    Route::post('/',[ClientController::class, 'postSearch'])->name('client.post.search');
+
+    // Gerer la listes des villes pour que le client puisse facilement les selectionner
+    Route::post('/do-search', [ClientController::class, 'doSearch'])->name('client.do-search');
+
+    Route::get('/mes-historiques-transport', [ClientController::class, 'historique'])->name('client.transport.history');
+
+});
+
 
 // --------------------- CARBURANTS ---------------//
 

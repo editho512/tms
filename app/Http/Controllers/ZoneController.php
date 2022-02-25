@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Session;
 use App\Models\Zone;
 use App\Models\Depart;
-use App\Models\Commune;
 use App\Models\District;
 use App\Models\Categorie;
 use App\Models\ZoneDistrict;
@@ -40,19 +39,19 @@ class ZoneController extends Controller
         return view("zone.zoneIndex", compact("active_zone_index", "zones", "districts"));
     }
 
-   
+
 
     public function ajouterCategorie(Request $request){
         $data = $request->all();
 
         if(
-            isset($data["depart"]) === true && isset($data["arrive"]) === true && isset($data["categorie"]) && 
+            isset($data["depart"]) === true && isset($data["arrive"]) === true && isset($data["categorie"]) &&
             isset(District::find($data["depart"])->id) === true && isset(District::find($data["arrive"])->id) === true && isset(Categorie::find($data["categorie"])->id) === true
-        
+
             )
         {
             if( DepartCategorie::isSetCategorie($data["depart"], $data["arrive"]) === false){
-                
+
                 $departs = Depart::where("district_id", $data["depart"])->get();
 
                 if(isset($departs[0]->id) === true){
@@ -64,7 +63,7 @@ class ZoneController extends Controller
                 DepartCategorie::create(["depart_id" => $departs->id, "id_district" => $data["arrive"], "categorie_id" => $data["categorie"] ]);
                 Session::put("notification", ["value" => "Catégorie ajouté" , "status" => "success" ]);
 
-                
+
             }else{
                 Session::put("notification", ["value" => "Catégorie existe déja" , "status" => "error" ]);
 
@@ -87,41 +86,49 @@ class ZoneController extends Controller
         $data = $request->all();
 
         if(
-            isset($data["depart"]) === true && isset($data["arrive"]) === true && isset($data["categorie"]) && 
+            isset($data["depart"]) === true && isset($data["arrive"]) === true && isset($data["categorie"]) &&
             isset(District::find($data["depart"])->id) === true && isset(District::find($data["arrive"])->id) === true && isset(Categorie::find($data["categorie"])->id) === true
-            
+
             )
             {
 
-                    
+
                 $departs = Depart::where("district_id", $data["depart"])->get();
-                    
+
                 if(isset($departs[0]->id) === true){
                     $departs = $departs[0];
                 }else{
                     $departs = Depart::create(["district_id" => $data["depart"]]);
                 }
-                    
+
                 $dep = DepartCategorie::where("id", $departCategorie->id)->update(["depart_id" => $departs->id, "id_district" => $data["arrive"], "categorie_id" => $data["categorie"] ]);
-                    
+
                 Session::put("notification", ["value" => "Catégorie modifiée" , "status" => "success" ]);
-               
-           
+
+
         }
 
         return redirect()->back();
     }
 
-    public function voirZone(Zone $zone){
+
+    /**
+     * Voir une zone de travail
+     *
+     * @param Zone $zone
+     * @return void
+     */
+    public function voirZone(Zone $zone)
+    {
         $active_zone_index = "active";
-        
+
         $districts = ZoneDistrict::where('zone_id', $zone->id)->get();
 
         $itineraires = DepartCategorie::join("departs", "departs.id", "=", "depart_categories.depart_id")
                                         ->join("zone_districts", "zone_districts.district_id", "=", "departs.district_id")
                                         ->where("zone_districts.zone_id", "=", $zone->id)
                                         ->get(['depart_categories.id', "depart_categories.depart_id", "depart_categories.categorie_id", "depart_categories.id_district", "zone_districts.zone_id"]);
-        
+
 
         $allDistricts = District::all();
 
@@ -132,7 +139,7 @@ class ZoneController extends Controller
     }
 
     public function trouverItineraire(DepartCategorie $departCategorie){
-        
+
         return response()->json(["depart" => $departCategorie->depart->district_id,
                                     "arrive" => $departCategorie->district->id,
                                     "categorie" => $departCategorie->categorie->id
@@ -150,9 +157,9 @@ class ZoneController extends Controller
     }
 
     public function edit(Zone $zone, Request $request){
-        
+
         $data = $request->validate([
-            "name" => "required" , 
+            "name" => "required" ,
             "district" => "required"
         ]);
 
@@ -181,7 +188,7 @@ class ZoneController extends Controller
 
     public function ajouter(Request $request){
         $data = $request->validate([
-            "name" => "required" , 
+            "name" => "required" ,
             "district" => "required"
         ]);
 
@@ -201,8 +208,8 @@ class ZoneController extends Controller
         }
 
         return redirect()->back();
-        
+
     }
 
-    
+
 }
