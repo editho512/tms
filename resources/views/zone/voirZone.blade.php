@@ -74,9 +74,9 @@
                         <ul class="nav nav-pills">
                             <li class="nav-item"><a class="nav-link active" href="#Categorisation" data-toggle="tab">Catégorisation</a>
                             </li>
-                            <li class="nav-item"><a class="nav-link " href="#production" data-toggle="tab">Production</a></li>
+                            <li class="nav-item d-none"><a class="nav-link " href="#production" data-toggle="tab">Production</a></li>
                             
-                            <li class="nav-item"><a class="nav-link" href="#livraison" data-toggle="tab">Livraison</a></li>
+                            <li class="nav-item d-none"><a class="nav-link" href="#livraison" data-toggle="tab">Livraison</a></li>
                         </ul>
                     </div><!-- /.card-header -->
                     <div class="card-body">

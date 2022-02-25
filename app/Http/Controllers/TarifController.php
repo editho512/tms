@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Session;
 use App\Models\Zone;
+use App\Models\Categorie;
 use Illuminate\Http\Request;
+use App\Models\CategoriePrix;
 use App\Models\ZoneTransporteur;
 
 class TarifController extends Controller
@@ -23,7 +25,34 @@ class TarifController extends Controller
 
         $zones = Zone::whereNotIn("id", $mes_zones->pluck("zone_id"))->get();
 
-        return view("tarif.tarifIndex", compact("active_tarif_index", "mes_zones", "zones"));
+        $categories = Categorie::leftjoin("categorie_prix", "categorie_prix.categorie_id", "=", "categories.id")
+                                ->where("categorie_prix.user_id", auth()->user()->id)
+                                ->orWhere("categorie_prix.user_id", null)
+                                ->get(["categories.id", "categories.nom"]);
+                                
+
+        return view("tarif.tarifIndex", compact("active_tarif_index", "mes_zones", "zones", "categories"));
+    }
+
+    public function ajouterCategorie(Request $request, Categorie $categorie){
+        $data = $request->all();
+        if(isset($data["montant"]) === true && doubleval($data["montant"]) >= 0){
+            CategoriePrix::where("categorie_id", $categorie->id)->where("user_id", auth()->user()->id)->delete();
+
+            CategoriePrix::create(["categorie_id" => $categorie->id, "montant" => $data["montant"], "user_id" => auth()->user()->id ]);
+            
+            Session::put("notification", ["value" => "Montant ajouté" , "status" => "success" ]);
+
+        }else{
+            Session::put("notification", ["value" => "echec d'ajout" , "status" => "error" ]);
+
+        }
+
+        return redirect()->back();
+    }
+
+    public function trouverCategorie(Categorie $categorie){
+        return response()->json(["categorie" => $categorie, "montant" => $categorie->prix()]);
     }
 
     public function voirZoneTransporteur(ZoneTransporteur $ZoneTransporteur){

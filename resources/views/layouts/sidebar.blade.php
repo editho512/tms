@@ -35,7 +35,15 @@
         <!-- Sidebar Menu -->
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-
+                <li class="nav-item has-treeview @if(isset($active_reservation_index)) menu-open @endif">
+                        <a href="{{route('reservation')}}" class="nav-link @if(isset($active_reservation_index)) {{$active_reservation_index}} @endif">
+                            <i class="nav-icon fa fa-bell"></i>
+                            <p>
+                                Réservation
+                                {{--<i class="right fas fa-angle-left"></i>--}}
+                            </p>
+                        </a>
+                </li>
                 <li class="nav-item has-treeview @if(isset($active_camion_index)) menu-open @endif">
                     <a href="{{route('camion.liste')}}" class="nav-link @if(isset($active_camion_index)) {{$active_camion_index}} @endif">
                         <i class="nav-icon fas fa-truck"></i>

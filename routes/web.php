@@ -22,7 +22,19 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
+// -------------------- RESERVATIONS -------------- //
+
+Route::get('/reservation', [App\Http\Controllers\ReservationController::class, 'index'])->name('reservation');
+
+Route::get('/reservation/accept/{reservation}', [App\Http\Controllers\ReservationController::class, 'accept'])->name('reservation.accept');
+
+
+// -------------------- RESERVATIONS -------------- //
+
 // --------------------- TARIFS --------------------//
+Route::post('/Tarif/categorie/ajouter/{categorie}', [App\Http\Controllers\TarifController::class, 'ajouterCategorie'])->name('tarif.categorie.ajouter');
+
+Route::get('/Tarif/categorie/trouver/{categorie}', [App\Http\Controllers\TarifController::class, 'trouverCategorie'])->name('tarif.categorie.trouver');
 
 Route::get('/Tarif/voir/{ZoneTransporteur}', [App\Http\Controllers\TarifController::class, 'voirZoneTransporteur'])->name('tarif.voir');
 
