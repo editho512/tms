@@ -11,6 +11,8 @@ use App\Models\Categorie;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;
+use App\Models\Depart;
+use App\Models\DepartCategorie;
 use Illuminate\Support\Facades\Validator;
 
 class ClientController extends Controller
@@ -149,8 +151,8 @@ class ClientController extends Controller
             "region-arrivee" => ['required', 'numeric', 'exists:regions,id'],
             "district-arrivee" => ['required', 'numeric', 'exists:districts,id'],
             "commune-arrivee" => ['required', 'numeric', 'exists:communes,id'],
-            "date_depart" => ['required', 'date', 'after_or_equal:' . Carbon::now()->toDateString()],
-            "heure_depart" => ['required'],
+            /*"date_depart" => ['required', 'date', 'after_or_equal:' . Carbon::now()->toDateString()],
+            "heure_depart" => ['required'],*/
         ]);
 
         if ($validator->fails())
@@ -158,12 +160,47 @@ class ClientController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $districtDepart = intval($request->get('district-depart'));
-        $districtArrivee = intval($request->get('district-arrivee'));
+        $districtDepartID = intval($request->get('district-depart'));
+        $districtArriveeID = intval($request->get('district-arrivee'));
 
-        dd($districtDepart, $districtArrivee);
+        $districtDepart = District::findOrFail($districtDepartID);
 
-        return Categorie::all();
+        $zone = $districtDepart->zones()->first();
+
+        if ($zone === null)
+        {
+            return response()->json(['error' => 'Aucune transporteur disponible pour ce district']);
+        }
+
+        $transporteurs = $zone->transporteurs; // Recuperer tous les transporteurs qui fait cette zone
+
+        /*$depart = $districtDepart->depart;
+        dd($depart);*/
+
+        $districtArrivee = District::findOrFail($districtArriveeID);
+        $departCategorie = DepartCategorie::where('depart_id', $districtDepart->id)->where('id_district', $districtArrivee->id)->first('categorie_id');
+
+        if ($departCategorie === null)
+        {
+            return response()->json(['error' => 'Pas de catégorie concerné par ce trajet']);
+        }
+
+        $categorie = $departCategorie->categorie;
+
+        $results = [];
+
+        foreach ($transporteurs as $transporteur)
+        {
+            if ($transporteur->prixCategorie($categorie->id) !== 0)
+            {
+                $results[] = [
+                    'transporteur' => $transporteur,
+                    'prix' => $transporteur->prixCategorie($categorie->id),
+                ];
+            }
+        }
+
+        return response()->json($results);
     }
 
 }

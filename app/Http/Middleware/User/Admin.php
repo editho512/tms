@@ -24,7 +24,6 @@ class Admin
         if (!auth()->user()->isAdmin()) {
             return redirect()->route('client.search');
         }
-        dd(true);
         return $next($request);
     }
 }

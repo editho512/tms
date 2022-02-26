@@ -253,30 +253,21 @@
                             <tr>
                                 <th>Numéro</th>
                                 <th>Nom du transporteur</th>
-                                <th>Status</th>
                                 <th>Prix</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody id="transporteur">
-                            @forelse ($transporteurs as $transporteurs)
-                            <tr>
-                                <td>1</td>
-                                <td>Test</td>
-                                <td>Disponible</td>
-                                <td>50 000 Ar</td>
-                            </tr>
-                            @empty
                             <tr>
                                 <td colspan="4" class="text-center">Aucun transporteur pour l'instant</td>
                             </tr>
-                            @endforelse
                         </tbody>
                         <tfoot>
                             <tr>
                                 <th>Numéro</th>
                                 <th>Nom du transporteur</th>
-                                <th>Status</th>
                                 <th>Prix</th>
+                                <th>Action</th>
                             </tr>
                         </tfoot>
                     </table>
@@ -338,26 +329,41 @@
             } else {
                 let tbody = document.getElementById('transporteur')
 
-                if (data.length > 0) tbody.innerHTML = ''
+                if (data.length > 0)
+                {
+                    if (data.error)
+                    {
+                        tbody.innerHTML = '<tr><td colspan="4" class="text-center">' + data.error + '</td></tr>'
+                        return
+                    }
 
-                data.forEach(transporteur => {
-                    let tr = document.createElement('tr')
-                    let id = document.createElement('td')
-                    let nom = document.createElement('td')
-                    let status = document.createElement('td')
-                    let prix = document.createElement('td')
+                    tbody.innerHTML = ''
 
-                    id.innerHTML = transporteur.id
-                    nom.innerHTML = transporteur.nom
-                    status.innerHTML = 'Disponible'
-                    prix.innerHTML = 50000
-                    tr.appendChild(id)
-                    tr.appendChild(nom)
-                    tr.appendChild(status)
-                    tr.appendChild(prix)
+                    data.forEach(element => {
+                        let transporteur = element.transporteur
 
-                    tbody.appendChild(tr)
-                })
+                        let tr = document.createElement('tr')
+                        let id = document.createElement('td')
+                        let nom = document.createElement('td')
+                        let prix = document.createElement('td')
+                        let action = document.createElement('td')
+
+                        id.innerHTML = transporteur.id
+                        nom.innerHTML = transporteur.name.toUpperCase()
+                        prix.innerHTML = element.prix
+                        action.innerHTML = '<button class="btn btn-primary">Reserver</button>'
+                        tr.appendChild(id)
+                        tr.appendChild(nom)
+                        tr.appendChild(prix)
+                        tr.appendChild(action)
+
+                        tbody.appendChild(tr)
+                    })
+                }
+                else
+                {
+                    tbody.innerHTML = '<tr><td colspan="4" class="text-center">Aucune transporteur trouvé</td></tr>'
+                }
             }
         })
     }

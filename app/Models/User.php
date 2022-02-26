@@ -99,4 +99,15 @@ class User extends Authenticatable
     {
         return $this->hasMany(Camion::class);
     }
+
+
+    public function prixCategorie(int $idCategorie)
+    {
+        $categoriePrix = CategoriePrix::where('categorie_id', $idCategorie)->where('user_id', $this->id)->first();
+        if ($categoriePrix === null)
+        {
+            return 0;
+        }
+        return $categoriePrix->montant;
+    }
 }

@@ -54,7 +54,7 @@ class CamionController extends Controller
     public function add(Request $request) : RedirectResponse
     {
         $data = $request->except("photo");
-        $data['id_user'] = auth()->user()->id;
+        $data['user_id'] = auth()->user()->id;
         $camion = Camion::create($data);
 
         if( $request->file('photo') !== null){

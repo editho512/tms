@@ -12,7 +12,7 @@ class Camion extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'annee', 'model', 'marque', 'numero_chassis', 'photo', 'id_user',
+        'name', 'annee', 'model', 'marque', 'numero_chassis', 'photo', 'user_id',
     ];
 
 
