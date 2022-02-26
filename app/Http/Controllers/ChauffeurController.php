@@ -5,15 +5,23 @@ namespace App\Http\Controllers;
 use File;
 use Session;
 use App\Models\Chauffeur;
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 
 class ChauffeurController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('super-admin')->except(['index', 'add']);
+        //$this->middleware('super-admin')->except(['index', 'add']);
+        // Verifier si l'utilisateur peut acceder au dashboard
+
+        //dd(Gate::allows('For-admin'));
+        if ( Gate::allows('For-admin') === false)
+        {
+            return redirect()->route('home');
+        }
     }
 
 

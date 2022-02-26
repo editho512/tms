@@ -54,7 +54,7 @@ class CarburantController extends Controller
     }
 
             
-    public function add(Request $request){
+    /*public function add(Request $request){
 
         $data = $request->except("_token");
         if(isset($data['quantite']) && intval($data['quantite']) >= 0 && isset($data['date']) && isset($data['flux']) ){
@@ -71,7 +71,7 @@ class CarburantController extends Controller
         }
  
         return redirect()->back();
-    }
+    }*/
 
     public function modifier(Carburant $carburant){
         return response()->json($carburant);
@@ -108,14 +108,14 @@ class CarburantController extends Controller
    
                       
 
-    public function delete(Carburant $carburant){
+    /*public function delete(Carburant $carburant){
             $carburant->delete();
             Session::put("notification", ["value" => "Carburant supprimé" ,
                         "status" => "success"
                 ]);
             return redirect()->back();
 
-    }
+    }*/
 }
   
 

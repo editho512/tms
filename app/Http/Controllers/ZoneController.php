@@ -20,17 +20,18 @@ class ZoneController extends Controller
     */
     public function __construct()
     {
-        $this->middleware('super-admin');
+        $this->middleware('auth');
+        
+        // Verifier si l'utilisateur peut acceder au dashboard
+        if (!Gate::allows('acceder-dashboard') || !Gate::allows('For-superAdmin'))
+        {
+            return redirect()->route('home');
+        }
     }
 
     public function index()
     {
-        // Verifier si l'utilisateur peut acceder au dashboard
-        if (!Gate::allows('acceder-dashboard'))
-        {
-            return redirect()->route('index');
-        }
-
+      
         $zones = Zone::all();
 
         $districts = District::all();

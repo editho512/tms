@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Session;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Session;
 
 class UserController extends Controller
 {
@@ -15,6 +16,12 @@ class UserController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        
+        // Verifier si l'utilisateur peut acceder au dashboard
+        if (!Gate::allows('acceder-dashboard') || !Gate::allows('For-superAdmin'))
+        {
+            return redirect()->route('home');
+        }
     }
 
     public function index(){

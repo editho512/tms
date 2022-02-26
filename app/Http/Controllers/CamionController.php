@@ -22,6 +22,11 @@ class CamionController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        // Verifier si l'utilisateur peut acceder au dashboard
+        if (!Gate::allows('acceder-dashboard') )
+        {
+            return redirect()->route('home');
+        }
     }
 
 
@@ -32,11 +37,7 @@ class CamionController extends Controller
     */
     public function index()
     {
-        // Verifier si l'utilisateur peut acceder au dashboard
-        if (!Gate::allows('acceder-dashboard'))
-        {
-            return redirect()->route('home');
-        }
+        
 
         $camions = auth()->user()->camions;
         $active_camion_index = "active";
