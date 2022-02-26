@@ -16,7 +16,7 @@ class DepartCategorie extends Model
     public $timestamps = false;
 
     public function depart(){
-        return $this->hasOne(Depart::class, "id", "depart_id");
+        return $this->hasOne(District::class, "id", "depart_id");
     }
 
     public function categorie(){
@@ -29,13 +29,9 @@ class DepartCategorie extends Model
     }
 
     public static function isSetCategorie($depart, $arrive){
-        $departs = Depart::where("district_id", $depart)->get();
-        if(isset($departs[0]->id) === true){
-            $departCategorie = self::where("depart_id", $departs[0]->id)->where("id_district", $arrive)->get();
+        
+        $departCategorie = self::where("depart_id", $depart)->where("id_district", $arrive)->get();
 
-            return isset($departCategorie[0]->id);
-        }
-
-        return false;
+        return isset($departCategorie[0]->id);
     }
 }

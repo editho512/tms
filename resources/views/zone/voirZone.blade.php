@@ -108,7 +108,7 @@
                                                     <tr  >
                                                         <td>
                                                             <p >
-                                                                {{ucwords($itineraire->depart->district->nom). "   à   " .ucwords($itineraire->district->nom)}}
+                                                                {{ucwords($itineraire->depart->nom). "   à   " .ucwords($itineraire->district->nom)}}
                                                             </p>
                                                            
                                                         </td>

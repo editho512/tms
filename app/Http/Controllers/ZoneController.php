@@ -53,15 +53,15 @@ class ZoneController extends Controller
         {
             if( DepartCategorie::isSetCategorie($data["depart"], $data["arrive"]) === false){
 
-                $departs = Depart::where("district_id", $data["depart"])->get();
+                /*$departs = Depart::where("district_id", $data["depart"])->get();
 
                 if(isset($departs[0]->id) === true){
                     $departs = $departs[0];
                 }else{
                     $departs = Depart::create(["district_id" => $data["depart"]]);
-                }
+                }*/
 
-                DepartCategorie::create(["depart_id" => $departs->id, "id_district" => $data["arrive"], "categorie_id" => $data["categorie"] ]);
+                DepartCategorie::create(["depart_id" => $data["depart"], "id_district" => $data["arrive"], "categorie_id" => $data["categorie"] ]);
                 Session::put("notification", ["value" => "Catégorie ajouté" , "status" => "success" ]);
 
 
@@ -94,15 +94,15 @@ class ZoneController extends Controller
             {
 
 
-                $departs = Depart::where("district_id", $data["depart"])->get();
+               /* $departs = Depart::where("district_id", $data["depart"])->get();
 
                 if(isset($departs[0]->id) === true){
                     $departs = $departs[0];
                 }else{
                     $departs = Depart::create(["district_id" => $data["depart"]]);
-                }
+                }*/
 
-                $dep = DepartCategorie::where("id", $departCategorie->id)->update(["depart_id" => $departs->id, "id_district" => $data["arrive"], "categorie_id" => $data["categorie"] ]);
+                $dep = DepartCategorie::where("id", $departCategorie->id)->update(["depart_id" => $data["depart"], "id_district" => $data["arrive"], "categorie_id" => $data["categorie"] ]);
 
                 Session::put("notification", ["value" => "Catégorie modifiée" , "status" => "success" ]);
 
@@ -125,8 +125,7 @@ class ZoneController extends Controller
 
         $districts = ZoneDistrict::where('zone_id', $zone->id)->get();
 
-        $itineraires = DepartCategorie::join("departs", "departs.id", "=", "depart_categories.depart_id")
-                                        ->join("zone_districts", "zone_districts.district_id", "=", "departs.district_id")
+        $itineraires = DepartCategorie::join("zone_districts", "zone_districts.district_id", "=", "depart_categories.depart_id")
                                         ->where("zone_districts.zone_id", "=", $zone->id)
                                         ->get(['depart_categories.id', "depart_categories.depart_id", "depart_categories.categorie_id", "depart_categories.id_district", "zone_districts.zone_id"]);
 
@@ -141,7 +140,7 @@ class ZoneController extends Controller
 
     public function trouverItineraire(DepartCategorie $departCategorie){
 
-        return response()->json(["depart" => $departCategorie->depart->district_id,
+        return response()->json(["depart" => $departCategorie->depart->id,
                                     "arrive" => $departCategorie->district->id,
                                     "categorie" => $departCategorie->categorie->id
                                 ]);
