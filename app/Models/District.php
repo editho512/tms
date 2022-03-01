@@ -19,4 +19,9 @@ class District extends Model
     {
         return $this->belongsTo(Region::class);
     }
+
+    public function zones()
+    {
+        return $this->belongsToMany(Zone::class, 'zone_districts', 'district_id', 'zone_id');
+    }
 }

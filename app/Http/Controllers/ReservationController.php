@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\District;
 use App\Models\Reservation;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
@@ -24,7 +25,7 @@ class ReservationController extends Controller
     public function index() : View
     {
         $active_reservation_index = true;
-        $user = auth()->user();
+        $user = User::findOrFail(auth()->user()->id);
         $reservations = null;
 
         $active_reservation_index = true;
@@ -32,7 +33,7 @@ class ReservationController extends Controller
         {
             $reservations = $user->reservationsTransporteur;
         }
-        else if(auth()->user()->isClient())
+        else if($user->isClient())
         {
             $reservations = $user->reservations;
         }
