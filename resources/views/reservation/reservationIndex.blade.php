@@ -79,7 +79,7 @@
                                                             Mettre comme livré
                                                         </a>
                                                     @else
-                                                        @if (!$reservation->rejete() AND !$reservation->annule())
+                                                        @if (!$reservation->rejete() AND !$reservation->annule() AND !$reservation->enAttente())
                                                             <span class="badge badge-warning p-2">En attente de date de livraison</span>
                                                         @endif
                                                     @endif
@@ -153,7 +153,7 @@
         });
 
         $(".table-principale").DataTable({
-            "responsive": true,
+            "responsive": false,
             "autoWidth": true,
             "searching": true,
             "paging": true,

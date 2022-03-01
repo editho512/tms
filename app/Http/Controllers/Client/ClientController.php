@@ -173,13 +173,12 @@ class ClientController extends Controller
         $zonesDepart = $districtDepart->zones;
         $zonesArrivee = $districtArrivee->zones;
 
-
         if ($zonesDepart === Collection::empty() OR $zonesArrivee === Collection::empty())
         {
             return response()->json(['error' => 'Aucune transporteur disponible pour ce district']);
         }
 
-        $zoneTransporteurs = ZoneTransporteur::whereIn('zone_id', $zonesDepart->pluck('id'))->whereIn('zone_id', $zonesArrivee->pluck('id'))->get('user_id');
+        $zoneTransporteurs = ZoneTransporteur::whereIn('zone_id', $zonesDepart->pluck('id'))->whereIn('zone_id', $zonesArrivee->pluck('id'))->get();
 
         $departCategorie = DepartCategorie::where('depart_id', $districtDepart->id)->where('id_district', $districtArrivee->id)->first('categorie_id');
 
@@ -194,7 +193,7 @@ class ClientController extends Controller
 
         foreach ($zoneTransporteurs as $zone)
         {
-            $transporteur = User::findOrFail($zone->user_id);
+            $transporteur = User::find($zone->user_id);
 
             if ($transporteur->prixCategorie($categorie->id) !== 0)
             {

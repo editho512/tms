@@ -267,7 +267,7 @@
 
         @include('client.header')
 
-        <div id="content" style="margin-top: 15vh">
+        <div id="content" style="margin-top: 15vh; margin-bottom:15vh;">
             @yield('content')
         </div>
 

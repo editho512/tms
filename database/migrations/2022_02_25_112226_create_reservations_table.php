@@ -15,13 +15,12 @@ class CreateReservationsTable extends Migration
     {
         Schema::create('reservations', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger("user_id");
-            $table->bigInteger("depart_id");
-            $table->bigInteger("arrive_id");
-            $table->bigInteger("id_user");
-            $table->date("date");
+            $table->bigInteger("user_id")->index('i_fk_reservation_client')->comment('Identifiant du client');
+            $table->bigInteger("depart_id")->index('i_fk_reservation_depart')->comment('Province de départ de la reservation');
+            $table->bigInteger("arrive_id")->index('i_fk_reservation_arrivee')->comment('Ville d\'arrivée de la reservation');
+            $table->bigInteger("id_user")->index('i_fk_reservation_transporteur')->comment('Identifiant du transporteur');
+            $table->dateTime("date");
             $table->string("status");
-
             $table->timestamps();
         });
     }
