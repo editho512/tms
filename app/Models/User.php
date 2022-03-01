@@ -110,4 +110,22 @@ class User extends Authenticatable
         }
         return $categoriePrix->montant;
     }
+
+    public function isSameAs(User $user)
+    {
+        if ($this->id === $user->id) return true;
+        return false;
+    }
+
+
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class);
+    }
+
+
+    public function reservationsTransporteur()
+    {
+        return $this->hasMany(Reservation::class, 'id_user', 'id');
+    }
 }

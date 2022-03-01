@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Client\ClientController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ReservationController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,14 +16,31 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
 Auth::routes();
+
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 
 // --------------------- TARIFS --------------------//
+// -------------------- RESERVATIONS -------------- //
+
+Route::get('/reservation', [App\Http\Controllers\ReservationController::class, 'index'])->name('reservation');
+
+Route::get('/reservation/accept/{reservation}', [App\Http\Controllers\ReservationController::class, 'accept'])->name('reservation.accept');
+
+Route::get('/reservation/reject/{reservation}', [App\Http\Controllers\ReservationController::class, 'reject'])->name('reservation.reject');
+
+Route::get('/reservation/livrer/{reservation}', [App\Http\Controllers\ReservationController::class, 'livrer'])->name('reservation.livrer');
+
+
+// -------------------- RESERVATIONS -------------- //
+
+// --------------------- TARIFS --------------------//
+Route::post('/Tarif/categorie/ajouter/{categorie}', [App\Http\Controllers\TarifController::class, 'ajouterCategorie'])->name('tarif.categorie.ajouter');
+
+Route::get('/Tarif/categorie/trouver/{categorie}', [App\Http\Controllers\TarifController::class, 'trouverCategorie'])->name('tarif.categorie.trouver');
 
 Route::get('/Tarif/voir/{ZoneTransporteur}', [App\Http\Controllers\TarifController::class, 'voirZoneTransporteur'])->name('tarif.voir');
 
@@ -75,6 +93,10 @@ Route::prefix('client')->group(function() {
     Route::post('/do-search', [ClientController::class, 'doSearch'])->name('client.do-search');
 
     Route::get('/mes-historiques-transport', [ClientController::class, 'historique'])->name('client.transport.history');
+
+    Route::post('/reserver', [ReservationController::class, 'reserver'])->name('client.reserver');
+
+    Route::get('/annuler-reservation/{reservation}', [ClientController::class, 'annulerReservation'])->name('client.reservation.annuler');
 
 });
 

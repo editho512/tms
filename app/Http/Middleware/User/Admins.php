@@ -5,7 +5,7 @@ namespace App\Http\Middleware\User;
 use Closure;
 use Illuminate\Http\Request;
 
-class Admin
+class admins
 {
     /**
      * Handle an incoming request.
@@ -16,12 +16,13 @@ class Admin
      */
     public function handle(Request $request, Closure $next)
     {
+
         if (!auth()->user())
         {
             return redirect(null, 301)->route('login');
         }
 
-        if (!auth()->user()->isAdmin()) {
+        if (!auth()->user()->isAdmin() && !auth()->user()->estSuperAdmin()) {
             return redirect()->route('home');
         }
         return $next($request);

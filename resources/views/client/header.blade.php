@@ -2,15 +2,11 @@
 <nav class="main-header navbar navbar-expand navbar-white navbar-light header-fixed">
     <!-- Left navbar links -->
     <ul class="navbar-nav">
-        <a class="navbar-brand" href="#">
-            <img class="img-fluid logo" src="{{ asset('assets/images/logo/logo.png') }}" alt="">
+        <a class="navbar-brand d-flex justify-content-start align-items-center" href="#">
+            <img class="img-fluid logo mr-3" src="{{ asset('assets/images/logo/logo.png') }}" alt="">
+            <h1 class="text-uppercase title font-bold p-0 m-0">TMS</h1>
         </a>
-        <!--li class="nav-item">
-            {{-- <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a> --}}
-            <a class="nav-link" data-widget="pushmenu" href="#" role="button">
-                <img class="img-fluid logo" src="{{ asset('assets/images/logo/logo.png') }}" alt="">
-            </a>
-        </li-->
+
         @can("viewAny" , auth()->user())
             <li class="nav-item d-none d-sm-inline-block">
                 <a href="{{route("home")}}" class="nav-link">Dashboard</a>
@@ -33,7 +29,7 @@
             </a>
         </li>
 
-        <li class="nav-item">
+        {{--         <li class="nav-item">
             <a href="" class="nav-link @if ($active === 2) active @endif flex">
                 <i class="nav-icon fas fa-truck mr-3"></i>
                 Mes transporteurs favoris
@@ -45,7 +41,7 @@
                 <i class="nav-icon fas fa-wrench mr-3"></i>
                 Autres trucs
             </a>
-        </li>
+        </li> --}}
 
         <li class="nav-item">
             <a class="nav-link flex" href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();">

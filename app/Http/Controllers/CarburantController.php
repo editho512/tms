@@ -7,16 +7,19 @@ use App\Models\Carburant;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Database\QueryException;
+use Session;
 
 class CarburantController extends Controller
 {
-    /**
-    * Ajouter un nouveau flux de carburant
-    *
-    * @param Request $request Requete contenant tous les champs
-    * @return RedirectResponse
-    */
-    public function add(Request $request) : RedirectResponse
+
+    public function __construct()
+    {
+        $this->middleware('admin');
+
+    }
+
+
+    public function add(Request $request)
     {
         $data = $request->validate([
             "camion_id" => ['required', 'numeric', 'exists:camions,id'],
@@ -49,98 +52,66 @@ class CarburantController extends Controller
         {
             dd("Une erreur est survenu, contactez l'administrateur. Message d'erreur : " , $e->getMessage());
         }
+    }
 
-<<<<<<< HEAD
-=======
-use Session;
-use App\Models\Carburant;
-use Illuminate\Http\Request;
 
-class CarburantController extends Controller
-{
-    //
-    public function add(Request $request){
-
+    /*public function add(Request $request){
         $data = $request->except("_token");
         if(isset($data['quantite']) && intval($data['quantite']) >= 0 && isset($data['date']) && isset($data['flux']) ){
             $data["date"] = date("Y-m-d", strtotime($data["date"]));
-
             Carburant::create($data);
             Session::put("notification", ["value" => "Carburant ajouté" ,
-                        "status" => "success"
+                            "status" => "success"
             ]);
         }else{
-            Session::put("notification", ["value" => "echec d'ajout" ,
-                        "status" => "error"
-            ]);
+                Session::put("notification", ["value" => "echec d'ajout" ,
+                            "status" => "error"
+                ]);
         }
->>>>>>> migration
-=======
->>>>>>> origin/endZone
+
         return redirect()->back();
-    }
+    }*/
 
     public function modifier(Carburant $carburant){
         return response()->json($carburant);
     }
 
     public function update(Request $request, Carburant $carburant){
-        $data = $request->except("_token");
+            $data = $request->except("_token");
 
-        if(isset($data['quantite']) && intval($data['quantite']) >= 0 && isset($data['date']) && isset($data['flux']) ){
-            $data["date"] = date("Y-m-d", strtotime($data["date"]));
+            if(isset($data['quantite']) && intval($data['quantite']) >= 0 && isset($data['date']) && isset($data['flux']) ){
+                $data["date"] = date("Y-m-d", strtotime($data["date"]));
 
-            $carburant->date = $data["date"];
-            $carburant->quantite = $data["quantite"];
-            $carburant->flux = $data["flux"];
-            $carburant->camion_id = $data["camion_id"];
-            $carburant->update();
-            Session::put("notification", ["value" => "Carburant modifié" ,
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> origin/endZone
-            "status" => "success"
-        ]);
-    }else{
-        Session::put("notification", ["value" => "echec d'ajout" ,
-        "status" => "error"
-    ]);
-}
-return redirect()->back();
-
-}
-
-public function delete(Carburant $carburant){
-    $carburant->delete();
-    Session::put("notification", ["value" => "Carburant supprimé" ,
-    "status" => "success"
-]);
-return redirect()->back();
-
-}
-<<<<<<< HEAD
-=======
-                        "status" => "success"
-            ]);
-        }else{
-            Session::put("notification", ["value" => "echec d'ajout" ,
+                        $carburant->date = $data["date"];
+                        $carburant->quantite = $data["quantite"];
+                        $carburant->flux = $data["flux"];
+                        $carburant->camion_id = $data["camion_id"];
+                        $carburant->update();
+                        Session::put("notification", ["value" => "Carburant modifié" ,"status" => "success"]);
+                }else{
+                    Session::put("notification", ["value" => "echec d'ajout" ,
                         "status" => "error"
-            ]);
-        }
+                ]);
+            }
         return redirect()->back();
 
     }
 
     public function delete(Carburant $carburant){
         $carburant->delete();
-        Session::put("notification", ["value" => "Carburant supprimé" ,
-                    "status" => "success"
-            ]);
+
+        Session::put("notification", ["value" => "Carburant supprimé" ,"status" => "success"]);
         return redirect()->back();
 
     }
->>>>>>> migration
-=======
->>>>>>> origin/endZone
+
+
+
+    /*public function delete(Carburant $carburant){
+            $carburant->delete();
+            Session::put("notification", ["value" => "Carburant supprimé" ,
+                        "status" => "success"
+                ]);
+            return redirect()->back();
+    }*/
 }

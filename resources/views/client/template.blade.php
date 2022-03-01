@@ -33,6 +33,10 @@
     <!-- DataTables -->
     <link rel="stylesheet" href="{{asset('assets/adminlte/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css')}}">
     <link rel="stylesheet" href="{{asset('assets/adminlte/plugins/datatables-responsive/css/responsive.bootstrap4.min.css')}}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
     <!-- include the style
 
         <link rel="stylesheet" href="{{asset('assets/alertifyjs/css/alertify.min.css')}}" />
@@ -53,6 +57,117 @@
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css"/>
 
     <style>
+
+        .button {
+            font-size: 16px;
+            line-height: 24px;
+            padding: 7px 19px 9px;
+            text-decoration: none;
+            display: inline-block;
+            vertical-align: top;
+            transition: all .2s ease-in-out;
+            border: 1px solid transparent;
+            border-radius: 5px;
+            background-color: #ccc;
+            color: #141414;
+            cursor: pointer;
+            position: relative;
+            box-shadow: 2px 2px 2px rgb(114, 114, 114)!important;
+        }
+
+        .button--secondary {
+            color: #fff;
+            background-color: #42b0d5;
+            border-color: transparent;
+            box-shadow: none;
+        }
+
+        .button--secondary:hover {
+            background-color: #33a1c5;
+        }
+
+        .select2-selection__rendered {
+            padding: 0!important;
+            margin: 0!important;
+        }
+
+        .select2-container .select2-selection--single {
+            display: flex;
+            justify-content: flex-start;
+            align-content: center;
+            align-items: center;
+            height: 40px!important;
+        }
+
+        .select2-selection__arrow {
+            margin-top: 5px;
+        }
+
+        .error {
+            border: 1px solid red!important;
+            border-radius: 5px!important;
+        }
+
+        .btn-primary {
+            background-color: #1190a7!important;
+            border: none;
+            box-shadow: 2px 2px 2px #045563;
+        }
+
+        .btn-primary:hover {
+            background-color: #30c6e0!important;
+        }
+
+        .btn-primary:visited {
+            box-shadow: 2px 2px 2px #045563!important;
+        }
+
+        .btn-primary:focus {
+            box-shadow: 2px 2px 2px #045563!important;
+        }
+
+        .btn-success {
+            background-color: #1fafca!important;
+            border: none;
+            box-shadow: 2px 2px 2px #045563;
+        }
+
+        .btn-success:hover {
+            background-color: #68cddf!important;
+        }
+
+        .btn-success:visited {
+            box-shadow: 2px 2px 2px #045563!important;
+        }
+
+        .btn-success:focus {
+            box-shadow: 2px 2px 2px #045563!important;
+        }
+
+        .btn-info {
+            box-shadow: 2px 2px 2px #045563;
+        }
+
+        .btn-info:visited {
+            box-shadow: 2px 2px 2px #045563!important;
+        }
+
+        .btn-info:focus {
+            box-shadow: 2px 2px 2px #045563!important;
+        }
+
+        .modal-footer {
+            background-color: hsl(210, 38%, 97%);
+        }
+
+        *:not(i){
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+        }
+
+        .title {
+            color: #003d6d;
+        }
 
         .font-xx-large {
             font-size: xx-large;
@@ -90,6 +205,11 @@
             margin: 0!important;
         }
 
+        .main-footer {
+            margin: 0!important;
+            width: 100%;
+        }
+
         .flex {
             display: flex!important;
             justify-content: center!important;
@@ -97,6 +217,8 @@
             align-content: center!important;
             transition: all;
             transition-duration: 0.5s;
+            color: #003d6d!important;
+            font-size: 1.1rem;
         }
 
         .flex:hover {
@@ -110,6 +232,9 @@
             right: 0;
             width: 100%;
             box-shadow: 2px 2px 2px #34b5cc;
+            opacity: 0,1!important;
+            padding-left: 110px;
+            padding-right: 110px;
         }
 
         .logo {
@@ -124,6 +249,11 @@
         .content-wrapper {
             margin-left: 100px!important;
             margin-right: 100px!important;
+            background-color: transparent!important;
+        }
+
+        .sidebar-mini {
+            background: linear-gradient(to right, hsl(210, 32%, 93%), hsl(0, 54%, 97%))!important;
         }
 
     </style>
@@ -137,72 +267,11 @@
 
         @include('client.header')
 
-        <!-- Main Sidebar Container -->
-        {{-- <aside class="main-sidebar sidebar-dark-primary elevation-4" style="background-color: #023047">
-            <!-- Brand Logo -->
-            <a href="" class="brand-link">
-                <img src="{{asset('assets/images/logo/logo.png')}}" alt="Tsaravidy Logo" class="brand-image img-circle elevation-3"
-                style="opacity: .8">
-                <span class="brand-text font-weight-light">{{ config('app.name') }} V1.0</span>
-            </a>
-
-            <!-- Sidebar -->
-            <div class="sidebar" >
-                <!-- Sidebar user panel (optional) -->
-                <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-                    <div class="image">
-                        <img src="{{asset('assets/images/avatars/avatar.png')}}" class="img-circle elevation-2" alt="User Image">
-                    </div>
-                    <div class="info">
-                        <a href="#" class="d-block">{{Auth::user()->name}}</a>
-                    </div>
-                </div>
-                <div class="user-panel  d-flex" id="tableau_bord" style="">
-                    <a style="@if(isset($active_dashboard_index))  color:white !important; @endif" href="" class="nav-link"><i class="nav-icon fas fa-tachometer-alt"></i>&nbsp;&nbsp;Dashboard</a>
-                </div>
-                <!-- Sidebar Menu -->
-                <nav class="mt-2">
-                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                        <li class="nav-item has-treeview">
-                            <a href="{{ route('client.search') }}" class="nav-link @if ($active === 0) active @endif">
-                                <i class="nav-icon fas fa-search"></i>
-                                <p>Rechercher transporteurs</p>
-                            </a>
-                        </li>
-
-                        <li class="nav-item has-treeview">
-                            <a href="{{ route('client.transport.history') }}" class="nav-link  @if ($active === 1) active @endif">
-                                <i class="nav-icon fas fa-list"></i>
-                                <p>Mes transports</p>
-                            </a>
-                        </li>
-
-                        <li class="nav-item has-treeview">
-                            <a href="" class="nav-link @if ($active === 2) active @endif">
-                                <i class="nav-icon fas fa-truck"></i>
-                                <p>Mes transporteurs favoris</p>
-                            </a>
-                        </li>
-
-                        <li class="nav-item has-treeview">
-                            <a href="" class="nav-link @if ($active === 3) active @endif">
-                                <i class="nav-icon fas fa-wrench"></i>
-                                <p>Autres trucs</p>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-                <!-- /.sidebar-menu -->
-            </div>
-            <!-- /.sidebar -->
-        </aside>
-        --}}
-
         <div id="content" style="margin-top: 15vh">
             @yield('content')
         </div>
 
-        @include('layouts.footer')
+        @include('client.footer')
 
     </div>
     <!-- ./wrapper -->

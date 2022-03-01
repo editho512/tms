@@ -3,23 +3,25 @@
 namespace App\Http\Controllers\Client;
 
 use Carbon\Carbon;
+use App\Models\User;
 use App\Models\Region;
 use App\Models\Commune;
 use App\Models\District;
 use App\Models\Province;
-use App\Models\Categorie;
 use Illuminate\Http\Request;
+use App\Models\DepartCategorie;
+use App\Models\ZoneTransporteur;
 use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;
-use App\Models\Depart;
-use App\Models\DepartCategorie;
+use App\Models\Reservation;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Database\Eloquent\Collection;
 
 class ClientController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('client');
     }
 
     /**
@@ -60,9 +62,11 @@ class ClientController extends Controller
         if (!auth()->user()->isClient()) {
             return redirect()->route('camion.liste');
         }
+        $reservations = auth()->user()->reservations;
 
         return view('client.history', [
             'active' => 1,
+            'reservations' => $reservations,
         ]);
     }
 
@@ -151,8 +155,8 @@ class ClientController extends Controller
             "region-arrivee" => ['required', 'numeric', 'exists:regions,id'],
             "district-arrivee" => ['required', 'numeric', 'exists:districts,id'],
             "commune-arrivee" => ['required', 'numeric', 'exists:communes,id'],
-            /*"date_depart" => ['required', 'date', 'after_or_equal:' . Carbon::now()->toDateString()],
-            "heure_depart" => ['required'],*/
+            "date_depart" => ['required', 'date', 'after_or_equal:' . Carbon::now()->toDateString()],
+            "heure_depart" => ['required'],
         ]);
 
         if ($validator->fails())
@@ -164,20 +168,19 @@ class ClientController extends Controller
         $districtArriveeID = intval($request->get('district-arrivee'));
 
         $districtDepart = District::findOrFail($districtDepartID);
+        $districtArrivee = District::findOrFail($districtArriveeID);
 
-        $zone = $districtDepart->zones()->first();
+        $zonesDepart = $districtDepart->zones;
+        $zonesArrivee = $districtArrivee->zones;
 
-        if ($zone === null)
+
+        if ($zonesDepart === Collection::empty() OR $zonesArrivee === Collection::empty())
         {
             return response()->json(['error' => 'Aucune transporteur disponible pour ce district']);
         }
 
-        $transporteurs = $zone->transporteurs; // Recuperer tous les transporteurs qui fait cette zone
+        $zoneTransporteurs = ZoneTransporteur::whereIn('zone_id', $zonesDepart->pluck('id'))->whereIn('zone_id', $zonesArrivee->pluck('id'))->get('user_id');
 
-        /*$depart = $districtDepart->depart;
-        dd($depart);*/
-
-        $districtArrivee = District::findOrFail($districtArriveeID);
         $departCategorie = DepartCategorie::where('depart_id', $districtDepart->id)->where('id_district', $districtArrivee->id)->first('categorie_id');
 
         if ($departCategorie === null)
@@ -189,18 +192,36 @@ class ClientController extends Controller
 
         $results = [];
 
-        foreach ($transporteurs as $transporteur)
+        foreach ($zoneTransporteurs as $zone)
         {
+            $transporteur = User::findOrFail($zone->user_id);
+
             if ($transporteur->prixCategorie($categorie->id) !== 0)
             {
                 $results[] = [
                     'transporteur' => $transporteur,
                     'prix' => $transporteur->prixCategorie($categorie->id),
+                    'depart' => $districtDepartID,
+                    'date_depart' => $request->date_depart,
+                    'heure_depart' => $request->heure_depart,
+                    'district' => [
+                        'depart' => $districtDepartID,
+                        'arrivee' => $districtArriveeID,
+                    ],
                 ];
             }
         }
 
         return response()->json($results);
+    }
+
+
+    public function annulerReservation(Reservation $reservation)
+    {
+        $reservation->status = Reservation::STATUS[3];
+        $reservation->update();
+
+        return redirect()->back();
     }
 
 }

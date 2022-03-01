@@ -5,7 +5,7 @@ namespace App\Http\Middleware\User;
 use Closure;
 use Illuminate\Http\Request;
 
-class Admin
+class client
 {
     /**
      * Handle an incoming request.
@@ -21,7 +21,7 @@ class Admin
             return redirect(null, 301)->route('login');
         }
 
-        if (!auth()->user()->isAdmin()) {
+        if (!auth()->user()->isClient()) {
             return redirect()->route('home');
         }
         return $next($request);

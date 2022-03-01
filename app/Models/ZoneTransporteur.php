@@ -32,7 +32,7 @@ class ZoneTransporteur extends Model
     }
 
     public static function isSetZone($zone_id){
-        $mes_zones = self::where("zone_id", $zone_id)->get();
+        $mes_zones = self::where("zone_id", $zone_id)->where("user_id", auth()->user()->id)->get();
         return isset($mes_zones[0]->id);
     }
 

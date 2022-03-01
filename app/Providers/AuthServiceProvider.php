@@ -39,5 +39,19 @@ class AuthServiceProvider extends ServiceProvider
             if ($user->type !== null AND $user->isClient() === false AND in_array($user->type, $typeUtilisateurs)) return true;
             else return false;
         });
+
+        Gate::define('for-superAdmin', function(User $user) {
+           return $user->estSuperAdmin();
+        });
+
+        Gate::define('for-admin', function(User $user) {
+            return $user->isAdmin();
+        });
+
+        Gate::define('for-client', function(User $user) {
+            return $user->isClient();
+        });
+
+
     }
 }

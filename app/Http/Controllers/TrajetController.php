@@ -1,22 +1,32 @@
 <?php
 
+
+<?php
+
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use App\Models\Camion;
 use App\Models\Trajet;
 use App\Models\Carburant;
-use App\Models\Carburant;
 use App\Models\Chauffeur;
 use App\Models\Itineraire;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Database\QueryException;
 
 class TrajetController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('admin');
+
+    }
+
     /**
     * Methode qui ajoute un nouveau trajet dans la base de données
     *

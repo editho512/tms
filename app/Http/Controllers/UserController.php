@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Session;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Session;
 
 class UserController extends Controller
 {
@@ -15,6 +16,12 @@ class UserController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+
+        // Verifier si l'utilisateur peut acceder au dashboard
+        if (!Gate::allows('acceder-dashboard') || !Gate::allows('For-superAdmin'))
+        {
+            return redirect()->route('home');
+        }
     }
 
     public function index(){
@@ -40,21 +47,21 @@ class UserController extends Controller
                                         ]);
             return response()->json($errors);
         }
-    
+
         // Check validation success
         if ($validator->passes()) {
             $data = $request->all();
             $data['password'] = Hash::make($data['password']);
-         
+
 
             User::create($data);
-            
+
             Session::put("notification", ["value" => "Utilisateur ajouté" ,
                                                 "status" => "success"
                                         ]);
             return response()->json(["success" => true]);
-            
-        } 
+
+        }
     }
 
     public function afficher(User $user){
@@ -77,7 +84,7 @@ class UserController extends Controller
                                         ]);
             return response()->json($errors);
         }
-    
+
         // Check validation success
         if ($validator->passes()) {
             $data = $request->all();
@@ -87,16 +94,16 @@ class UserController extends Controller
             if($data["password"] != null){
                 $user->password = Hash::make($data["password"]);
             }
-    
+
             $user->update();
-            
+
             Session::put("notification", [  "value" => "Utilisateur ajouté" ,
                                             "status" => "success"
                                         ]);
             return response()->json(["success" => true]);
-            
-        } 
-        
+
+        }
+
     }
 
     public function delete(User $user){
@@ -105,5 +112,5 @@ class UserController extends Controller
         "status" => "success"]);
         return redirect()->back();
     }
-    
+
 }

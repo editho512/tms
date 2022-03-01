@@ -2,14 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Hash;
 
 class HomeController extends Controller
 {
-    /**
+        /**
     * Create a new controller instance.
     *
     * @return void
@@ -27,17 +23,12 @@ class HomeController extends Controller
     public function index()
     {
         $user = auth()->user();
-
-        if ($user->isClient())
-        {
+        if($user->isClient()){
             return redirect()->route('client.search');
-        }
-
-        if ($user->isAdmin())
-        {
+        }else if($user->isAdmin() || $user->estSuperAdmin()){
             return redirect()->route('camion.liste');
         }
-
         return view('accueil');
     }
+
 }

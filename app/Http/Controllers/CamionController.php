@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
@@ -21,7 +20,7 @@ class CamionController extends Controller
     */
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('admins');
     }
 
 
@@ -32,12 +31,6 @@ class CamionController extends Controller
     */
     public function index()
     {
-        // Verifier si l'utilisateur peut acceder au dashboard
-        if (!Gate::allows('acceder-dashboard'))
-        {
-            return redirect()->route('home');
-        }
-
         $camions = auth()->user()->camions;
         $active_camion_index = "active";
 

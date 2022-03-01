@@ -5,17 +5,17 @@ namespace App\Http\Controllers;
 use File;
 use Session;
 use App\Models\Chauffeur;
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Validator;
 
 class ChauffeurController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('super-admin')->except(['index', 'add']);
-    }
+        $this->middleware('admin');
 
+    }
 
     public function index() : View
     {

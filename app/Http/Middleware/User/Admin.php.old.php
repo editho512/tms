@@ -22,7 +22,7 @@ class Admin
         }
 
         if (!auth()->user()->isAdmin()) {
-            return redirect()->route('home');
+            return redirect()->route('client.search');
         }
         return $next($request);
     }

@@ -46,10 +46,6 @@
                             <table id="camions" class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
-                                        @if (auth()->user()->estSuperAdmin())
-                                        <th>Transporteur</th>
-
-                                        @endif
                                         <th>Désignation</th>
                                         <th>Numéro châssis</th>
                                         <th>Modèle</th>
@@ -62,10 +58,6 @@
                                     @if(isset($camions) && $camions->count() > 0)
                                     @foreach($camions as $camion)
                                     <tr style='{{$camion->blocked == true ? "color:gray;" : ""}}' >
-                                        @if (auth()->user()->estSuperAdmin())
-                                        <td>{{$camion->transporteur->name}}</td>
-
-                                        @endif
                                         <td>
                                             {{ucwords($camion->name)}}
                                             @if ($camion->aUnTrajetEncours()) -<span class="badge badge-info">A un trajet en cours</span> @endif
@@ -101,7 +93,7 @@
                                     @endforeach
                                     @else
                                     <tr>
-                                        <td style="text-align: center" colspan="{{auth()->user()->estSuperAdmin() ? 7 : 6}}">
+                                        <td style="text-align: center" colspan="6">
                                             Aucun camion dans la liste
                                         </td>
                                     </tr>
@@ -109,10 +101,6 @@
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        @if (auth()->user()->estSuperAdmin())
-                                        <th>Transporteur</th>
-
-                                        @endif
                                         <th>Désignation</th>
                                         <th>Numéro châssis</th>
                                         <th>Modèle</th>

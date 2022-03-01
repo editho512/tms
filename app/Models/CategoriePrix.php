@@ -9,6 +9,9 @@ class CategoriePrix extends Model
 {
     use HasFactory;
 
+    protected $table = "categorie_prix";
 
-    protected $table = 'categorie_prix';
+    protected $fillable = ["categorie_id", "montant", "user_id"];
+
+    public $timestamps = false;
 }

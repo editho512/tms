@@ -21,7 +21,6 @@ class Zone extends Model
         return isset($district[0]->district_id) === true ?  $district->pluck("district_id") : [];
     }
 
-
     public function transporteurs() : BelongsToMany
     {
         return $this->belongsToMany(User::class, 'zone_transporteurs', 'zone_id', 'user_id');

@@ -16,6 +16,10 @@ class Camion extends Model
     ];
 
 
+    public function transporteur(){
+        return $this->hasOne(User::class, "id", "user_id");
+    }
+
     /**
     * Méthode qui retourne tous les trajets faite par un camion
     *

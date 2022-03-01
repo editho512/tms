@@ -16,7 +16,7 @@ class DepartCategorie extends Model
     public $timestamps = false;
 
     public function depart(){
-        return $this->hasOne(Depart::class, "id", "depart_id");
+        return $this->hasOne(District::class, "id", "depart_id");
     }
 
     public function categorie(){
@@ -37,5 +37,9 @@ class DepartCategorie extends Model
         }
 
         return false;
+
+        $departCategorie = self::where("depart_id", $depart)->where("id_district", $arrive)->get();
+
+        return isset($departCategorie[0]->id);
     }
 }
