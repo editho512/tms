@@ -14,10 +14,10 @@ class CreateCategorieRnTransporteursTable extends Migration
     public function up()
     {
         Schema::create('categorie_rn_transporteurs', function (Blueprint $table) {
-            $table->id();
-            $table->bigInteger('rn_id')->index('i_fk_rn')->comment('Identifiant de la route nationale');
-            $table->bigInteger('transporteur_id')->index('i_fk_transporteur')->comment('Identifiant du transporteur');
-            $table->bigInteger('categorie_id')->index('i_fk_categorie')->comment('Identifiant de la catégorie');
+            $table->primary(['rn_id', 'transporteur_id', 'categorie_id'], 'cate_rn_trans_id');
+            $table->bigInteger('rn_id')->index('i_fk_cat_trans_rn')->unsigned()->comment('Identifiant de la route nationale');
+            $table->bigInteger('transporteur_id')->unsigned()->index('i_fk_cat_rn_transporteur')->comment('Identifiant du transporteur');
+            $table->bigInteger('categorie_id')->unsigned()->index('i_fk_rn_trans_categorie')->comment('Identifiant de la catégorie');
             $table->decimal('prix', 10)->nullable(false);
             $table->timestamps();
         });

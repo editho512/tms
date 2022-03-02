@@ -14,7 +14,9 @@ class AddForeignKeyToCategorieDepartsTable extends Migration
     public function up()
     {
         Schema::table('categorie_departs', function (Blueprint $table) {
-            //
+            $table->foreign(['province_id'], 'i_fk_depart')->references(['id'])->on('provinces');
+            $table->foreign(['ville_id'], 'i_fk_arrivee')->references(['id'])->on('villes');
+            $table->foreign(['categorie_id'], 'i_fk_categorie')->references(['id'])->on('categories');
         });
     }
 
@@ -26,7 +28,9 @@ class AddForeignKeyToCategorieDepartsTable extends Migration
     public function down()
     {
         Schema::table('categorie_departs', function (Blueprint $table) {
-            //
+            $table->dropForeign('i_fk_depart');
+            $table->dropForeign('i_fk_arrivee');
+            $table->dropForeign('i_fk_categorie');
         });
     }
 }

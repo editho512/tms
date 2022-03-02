@@ -14,7 +14,8 @@ class AddForeignKeyToRnTransporteursTable extends Migration
     public function up()
     {
         Schema::table('rn_transporteurs', function (Blueprint $table) {
-            //
+            $table->foreign(['user_id'], 'i_fk_transporteur')->references(['id'])->on('users');
+            $table->foreign(['rn_id'], 'i_fk_rn')->references(['id'])->on('rns');
         });
     }
 
@@ -26,7 +27,8 @@ class AddForeignKeyToRnTransporteursTable extends Migration
     public function down()
     {
         Schema::table('rn_transporteurs', function (Blueprint $table) {
-            //
+            $table->dropForeign('user_id');
+            $table->dropForeign('rn_id');
         });
     }
 }

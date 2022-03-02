@@ -11,4 +11,24 @@ class Rn extends Model
 
     protected $fillable = ['nom'];
 
+    public function villes()
+    {
+        return $this->belongsToMany(Ville::class, 'ville_rns', 'rn_id', 'ville_id');
+    }
+
+    public function grandeVilles()
+    {
+        return $this->belongsToMany(Province::class, 'province_rns', 'rn_id', 'province_id');
+    }
+
+    public function description()
+    {
+        return 'Description';
+    }
+
+
+    public function provinces()
+    {
+        return $this->belongsToMany(Province::class, 'province_rns', 'rn_id', 'province_id');
+    }
 }

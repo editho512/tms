@@ -2,129 +2,146 @@
 
 namespace App\Http\Controllers;
 
-use Session;
+use App\Models\Rn;
 use App\Models\Zone;
+use App\Models\Ville;
 use App\Models\District;
 use App\Models\Categorie;
+use App\Models\CategorieDepart;
 use App\Models\ZoneDistrict;
 use Illuminate\Http\Request;
 use App\Models\DepartCategorie;
-
+use Illuminate\Support\Facades\Session;
 
 class ZoneController extends Controller
 {
-     /**
+    /**
     * Constructeur qui definit les middlewares
     */
     public function __construct()
     {
         $this->middleware('super-admin');
-
     }
 
     public function index()
     {
-
-        $zones = Zone::all();
-
-        $districts = District::all();
+        $rns = Rn::all();
+        $villes = Ville::all();
         $active_zone_index = "active";
 
-        return view("zone.zoneIndex", compact("active_zone_index", "zones", "districts"));
+        return view("zone.zoneIndex", compact("active_zone_index", "rns", "villes"));
     }
 
+    public function ajouterCategorie(Request $request)
+    {
+        $data = $request->validate([
+            "depart" => ["required", "numeric", "exists:provinces,id"],
+            "arrive" => ["required", "numeric", "exists:villes,id"],
+            "categorie" => ["required", "numeric", "exists:categories,id"],
+            "delais_approximatif" => ["nullable", "numeric", "min:1", "max:200"],
+        ]);
 
+        $categorieDepart = new CategorieDepart([
+            "province_id" => $data['depart'],
+            "ville_id" => $data['arrive'],
+            "categorie_id" => $data['categorie'],
+            "delais_approximatif" => $data['delais_approximatif'],
+        ]);
 
-    public function ajouterCategorie(Request $request){
-        $data = $request->all();
-
-        if(
-            isset($data["depart"]) === true && isset($data["arrive"]) === true && isset($data["categorie"]) &&
-            isset(District::find($data["depart"])->id) === true && isset(District::find($data["arrive"])->id) === true && isset(Categorie::find($data["categorie"])->id) === true
-
-            )
+        if ($categorieDepart->save())
         {
-            if( DepartCategorie::isSetCategorie($data["depart"], $data["arrive"]) === false){
-
-                DepartCategorie::create(["depart_id" => $data["depart"], "id_district" => $data["arrive"], "categorie_id" => $data["categorie"] ]);
-                Session::put("notification", ["value" => "Catégorie ajouté" , "status" => "success" ]);
-            }else{
-                Session::put("notification", ["value" => "Catégorie existe déja" , "status" => "error" ]);
-            }
-
+            $request->session()->flash("notification", [
+                "value" => "Catégorie ajouté" ,
+                "status" => "success"
+            ]);
+        }
+        else
+        {
+            $request->session()->flash("notification", [
+                "value" => "Impossible d'ajouter la catégorie" ,
+                "status" => "error"
+            ]);
         }
 
         return redirect()->back();
     }
 
-    public function supprimerCategorie(DepartCategorie $departCategorie){
+    public function supprimerCategorie(DepartCategorie $departCategorie)
+    {
         $departCategorie->delete();
-
         Session::put("notification", ["value" => "Catégorie supprimé" , "status" => "success" ]);
 
         return redirect()->back();
     }
 
-    public function modifierCategorie(Request $request, DepartCategorie $departCategorie){
-        $data = $request->all();
+    public function modifierCategorie(Request $request, CategorieDepart $departCategorie)
+    {
+        $data = $request->validate([
+            "depart" => ["required", "numeric", "exists:provinces,id"],
+            "arrive" => ["required", "numeric", "exists:villes,id"],
+            "categorie" => ["required", "numeric", "exists:categories,id"],
+            "delais_approximatif" => ["nullable", "numeric", "min:1", "max:200"],
+        ]);
 
-        if(
-            isset($data["depart"]) === true && isset($data["arrive"]) === true && isset($data["categorie"]) &&
-            isset(District::find($data["depart"])->id) === true && isset(District::find($data["arrive"])->id) === true && isset(Categorie::find($data["categorie"])->id) === true
+        $update = $departCategorie->update([
+            "province_id" => $data['depart'],
+            "ville_id" => $data['arrive'],
+            "categorie_id" => $data['categorie'],
+            "delais_approximatif" => $data['delais_approximatif'],
+        ]);
 
-            )
-            {
-
-
-               /* $departs = Depart::where("district_id", $data["depart"])->get();
-                if(isset($departs[0]->id) === true){
-                    $departs = $departs[0];
-                }else{
-                    $departs = Depart::create(["district_id" => $data["depart"]]);
-                }*/
-
-                $dep = DepartCategorie::where("id", $departCategorie->id)->update(["depart_id" => $data["depart"], "id_district" => $data["arrive"], "categorie_id" => $data["categorie"] ]);
-
-                Session::put("notification", ["value" => "Catégorie modifiée" , "status" => "success" ]);
-
-
+        if ($update)
+        {
+            $request->session()->flash("notification", [
+                "value" => "Catégorie mis a jour" ,
+                "status" => "success"
+            ]);
+        }
+        else
+        {
+            $request->session()->flash("notification", [
+                "value" => "Impossible mettre a jour la catégorie" ,
+                "status" => "error"
+            ]);
         }
 
         return redirect()->back();
     }
 
-
     /**
-     * Voir une zone de travail
-     *
-     * @param Zone $zone
-     * @return void
-     */
-    public function voirZone(Zone $zone)
+    * Voir une zone de travail
+    *
+    * @param int $rnId
+    * @return void
+    */
+    public function voirZone(int $rnID)
     {
         $active_zone_index = "active";
-
-        $districts = ZoneDistrict::where('zone_id', $zone->id)->get();
-
-        $itineraires = DepartCategorie::join("zone_districts", "zone_districts.district_id", "=", "depart_categories.depart_id")
-                                        ->where("zone_districts.zone_id", "=", $zone->id)
-                                        ->get(['depart_categories.id', "depart_categories.depart_id", "depart_categories.categorie_id", "depart_categories.id_district", "zone_districts.zone_id"]);
-
-
-        $allDistricts = District::all();
-
+        $rn = Rn::findOrFail($rnID);
+        $villes = Ville::all();
         $categories = Categorie::all();
+        $grandeVilles = $rn->grandeVilles;
+        $itineraires = CategorieDepart::all();
 
-        return view("zone.voirZone", compact("active_zone_index", "zone", "districts", "itineraires", "allDistricts", "categories"));
+        return view("zone.voirZone", [
+            "active_zone_index" => $active_zone_index,
+            "rn" => $rn,
+            "villes" => $villes,
+            "itineraires" => $itineraires,
+            "categories" => $categories,
+            "grandeVilles" => $grandeVilles
+        ]);
 
     }
 
-    public function trouverItineraire(DepartCategorie $departCategorie){
-
-        return response()->json(["depart" => $departCategorie->depart->id,
-                                    "arrive" => $departCategorie->district->id,
-                                    "categorie" => $departCategorie->categorie->id
-                                ]);
+    public function trouverItineraire(CategorieDepart $departCategorie)
+    {
+        return response()->json([
+            "depart" => $departCategorie->depart->id,
+            "arrive" => $departCategorie->arrivee->id,
+            "categorie" => $departCategorie->categorie->id,
+            "delais_approximatif" => $departCategorie->delais_approximatif,
+        ]);
     }
 
     public function supprimer(Zone $zone){
@@ -163,34 +180,41 @@ class ZoneController extends Controller
         return redirect()->back();
     }
 
-    public function modifier(Zone $zone){
+    public function modifier(Zone $zone)
+    {
         return response()->json(['zone' => $zone, 'district' => $zone->getDistrictId()]);
     }
 
-    public function ajouter(Request $request){
+    public function ajouter(Request $request)
+    {
         $data = $request->validate([
-            "name" => "required" ,
-            "district" => "required"
+            "name" => ["required", "unique:rns,nom"] ,
+            "ville" => ["required", "array"],
         ]);
 
-        if(count($data['district']) > 0  ){
+        if (count($data['ville']) > 0)
+        {
+            $rn = Rn::create([
+                "nom" => strtoupper($data['name'])
+            ]);
 
-            $zone = Zone::create(["name" => $data['name']]);
-
-            foreach ($data['district'] as $key => $district) {
-
-                if( isset(District::find($district)->id) === true ){
-                    ZoneDistrict::create(['zone_id' => $zone->id, "district_id" => $district]);
-
-                    Session::put("notification", ["value" => "Zone ajoutée" , "status" => "success" ]);
-
+            if ($rn)
+            {
+                foreach ($data['ville'] as $villeID)
+                {
+                    $ville = Ville::find($villeID);
+                    if ($ville !== null)
+                    {
+                        $rn->villes()->attach($ville->id);
+                    }
                 }
+
+                $request->session()->flash("notification", [
+                    "value" => "Zone ajoutée" ,
+                    "status" => "success"
+                ]);
             }
         }
-
         return redirect()->back();
-
     }
-
-
 }

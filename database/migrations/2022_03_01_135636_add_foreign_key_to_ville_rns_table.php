@@ -14,7 +14,8 @@ class AddForeignKeyToVilleRnsTable extends Migration
     public function up()
     {
         Schema::table('ville_rns', function (Blueprint $table) {
-            //
+            $table->foreign(['ville_id'], 'i_fk_rn_ville')->references(['id'])->on('villes');
+            $table->foreign(['rn_id'], 'i_fk_ville_rn')->references(['id'])->on('rns');
         });
     }
 
@@ -26,7 +27,8 @@ class AddForeignKeyToVilleRnsTable extends Migration
     public function down()
     {
         Schema::table('ville_rns', function (Blueprint $table) {
-            //
+            $table->dropForeign('i_fk_ville');
+            $table->dropForeign('i_fk_rn');
         });
     }
 }

@@ -14,7 +14,7 @@ class AddForeignKeyToVillesTable extends Migration
     public function up()
     {
         Schema::table('villes', function (Blueprint $table) {
-            //
+            $table->foreign(['region_id'], 'i_fk_ville_region')->references(['id'])->on('regions');
         });
     }
 
@@ -26,7 +26,7 @@ class AddForeignKeyToVillesTable extends Migration
     public function down()
     {
         Schema::table('villes', function (Blueprint $table) {
-            //
+            $table->dropForeign('i_fk_ville_region');
         });
     }
 }

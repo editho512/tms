@@ -38,6 +38,8 @@ Route::get('/reservation/livrer/{reservation}', [App\Http\Controllers\Reservatio
 // -------------------- RESERVATIONS -------------- //
 
 // --------------------- TARIFS --------------------//
+Route::post('/Tarif/enregistrer-tarif', [App\Http\Controllers\TarifController::class, 'enregistrerTarif'])->name('transporteur.tarif.save');
+
 Route::post('/Tarif/categorie/ajouter/{categorie}', [App\Http\Controllers\TarifController::class, 'ajouterCategorie'])->name('tarif.categorie.ajouter');
 
 Route::get('/Tarif/categorie/trouver/{categorie}', [App\Http\Controllers\TarifController::class, 'trouverCategorie'])->name('tarif.categorie.trouver');
@@ -51,6 +53,8 @@ Route::get('/Tarif/modifier/{ZoneTransporteur}', [App\Http\Controllers\TarifCont
 Route::post('/Tarif/ajouter', [App\Http\Controllers\TarifController::class, 'ajouter'])->name('tarif.ajouter');
 
 Route::get('/Tarif', [App\Http\Controllers\TarifController::class, 'index'])->name('tarif');
+
+Route::get('/trajet-search', [App\Http\Controllers\TarifController::class, 'trajetSearch'])->name('trajet.search');
 
 
 // --------------------- TARIFS --------------------//

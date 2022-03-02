@@ -127,4 +127,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Reservation::class, 'id_user', 'id');
     }
+
+
+    public function zones()
+    {
+        return $this->belongsToMany(Rn::class, 'rn_transporteurs', 'rn_id', 'user_id');
+    }
 }

@@ -59,8 +59,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if(isset($camions) && $camions->count() > 0)
-                                    @foreach($camions as $camion)
+                                    @forelse($camions as $camion)
                                     <tr style='{{$camion->blocked == true ? "color:gray;" : ""}}' >
                                         @if (auth()->user()->estSuperAdmin())
                                         <td>{{$camion->transporteur->name}}</td>
@@ -68,8 +67,8 @@
                                         @endif
                                         <td>
                                             {{ucwords($camion->name)}}
-                                            @if ($camion->aUnTrajetEncours()) -<span class="badge badge-info">A un trajet en cours</span> @endif
-                                            &nbsp; @if ($camion->nombreTrajetEnAttente() > 0)<div class="badge badge-info">({{ $camion->nombreTrajetEnAttente() }} Trajet(s) en attente)</div>@endif
+                                            {{-- @if ($camion->aUnTrajetEncours()) -<span class="badge badge-info">A un trajet en cours</span> @endif
+                                            &nbsp; @if ($camion->nombreTrajetEnAttente() > 0)<div class="badge badge-info">({{ $camion->nombreTrajetEnAttente() }} Trajet(s) en attente)</div>@endif --}}
                                         </td>
                                         <td>{{$camion->numero_chassis}}</td>
                                         <td>{{$camion->model}}</td>
@@ -98,20 +97,18 @@
                                             </div>
                                         </td>
                                     </tr>
-                                    @endforeach
-                                    @else
+                                    @empty
                                     <tr>
                                         <td style="text-align: center" colspan="{{auth()->user()->estSuperAdmin() ? 7 : 6}}">
                                             Aucun camion dans la liste
                                         </td>
                                     </tr>
-                                    @endif
+                                    @endforelse
                                 </tbody>
                                 <tfoot>
                                     <tr>
                                         @if (auth()->user()->estSuperAdmin())
                                         <th>Transporteur</th>
-
                                         @endif
                                         <th>Désignation</th>
                                         <th>Numéro châssis</th>

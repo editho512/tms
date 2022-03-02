@@ -23,7 +23,6 @@ class CamionController extends Controller
         $this->middleware('admins');
     }
 
-
     /**
     * Afficher la liste des camions
     *
@@ -50,8 +49,8 @@ class CamionController extends Controller
         $data['user_id'] = auth()->user()->id;
         $camion = Camion::create($data);
 
-        if( $request->file('photo') !== null){
-
+        if( $request->file('photo') !== null)
+        {
             $validator = Validator::make($request->all(), [
                 'photo' => 'mimes:jpeg,png,bmp,tiff |max:4096',
             ],
@@ -78,7 +77,6 @@ class CamionController extends Controller
 
         return redirect()->back();
     }
-
 
     /**
     * Methode pour modifier un camion
