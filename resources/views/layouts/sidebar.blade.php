@@ -14,7 +14,7 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4" style="background-color: #023047">
     <!-- Brand Logo -->
     <a href="" class="brand-link">
-        <img src="{{asset('assets/images/logo/logo-white.png')}}" alt="Tsaravidy Logo" class="brand-image elevation-3"
+        <img src="{{asset('assets/images/logo/logo.png')}}" alt="TMS Logo" class="brand-image elevation-3"
         style="opacity: .8">
         <span class="brand-text font-weight-light">{{ config('app.name') }} V1.0</span>
     </a>

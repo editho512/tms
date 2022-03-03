@@ -23,21 +23,25 @@ class TarifController extends Controller
 
     public function trajetSearch(Request $request)
     {
-        $zone = Rn::findOrFail($request->id);
+        $zone = Rn::findOrFail($request->zone);
+        $categorie = Categorie::findOrFail($request->categorie);
         $provinces = $zone->provinces;
 
-        $departCategories = CategorieDepart::whereIn('province_id', $provinces->pluck('id'))->get();
-        //$trajets = [];
+        $departCategories = CategorieDepart::whereIn('province_id', $provinces->pluck('id'))->where('categorie_id', $categorie->id)->get();
 
+        $lists = "<ul>";
         $options = '';
 
         foreach ($departCategories as $departCategorie)
         {
-            //$trajets[] = $departCategorie->depart->nom . ' - ' . $departCategorie->arrivee->nom;
-            $options .= "<option value='{$departCategorie->depart->id}-{$departCategorie->arrivee->id}'>{$departCategorie->depart->nom} - {$departCategorie->arrivee->nom}</option>\n";
+            $lists .= "<li>{$departCategorie->depart->nom} - {$departCategorie->arrivee->nom}</li>";
+            //$options .= "<option value='{$departCategorie->depart->id}-{$departCategorie->arrivee->id}'>{$departCategorie->depart->nom} - {$departCategorie->arrivee->nom}</option>\n";
         }
+        $lists .= '</ul>';
 
-        return response()->json(['options' => $options]);
+        return response()->json([
+            'lists' => $lists,
+        ]);
     }
 
     public function index()
@@ -48,22 +52,30 @@ class TarifController extends Controller
         $active_tarif_index = true;
         $categories = Categorie::all()->take(10);
 
-        /*$zone = $zones[0];
-        $provinces = $zone->provinces;
+        $categorieRnTrans = $transporteur->categorieRnTrans;
+        $datas = [];
 
-        $departCategories = CategorieDepart::whereIn('province_id', $provinces->pluck('id'))->get();
-        $trajets = [];
-
-        foreach ($departCategories as $departCategorie)
+        foreach ($categorieRnTrans as $categorieRn)
         {
-            $trajets[] = $departCategorie->depart->nom . ' - ' . $departCategorie->arrivee->nom;
-        }*/
+            $zone = $categorieRn->zone;
+            $categorie = $categorieRn->categorie;
+            $provinces = $zone->provinces;
+            $departCategories = CategorieDepart::whereIn('province_id', $provinces->pluck('id'))->where('categorie_id', $categorie->id)->get();
+
+            $datas[$zone->nom][$categorie->id] = [
+                'nom' => $categorie->nom,
+                'prix' => $categorieRn->prix,
+                'data' => $departCategories,
+            ];
+        }
 
         return view("tarif.tarifIndex", [
             "active_tarif_index" => $active_tarif_index,
             "zones" => $zones,
             "allZones" => $allZones,
             "categories" => $categories,
+            'categorieRnTrans' => $categorieRnTrans,
+            'datas' => $datas,
         ]);
     }
 
@@ -109,11 +121,11 @@ class TarifController extends Controller
 
 
     /**
-     * Ajouter un nouveau zone de travail pour un transporteur
-     *
-     * @param Request $request Requete contenant tous les champs
-     * @return RedirectResponse
-     */
+    * Ajouter un nouveau zone de travail pour un transporteur
+    *
+    * @param Request $request Requete contenant tous les champs
+    * @return RedirectResponse
+    */
     public function ajouter(Request $request) : RedirectResponse
     {
         $data = $request->validate([
@@ -144,19 +156,41 @@ class TarifController extends Controller
     {
         $data = $request->validate([
             "zone" => ["required", "numeric", "exists:rns,id"],
-            "trajet" => ["required", "sometimes"],
+            "categorie" => ["required", "numeric", "exists:categories,id"],
             "prix" => ["required", "numeric", "min:1", "max:999999999"],
         ]);
-
-        $trajets = explode('-', $data['trajet']);
-        $departID = intval($trajets[0]);
-        $arriveeID = intval(end($trajets));
-        $categorie_id = CategorieDepart::where('province_id', $departID)->where('ville_id', $arriveeID)->first('categorie_id')->categorie_id;
 
         $categRnTrans = CategorieRnTransporteur::create([
             'transporteur_id' => auth()->user()->id,
             'rn_id' => $data['zone'],
-            'categorie_id' => $categorie_id,
+            'categorie_id' => $data['categorie'],
+            'prix' => doubleval($data['prix']),
         ]);
+
+        if ($categRnTrans)
+        {
+            $request->session()->flash("notification", [
+                "value" => "Catégorie enregistré avec success" ,
+                "status" => "success"
+            ]);
+        }
+        else
+        {
+            $request->session()->flash("notification", [
+                "value" => "Erreur d'ajout" ,
+                "status" => "error"
+            ]);
+        }
+
+        return redirect()->back();
     }
 }
+
+/*$zone = $zones[0];
+$provinces = $zone->provinces;
+$departCategories = CategorieDepart::whereIn('province_id', $provinces->pluck('id'))->get();
+$trajets = [];
+foreach ($departCategories as $departCategorie)
+{
+    $trajets[] = $departCategorie->depart->nom . ' - ' . $departCategorie->arrivee->nom;
+}*/

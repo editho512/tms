@@ -100,14 +100,14 @@ class User extends Authenticatable
     }
 
 
-    public function prixCategorie(int $idCategorie)
+    public function prixCategorie(int $idCategorie, int $zone)
     {
-        $categoriePrix = CategoriePrix::where('categorie_id', $idCategorie)->where('user_id', $this->id)->first();
+        $categoriePrix = CategorieRnTransporteur::where('categorie_id', $idCategorie)->where('transporteur_id', $this->id)->where('rn_id', $zone)->first();
         if ($categoriePrix === null)
         {
             return 0;
         }
-        return $categoriePrix->montant;
+        return $categoriePrix->prix;
     }
 
     public function isSameAs(User $user)
@@ -119,18 +119,23 @@ class User extends Authenticatable
 
     public function reservations()
     {
-        return $this->hasMany(Reservation::class);
+        return $this->hasMany(Reservation::class, 'client_id', 'id');
     }
-
 
     public function reservationsTransporteur()
     {
-        return $this->hasMany(Reservation::class, 'id_user', 'id');
+        return $this->hasMany(Reservation::class, 'transporteur_id', 'id');
     }
 
 
     public function zones()
     {
         return $this->belongsToMany(Rn::class, 'rn_transporteurs', 'rn_id', 'user_id');
+    }
+
+
+    public function categorieRnTrans()
+    {
+        return $this->hasMany(CategorieRnTransporteur::class, 'transporteur_id', 'id');
     }
 }

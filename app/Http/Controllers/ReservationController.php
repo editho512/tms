@@ -58,7 +58,7 @@ class ReservationController extends Controller
     public function accept(Reservation $reservation)
     {
         $reservation->status = Reservation::STATUS[1];
-        $reservation->id_user = auth()->user()->id;
+        $reservation->user_id = auth()->user()->id;
         $reservation->update();
 
         request()->session()->flash("notification", [
@@ -126,9 +126,9 @@ class ReservationController extends Controller
 
         $reservation = Reservation::create([
             'depart_id' => $departId,
-            'user_id' => auth()->user()->id,
-            'arrive_id' => $arriveeId,
-            'id_user' => $transporteur,
+            'client_id' => auth()->user()->id,
+            'arrivee_id' => $arriveeId,
+            'transporteur_id' => $transporteur,
             'date' => $date_heure,
             'status' => Reservation::STATUS[0],
         ]);

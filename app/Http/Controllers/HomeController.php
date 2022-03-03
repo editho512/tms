@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Artisan;
 
 class HomeController extends Controller
 {
@@ -22,6 +23,7 @@ class HomeController extends Controller
     */
     public function index()
     {
+        //Artisan::call('storage:link');
         $user = auth()->user();
         if($user->isClient()){
             return redirect()->route('client.search');

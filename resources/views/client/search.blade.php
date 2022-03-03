@@ -49,50 +49,14 @@
 
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-sm-6 mb-4">
-                                        <select autocomplete="off" name="province-depart" id="province-depart" class="form-control .test select-destination select-search-depart" data-index=0>
-                                            <option value="0">Province</option>
+                                    <div class="col-sm-12 mb-4">
+                                        <select autocomplete="off" name="province-depart" id="province-depart" class="form-control select-destination select-search-depart" data-index=0>
+                                            <option value="0">Ville de départ</option>
                                             @foreach ($provinces as $province)
-                                            <option value="{{ $province->id }}">{{ $province->nom }}</option>
+                                            <option value="{{ $province->id }}">{{ strtoupper($province->nom) }}</option>
                                             @endforeach
                                         </select>
                                         @error('province-depart')
-                                        <span class="text-danger mt-2">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-
-                                    <div class="col-sm-6 mb-4">
-                                        <select autocomplete="off" name="region-depart" id="region-depart" class="form-control select-destination select-search-depart" data-index=1>
-                                            <option value="0">Région</option>
-                                            @foreach ($regions as $region)
-                                            <option value="{{ $region->id }}">{{ $region->nom }}</option>
-                                            @endforeach
-                                        </select>
-                                        @error('region-depart')
-                                        <span class="text-danger mt-2">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-
-                                    <div class="col-sm-6 mt-1">
-                                        <select autocomplete="off" name="district-depart" id="district-depart" class="form-control select-destination select-search-depart"  data-index=2>
-                                            <option value="0">District</option>
-                                            @foreach ($districts as $district)
-                                            <option value="{{ $district->id }}">{{ $district->nom }}</option>
-                                            @endforeach
-                                        </select>
-                                        @error('district-depart')
-                                        <span class="text-danger mt-2">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-
-                                    <div class="col-sm-6 mt-1">
-                                        <select onchange="//updateDepart(this, 3)" autocomplete="off" name="commune-depart" id="commune-depart" class="form-control select-destination select-search-depart" data-index=3>
-                                            <option value="0">Commune</option>
-                                            @foreach ($communes as $commune)
-                                            <option value="{{ $commune->id }}">{{ $commune->nom }}</option>
-                                            @endforeach
-                                        </select>
-                                        @error('commune-depart')
                                         <span class="text-danger mt-2">{{ $message }}</span>
                                         @enderror
                                     </div>
@@ -119,22 +83,10 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-sm-6 mb-4">
-                                        <select autocomplete="off" name="province-arrivee" id="province-arrivee" class="form-control select-destination select-search-arrivee" data-index=0>
-                                            <option value="0">Province</option>
-                                            @foreach ($provinces as $province)
-                                            <option value="{{ $province->id }}">{{ $province->nom }}</option>
-                                            @endforeach
-                                        </select>
-                                        @error('province-arrivee')
-                                        <span class="text-danger mt-2">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-
-                                    <div class="col-sm-6 mb-4">
                                         <select onchange="//updatearrivee(this, 1)" autocomplete="off" name="region-arrivee" id="region-arrivee" class="form-control select-destination select-search-arrivee" data-index=1>
                                             <option value="0">Région</option>
                                             @foreach ($regions as $region)
-                                            <option value="{{ $region->id }}">{{ $region->nom }}</option>
+                                            <option value="{{ $region->id }}">{{ strtoupper($region->nom) }}</option>
                                             @endforeach
                                         </select>
                                         @error('region-arrivee')
@@ -142,26 +94,14 @@
                                         @enderror
                                     </div>
 
-                                    <div class="col-sm-6 mt-1">
-                                        <select onchange="//updatearrivee(this, 2)" autocomplete="off" name="district-arrivee" id="district-arrivee" class="form-control select-destination select-search-arrivee"  data-index=2>
-                                            <option value="0">District</option>
-                                            @foreach ($districts as $district)
-                                            <option value="{{ $district->id }}">{{ $district->nom }}</option>
+                                    <div class="col-sm-6">
+                                        <select onchange="//updatearrivee(this, 2)" autocomplete="off" name="ville-arrivee" id="ville-arrivee" class="form-control select-destination select-search-arrivee"  data-index=2>
+                                            <option value="0">Ville d'arrivée</option>
+                                            @foreach ($villes as $ville)
+                                                <option value="{{ $ville->id }}">{{ $ville->nom }}</option>
                                             @endforeach
                                         </select>
-                                        @error('district-arrivee')
-                                        <span class="text-danger mt-2">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-
-                                    <div class="col-sm-6 mt-1">
-                                        <select onchange="//updatearrivee(this, 3)" autocomplete="off" name="commune-arrivee" id="commune-arrivee" class="form-control select-destination select-search-arrivee" data-index=3>
-                                            <option value="0">Commune</option>
-                                            @foreach ($communes as $commune)
-                                            <option value="{{ $commune->id }}">{{ $commune->nom }}</option>
-                                            @endforeach
-                                        </select>
-                                        @error('commune-arrivee')
+                                        @error('ville-arrivee')
                                         <span class="text-danger mt-2">{{ $message }}</span>
                                         @enderror
                                     </div>
@@ -391,11 +331,11 @@
         })
     }
 
-    $(document).on("change", ".select-search-depart", function(e){
+    /*$(document).on("change", ".select-search-depart", function(e){
         let index = parseInt($(this).attr("data-index"));
         e.currentTarget.classList.remove('error')
         updateDepart(e.currentTarget, index);
-    });
+    });*/
 
     $(document).on("change", ".select-search-arrivee", function(e){
         let index = parseInt($(this).attr("data-index"));
@@ -433,9 +373,6 @@
         .then(data => {
 
             let provinceDepart = document.getElementById('province-depart')
-            let regionDepart = document.getElementById('region-depart')
-            let districtDepart = document.getElementById('district-depart')
-            let communetDepart = document.getElementById('commune-depart')
 
             if (type === 0) // Pour la selection des provinces
             {
@@ -516,54 +453,27 @@
         })
         .then(data => {
 
-            let provinceArrivee = document.getElementById('province-arrivee')
             let regionArrivee = document.getElementById('region-arrivee')
-            let districtArrivee = document.getElementById('district-arrivee')
-            let communeArrivee = document.getElementById('commune-arrivee')
+            let villeArrivee = document.getElementById('ville-arrivee')
 
-            if (type === 0) // Pour la selection des provinces
+            if(type === 1) // Pour la selection des regions
             {
-                regionArrivee.innerHTML = null
-                $('#district-arrivee').prop('selectedIndex', 0).select2()
-                $('#commune-arrivee').prop('selectedIndex', 0).select2()
+                villeArrivee.innerHTML = null
 
-                updateSelect(data.regions, regionArrivee, 'Région')
-            }
-            else if(type === 1) // Pour la selection des regions
-            {
-                districtArrivee.innerHTML = null
+                $('#ville-arrivee').prop('selectedIndex', 0).select2()
+                updateSelect(data.villes, villeArrivee, 'Ville d\'arrivée')
 
-                $('#commune-arrivee').prop('selectedIndex', 0).select2()
-
-                updateSelect(data.districts, districtArrivee, 'District')
-
-                $('#province-arrivee').val(data.province.id).select2()
                 $('#region-arrivee').val(data.region.id).select2()
 
             }
             else if(type === 2) // Pour la selection des districts
             {
-                communeArrivee.innerHTML = null
-
+                debugger
                 updateSelect(data.regions, regionArrivee, 'Région')
-                updateSelect(data.communes, communeArrivee, 'Commune')
 
-                $('#province-arrivee').val(data.province.id).select2()
                 $('#region-arrivee').val(data.region.id).select2()
-                $('#district-arrivee').val(data.district.id).select2()
+                $('#ville-arrivee').val(data.ville.id).select2()
             }
-            else if(type === 3) // Pour la selection des communes
-            {
-                updateSelect(data.regions, regionArrivee, 'Région')
-                updateSelect(data.districts, districtArrivee, 'District')
-                updateSelect(data.communes, communeArrivee, 'Commune')
-
-                $('#province-arrivee').val(data.province.id).select2()
-                $('#region-arrivee').val(data.region.id).select2()
-                $('#district-arrivee').val(data.district.id).select2()
-                $('#commune-arrivee').val(data.commune.id).select2()
-            }
-
         })
         .catch(function(error) {
             console.log(error);
@@ -579,7 +489,7 @@
         data.forEach(region => {
             let option = document.createElement('option')
             option.value = region.id
-            option.innerHTML = region.nom
+            option.innerHTML = region.nom.toUpperCase()
             select.appendChild(option)
         });
     }

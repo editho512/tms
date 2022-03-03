@@ -133,25 +133,32 @@
                                                 <tr>
                                                     <th>Catégorie</th>
                                                     <th>Prix</th>
+                                                    <td>Trajets</td>
                                                     <th>Actions</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @forelse($categories as $categorie)
-                                                <tr>
-                                                    <td>{{ ucwords($categorie->nom) }}</td>
-                                                    <td>50 000 Ar</td>
-                                                    <td>
-                                                        <div class="row">
-                                                            <div class="col-sm-12" style="text-align: center;">
-                                                                <button class="btn btn-primary btn-xs btn-modifier-categorie" data-show="{{route('tarif.categorie.trouver', ['categorie' => $categorie->id ])}}" data-url="{{route('tarif.categorie.ajouter', ['categorie' => $categorie->id])}}"><span class="fa fa-edit"></span></button>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                </tr>
+                                                @forelse($datas as $rn => $categorieRnTrans)
+                                                    <tr>
+                                                        <td colspan="5">{{ $rn }}</td>
+                                                    </tr>
+                                                    @foreach ($categorieRnTrans as $categorie)
+                                                        <tr>
+                                                            <td>{{ $categorie['nom'] }}</td>
+                                                            <td>{{ $categorie['prix'] }}</td>
+                                                            <td>
+                                                                <ul>
+                                                                    @foreach ($categorie['data'] as $c)
+                                                                        <li>{{ $c->depart->nom }} - {{ $c->arrivee->nom }}</li>
+                                                                    @endforeach
+                                                                </ul>
+                                                            </td>
+                                                            <td>Aucune action pour le moment</td>
+                                                        </tr>
+                                                    @endforeach
                                                 @empty
                                                 <tr>
-                                                    <td style="text-align: center" colspan="3">
+                                                    <td style="text-align: center" colspan="4">
                                                         Aucun catégorie dans la liste
                                                     </td>
                                                 </tr>
@@ -161,6 +168,7 @@
                                                 <tr>
                                                     <th>Catégorie</th>
                                                     <th>Prix</th>
+                                                    <th>Trajets</th>
                                                     <th>Actions</th>
                                                 </tr>
                                             </tfoot>
@@ -178,6 +186,7 @@
 <!-- /.content-wrapper -->
 
 {{-- Modal pour ajouter un prix pour chaque catégorie en fonction du transporteur et en fonction de RN --}}
+{{--
 <div class="modal fade" id="modal-ajouter-prix">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -208,8 +217,78 @@
                     <div class="col-sm-8 mb-3">
                         <select name="trajet" id="trajets" class="js-states form-control select-trajet w-100" style="width:100%!important" autocomplete="off">
                             <option value="0">Selectionner le trajet</option>
-                            <option value="">TAMATAVE - MORAMANGA</option>
+
                         </select>
+                    </div>
+
+                    <div class="col-sm-4 mb-3">
+                        <label for="zone_transport">Prix (Ar) :</label>
+                    </div>
+                    <div class="col-sm-8 mb-3">
+                        <input type="number" name="prix" value="50000" id="prix" class="form-control">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+                <button type="submit" id="button-ajouter-prix" form="ajouter-prix"  class="float-right btn btn-primary">Ajouter</button>
+            </div>
+        </div>
+    </div>
+</div>
+--}}
+
+<div class="modal fade" id="modal-ajouter-prix">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header modal-header-primary">
+                <h4 class="modal-title">Ajouter une prix</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="modal-ajouter-prix">
+                <form method="POST" action="{{ route('transporteur.tarif.save') }}" name="ajouter-prix" id="ajouter-prix" class="row">
+                    @csrf
+                    <div class="col-sm-4 mb-3">
+                        <label for="zone_transport">Zone :</label>
+                    </div>
+                    <div class="col-sm-8 mb-3">
+                        <select id="zone" name="zone"  class="js-states form-control select-zone w-100" style="width:100%!important" autocomplete="off">
+                            <option value="0">Selectionner la zone</option>
+                            @foreach ($zones as $zone)
+                                <option value={{ $zone->id }}>{{ $zone->nom }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="col-sm-4 mb-3">
+                        <label for="zone_transport">Catégorie :</label>
+                    </div>
+                    <div class="col-sm-8 mb-3">
+                        <select onchange="updateTrajets(this, '{{ route('trajet.search') }}')" name="categorie"  class="js-states form-control select-zone w-100" style="width:100%!important" autocomplete="off">
+                            <option value="0">Selectionner la catégorie</option>
+                            @foreach ($categories as $categorie)
+                                <option value={{ $categorie->id }}>{{ $categorie->nom }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    {{-- <div class="col-sm-4 mb-3">
+                        <label for="zone_transport">Trajets :</label>
+                    </div>
+                    <div class="col-sm-8 mb-3">
+                        <select name="trajet" id="trajets" class="js-states form-control select-trajet w-100" style="width:100%!important" autocomplete="off">
+                            <option value="0">Selectionner le trajet</option>
+
+                        </select>
+                    </div> --}}
+
+                    <div class="mb-2 p-3 d-none" style="border: 1px solid rgb(187, 187, 187); border-radius:2px; width:100%">
+                        <p>Listes des trajets qui appartient a cette catégorie</p>
+                        <div id="list-trajets">
+
+                        </div>
                     </div>
 
                     <div class="col-sm-4 mb-3">
@@ -418,6 +497,35 @@
 
 <script>
     function updateTrajets(select, url) {
+        window.event.preventDefault();
+        let zone = document.getElementById('zone')
+        if (parseInt(zone.value) === 0)
+        {
+            alert ('Veillez choisir d\'abord le RN')
+            select.value = 0
+            return
+        }
+
+        url = encodeURI(url + '?zone=' + zone.value + "&categorie=" + select.value)
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json", "Accept": "application/json, text-plain, */*",
+            },
+            credentials: "same-origin",
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            let trajet = document.getElementById('list-trajets')
+            trajet.parentElement.classList.remove('d-none')
+            trajet.innerHTML = data.lists
+        })
+        .catch((err) => {
+            console.log(err)
+        });
+    }
+
+    function updateTrajetsBackup(select, url) {
         window.event.preventDefault();
         url = url + '?id=' + select.value
         fetch(url, {

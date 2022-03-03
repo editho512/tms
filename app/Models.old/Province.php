@@ -15,4 +15,9 @@ class Province extends Model
     {
         return $this->hasMany(Region::class);
     }
+
+    public function zones()
+    {
+        return $this->belongsToMany(Rn::class, 'province_rns', 'province_id', 'rn_id');
+    }
 }
