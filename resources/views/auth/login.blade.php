@@ -20,6 +20,8 @@
     <!-- Style -->
     <link rel="stylesheet" href="{{asset('assets/login/css/style.css')}}">
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <title>Connexion</title>
 </head>
 
@@ -42,19 +44,27 @@
     .content {
         padding: 0;
         height: 100vh;
-    }
-
-    .container {
-        height: 100%;
         display: flex;
-        align-content: center;
         justify-content: center;
         align-items: center;
+        align-content: center;
     }
 
-    .form-block {
+    .form-content {
+        height: 100%!important;
+        width: 30vw;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .form {
         width: 100%;
-        height: 60vh;
+        padding: 50px;
+        box-shadow: 2px 2px 12px 2px #0a312cc4;
+        border-radius: 5px;
     }
 
     .logo {
@@ -100,69 +110,93 @@
         box-shadow: none;
     }
 
+    .color-primary {
+        color: #0e6359;
+    }
+
     .button--secondary:hover {
         background-color: #3b9b90;
+    }
+
+    @media only screen and (max-width: 1500px) {
+        .form-content {
+            width: 40vw;
+        }
+    }
+
+    @media only screen and (max-width: 1000px) {
+        .form-content {
+            width: 50vw;
+        }
+    }
+
+    @media only screen and (max-width: 750px) {
+        .form-content {
+            width: 80vw;
+        }
+    }
+
+    @media only screen and (max-width: 470px) {
+        .form-content {
+            width: 90vw;
+        }
+    }
+
+    .border-red {
+        border-color: red;
+    }
+
+    input:focus {
+        border-color: rgb(173, 173, 173)!important;
+        box-shadow: 2px 2px 2px rgb(185, 185, 185)!important;
+        background-color: rgb(226, 226, 226);
     }
 
 </style>
 
 <body>
     <div class="content">
-        <div class="container">
-            <div class="contents">
-                {{-- Message d'erreurs --}}
-                @if ($errors->any())
-                <div class="alert alert-danger">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
+        <div class="form-content">
+
+            <div class="form">
+
+                <div class="logo">
+                    <img class="img-fluid" src="{{ asset('assets/images/logo/logo.png') }}" alt="" srcset="">
                 </div>
-                @endif
 
-                <div class="form-block">
+                <div class="mb-4">
+                    <h3 class="title">Connexion sur <strong>{{ config('app.name') }}</strong></h3>
+                </div>
 
-                    <div class="logo">
-                        <img class="img-fluid" src="{{ asset('assets/images/logo/logo.png') }}" alt="" srcset="">
+                <form action="{{ route('login') }}" method="post">
+
+                    @csrf
+
+                    <div class="input-group mb-4">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="email"><i class="color-primary fas fa-user"></i></span>
+                        </div>
+                        <input type="text" name="email" value="{{ old('email') }}" class="form-control @error('email') border-red @enderror" placeholder="Adresse email" aria-label="Email" aria-describedby="email">
                     </div>
 
-                    <div class="mb-4">
-                        <h3 class="title">Connexion sur <strong>{{ config('app.name') }}</strong></h3>
+                    <div class="input-group mb-4">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="password"><i class="color-primary fas fa-lock"></i></span>
+                        </div>
+                        <input type="password" name="password" class="form-control @error('email') border-red @enderror" placeholder="Mot de passe" aria-label="Password" aria-describedby="password">
                     </div>
-                    <form action="{{ route('login') }}" method="post">
-                        @csrf
-                        <div class="form-group first">
-                            <label for="username">Email</label>
-                            <input type="text" class="form-control" id="username" name="email">
-                            @error('email')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
-                        </div>
-                        <div class="form-group last mb-4">
-                            <label for="password">Mot de passe</label>
-                            <input type="password" class="form-control" id="password" name="password">
-                            @error('password')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
-                        </div>
 
-                        <div class="d-flex mb-5 align-items-center">
-                            <label class="control control--checkbox mb-0"><span class="caption">Se souvenir de moi</span>
-                                <input type="checkbox" checked="checked"/>
-                                <div class="control__indicator"></div>
-                            </label>
-                            <span class="ml-auto"><a href="#" class="forgot-pass d-none">Mot de passe oublié ?</a></span>
-                        </div>
+                    <div class="d-flex mb-5 align-items-center">
+                        <label class="control control--checkbox mb-0"><span class="caption">Se souvenir de moi</span>
+                            <input type="checkbox" checked="checked"/>
+                            <div class="control__indicator"></div>
+                        </label>
+                        <span class="ml-auto"><a href="#" class="forgot-pass d-none">Mot de passe oublié ?</a></span>
+                    </div>
 
-                        <button type="submit" style="float: right;" type="submit" class="button button--secondary">Connexion</button>
+                    <button type="submit" style="float: right;" type="submit" class="button button--secondary"><i class="fa fa-sign-in-alt mr-3"></i>Connexion</button>
 
-                    </form>
-                </div>
+                </form>
             </div>
         </div>
     </div>

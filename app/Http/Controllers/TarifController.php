@@ -8,6 +8,7 @@ use App\Models\Categorie;
 use App\Models\CategorieDepart;
 use App\Models\CategorieRnTransporteur;
 use App\Models\Province;
+use App\Models\Ville;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -62,7 +63,7 @@ class TarifController extends Controller
         $active_tarif_index = true;
         $categories = Categorie::all()->take(10);
 
-        $categorieRnTrans = $transporteur->categorieRnTrans;
+        $categorieRnTrans = $transporteur->categorieRnTrans; // Informations du prix de trajet du transporteur suivant la catégorie et la RN
         $datas = [];
 
         foreach ($categorieRnTrans as $categorieRn)
@@ -70,13 +71,25 @@ class TarifController extends Controller
             $zone = $categorieRn->zone;
             $categorie = $categorieRn->categorie;
             $provinces = $zone->provinces;
-            $departCategories = CategorieDepart::whereIn('province_id', $provinces->pluck('id'))->where('categorie_id', $categorie->id)->get();
+            $departCategories = CategorieDepart::where('categorie_id', $categorie->id)->get();
+            $tmp = [];
 
-            $datas[$zone->nom][$categorie->id] = [
-                'nom' => $categorie->nom,
-                'prix' => $categorieRn->prix,
-                'data' => $departCategories,
-            ];
+            foreach ($departCategories as $d)
+            {
+                if (in_array($zone->id, $d->arrivee->zones->pluck('id')->toArray()))
+                {
+                    $tmp[] = $d;
+                }
+            }
+
+            if ($tmp !== [])
+            {
+                $datas[$zone->nom][$categorie->id] = [
+                    'nom' => $categorie->nom,
+                    'prix' => $categorieRn->prix,
+                    'data' => collect($tmp),
+                ];
+            }
         }
 
         return view("tarif.tarifIndex", [
@@ -144,7 +157,7 @@ class TarifController extends Controller
 
         $transporteur = auth()->user();
 
-        if ($transporteur->zones()->exists($data['zone']))
+        if ($transporteur->zones->contains($data['zone']))
         {
             $request->session()->flash("notification", [
                 "value" => "Ce zone existe déja dans votre liste actif" ,

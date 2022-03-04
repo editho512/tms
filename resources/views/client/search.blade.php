@@ -25,7 +25,7 @@
     <section class="content-header">
         <div class="container-fluid">
             <div class="mb-3">
-                <h1 style="color: #1fafca;" class="text-center text-uppercase">Rechercher un transporteur</h1>
+                <h1 style="color: #49aba0;" class="text-center text-uppercase">Rechercher un transporteur</h1>
                 <hr>
             </div>
         </div><!-- /.container-fluid -->

@@ -4,15 +4,15 @@ namespace App\Http\Controllers\Client;
 
 use Carbon\Carbon;
 use App\Models\User;
+use App\Models\Ville;
 use App\Models\Region;
 use App\Models\Province;
+use App\Models\Reservation;
 use Illuminate\Http\Request;
+use App\Models\RnTransporteur;
+use App\Models\CategorieDepart;
 use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;
-use App\Models\CategorieDepart;
-use App\Models\Reservation;
-use App\Models\RnTransporteur;
-use App\Models\Ville;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -127,7 +127,7 @@ class ClientController extends Controller
             return response()->json(['error' => 'Aucune transporteur disponible pour ce district']);
         }
 
-        $zoneTransporteurs = RnTransporteur::whereIn('rn_id', $zonesDepart->pluck('id'))->whereIn('rn_id', $zonesArrivee->pluck('id'))->get();
+        $zoneTransporteurs = RnTransporteur::whereIn('rn_id', $zonesDepart->pluck('id'))->orWhereIn('rn_id', $zonesArrivee->pluck('id'))->get();
         $departCategorie = CategorieDepart::where('province_id', $villeDepart->id)->where('ville_id', $villeArrivee->id)->first('categorie_id');
 
         if ($departCategorie === null)

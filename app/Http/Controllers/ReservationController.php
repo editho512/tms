@@ -58,7 +58,6 @@ class ReservationController extends Controller
     public function accept(Reservation $reservation)
     {
         $reservation->status = Reservation::STATUS[1];
-        $reservation->user_id = auth()->user()->id;
         $reservation->update();
 
         request()->session()->flash("notification", [

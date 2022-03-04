@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Rn;
 use App\Models\Zone;
 use App\Models\Ville;
-use App\Models\District;
 use App\Models\Categorie;
 use App\Models\CategorieDepart;
 use App\Models\ZoneDistrict;

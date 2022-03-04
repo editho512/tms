@@ -140,7 +140,7 @@
                                             <tbody>
                                                 @forelse($datas as $rn => $categorieRnTrans)
                                                     <tr>
-                                                        <td colspan="5">{{ $rn }}</td>
+                                                        <td colspan="5" class="bg-secondary">{{ $rn }}</td>
                                                     </tr>
                                                     @foreach ($categorieRnTrans as $categorie)
                                                         <tr>
@@ -185,58 +185,6 @@
 </div>
 <!-- /.content-wrapper -->
 
-{{-- Modal pour ajouter un prix pour chaque catégorie en fonction du transporteur et en fonction de RN --}}
-{{--
-<div class="modal fade" id="modal-ajouter-prix">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header modal-header-primary">
-                <h4 class="modal-title">Ajouter une prix</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body" id="modal-ajouter-prix">
-                <form method="POST" action="{{ route('transporteur.tarif.save') }}" name="ajouter-prix" id="ajouter-prix" class="row">
-                    @csrf
-                    <div class="col-sm-4 mb-3">
-                        <label for="zone_transport">Zone :</label>
-                    </div>
-                    <div class="col-sm-8 mb-3">
-                        <select onchange="updateTrajets(this, '{{ route('trajet.search') }}')" name="zone"  class="js-states form-control select-zone w-100" style="width:100%!important" autocomplete="off">
-                            <option value="0">Selectionner la zone</option>
-                            @foreach ($zones as $zone)
-                                <option value={{ $zone->id }}>{{ $zone->nom }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="col-sm-4 mb-3">
-                        <label for="zone_transport">Trajets :</label>
-                    </div>
-                    <div class="col-sm-8 mb-3">
-                        <select name="trajet" id="trajets" class="js-states form-control select-trajet w-100" style="width:100%!important" autocomplete="off">
-                            <option value="0">Selectionner le trajet</option>
-
-                        </select>
-                    </div>
-
-                    <div class="col-sm-4 mb-3">
-                        <label for="zone_transport">Prix (Ar) :</label>
-                    </div>
-                    <div class="col-sm-8 mb-3">
-                        <input type="number" name="prix" value="50000" id="prix" class="form-control">
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer justify-content-between">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
-                <button type="submit" id="button-ajouter-prix" form="ajouter-prix"  class="float-right btn btn-primary">Ajouter</button>
-            </div>
-        </div>
-    </div>
-</div>
---}}
 
 <div class="modal fade" id="modal-ajouter-prix">
     <div class="modal-dialog">
@@ -441,15 +389,8 @@
 <!-- page script -->
 <script>
 
+
     $(document).ready(function(){
-
-        $(".select-zone").select2({
-            placeholder: "Nom des zones"
-        });
-
-        $(".select-trajet").select2({
-            placeholder: "Nom des trajets"
-        });
 
         $(".table-principale").DataTable({
             "responsive": true,
@@ -459,6 +400,15 @@
             "ordering": true,
             "info": false,
         });
+
+        $(".select-zone").select2({
+            placeholder: "Nom des zones"
+        });
+
+        $(".select-trajet").select2({
+            placeholder: "Nom des trajets"
+        });
+
 
         $(document).on("click", ".btn-modifier-categorie", function(e){
             let url = $(this).attr("data-show");

@@ -77,13 +77,17 @@
 
         .button--secondary {
             color: #fff;
-            background-color: #42b0d5;
+            background-color: #49aba0;
             border-color: transparent;
             box-shadow: none;
         }
 
+        .color-primary {
+            color: #0e6359;
+        }
+
         .button--secondary:hover {
-            background-color: #33a1c5;
+            background-color: #3b9b90;
         }
 
         .select2-selection__rendered {
@@ -106,54 +110,6 @@
         .error {
             border: 1px solid red!important;
             border-radius: 5px!important;
-        }
-
-        .btn-primary {
-            background-color: #1190a7!important;
-            border: none;
-            box-shadow: 2px 2px 2px #045563;
-        }
-
-        .btn-primary:hover {
-            background-color: #30c6e0!important;
-        }
-
-        .btn-primary:visited {
-            box-shadow: 2px 2px 2px #045563!important;
-        }
-
-        .btn-primary:focus {
-            box-shadow: 2px 2px 2px #045563!important;
-        }
-
-        .btn-success {
-            background-color: #1fafca!important;
-            border: none;
-            box-shadow: 2px 2px 2px #045563;
-        }
-
-        .btn-success:hover {
-            background-color: #68cddf!important;
-        }
-
-        .btn-success:visited {
-            box-shadow: 2px 2px 2px #045563!important;
-        }
-
-        .btn-success:focus {
-            box-shadow: 2px 2px 2px #045563!important;
-        }
-
-        .btn-info {
-            box-shadow: 2px 2px 2px #045563;
-        }
-
-        .btn-info:visited {
-            box-shadow: 2px 2px 2px #045563!important;
-        }
-
-        .btn-info:focus {
-            box-shadow: 2px 2px 2px #045563!important;
         }
 
         .modal-footer {
@@ -193,7 +149,7 @@
         }
 
         .has-treeview > .active{
-            background-color: #3490c1 !important;
+            background-color: #49aba0 !important;
         }
         @media screen and (min-width: 576px) {
             #tableau_bord {
@@ -222,7 +178,7 @@
         }
 
         .flex:hover {
-            color: #1fafca!important;
+            color: #49aba0!important;
         }
 
         .header-fixed {
@@ -231,7 +187,7 @@
             left: 0;
             right: 0;
             width: 100%;
-            box-shadow: 2px 2px 2px #34b5cc;
+            box-shadow: 2px 2px 2px #49aba0;
             opacity: 0,1!important;
             padding-left: 110px;
             padding-right: 110px;
@@ -243,7 +199,7 @@
         }
 
         .active {
-            color: #0093ad!important;
+            color: #49aba0!important;
         }
 
         .content-wrapper {
