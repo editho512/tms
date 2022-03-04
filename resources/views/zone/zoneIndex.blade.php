@@ -36,10 +36,12 @@
             <div class="row">
                 <div class="col-12">
                     <div class="alert alert-danger">
-                        @dump($errors->all())
+                        @if ($errors->any())
+                            @dump($errors->all())
+                        @endif
                     </div>
                     <div class="card">
-                        <div class="card-header" >
+                        <div class="card-header">
                             <h3 class="card-title">Liste des zones de travail</h3>
                             <button class="btn  btn-success float-right"  data-toggle="modal" id="nouveau-rn" data-backdrop="static" data-keyboard="false" data-target="#modal-ajouter-rn"><span class="fa fa-plus"></span>&nbsp;Ajouter</button>
 
@@ -69,10 +71,10 @@
                                             <div class="row">
                                                 <div class="col-sm-12" style="text-align: center;">
                                                     <a href="{{route('zone.voir', ['zone' => $rn->id ])}}">
-                                                        <button class="btn btn-xs btn-info btn-voir-rn"><span class="fa fa-eye"></span></button>
+                                                        <button class="btn btn-sm btn-info btn-voir-rn"><span class="fa fa-eye"></span></button>
                                                     </a>
-                                                    <button class="btn btn-primary btn-xs btn-modifier-rn" data-show="{{route('zone.modifier', ['zone' => $rn->id ])}}" data-url="{{route('zone.edit', ['zone' => $rn->id ])}}"><span class="fa fa-edit"></span></button>
-                                                    <button class="btn btn-xs btn-danger btn-supprimer-rn" data-url="{{route('zone.supprimer', ['zone' => $rn->id ])}}" ><span class="fa fa-trash"></span></button>
+                                                    <button class="btn btn-primary btn-sm btn-modifier-rn" data-show="{{route('zone.modifier', ['zone' => $rn->id ])}}" data-url="{{route('zone.edit', ['zone' => $rn->id ])}}"><span class="fa fa-edit"></span></button>
+                                                    <button class="btn btn-sm btn-danger btn-supprimer-rn" data-url="{{route('zone.supprimer', ['zone' => $rn->id ])}}" ><span class="fa fa-trash"></span></button>
                                                 </div>
                                             </div>
                                         </td>
@@ -185,18 +187,16 @@
                         <div class="col-sm-8">
                             <select name="ville[]"  class="js-example-basic-multiple js-states form-control select-ville"  multiple="multiple" placeholder="Nom des villes" style="width:100%;" autocomplete="off">
                                 @foreach ($villes as $ville)
-                                <option value={{$ville->id}}>{{$ville->nom}}</option>
+                                    <option value={{$ville->id}}>{{$ville->nom}}</option>
                                 @endforeach
                             </select>
                         </div>
                     </div>
-
                 </form>
             </div>
             <div class="modal-footer justify-content-between">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
                 <button type="submit" id="button-modifier-rn" form="form-modifier-rn" class="float-right btn btn-primary">Modifier</button>
-
             </div>
         </div>
         <!-- /.modal-content -->
@@ -279,7 +279,7 @@
             "responsive": true,
             "autoWidth": false,
             "searching": true,
-            "paging": false,
+            "paging": true,
             "ordering": true,
             "info": false,
         });
@@ -299,8 +299,6 @@
             $.get(url, {}, dataType="JSON").done(function (data) {
                 $("#modal-supprimer-rn ").find('input[name="name"]').val(data.rn.name);
                 $("#modal-supprimer-rn ").find('select').val(data.ville).change();
-
-
             })
         })
 
@@ -317,10 +315,8 @@
             $("#form-modifier-rn").attr('action', url_edit);
 
             $.get(url, {}, dataType="JSON").done(function (data) {
-                $("#modal-modifier-rn ").find('input[name="name"]').val(data.rn.name);
-                $("#modal-modifier-rn ").find('select').val(data.ville).change();
-
-
+                $("#modal-modifier-rn ").find('input[name="name"]').val(data.rn.nom);
+                $("#modal-modifier-rn ").find('select').val(data.villes).change();
             })
         })
     })

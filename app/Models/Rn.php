@@ -26,7 +26,6 @@ class Rn extends Model
         return 'Description';
     }
 
-
     public function provinces()
     {
         return $this->belongsToMany(Province::class, 'province_rns', 'rn_id', 'province_id');

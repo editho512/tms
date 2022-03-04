@@ -130,7 +130,7 @@ class User extends Authenticatable
 
     public function zones()
     {
-        return $this->belongsToMany(Rn::class, 'rn_transporteurs', 'rn_id', 'user_id');
+        return $this->belongsToMany(Rn::class, 'rn_transporteurs', 'user_id', 'rn_id');
     }
 
 

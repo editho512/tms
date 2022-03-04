@@ -7,7 +7,9 @@ use App\Models\User;
 use App\Models\Categorie;
 use App\Models\CategorieDepart;
 use App\Models\CategorieRnTransporteur;
+use App\Models\Province;
 use Illuminate\Database\QueryException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 
@@ -21,21 +23,29 @@ class TarifController extends Controller
         $this->middleware('admin');
     }
 
-    public function trajetSearch(Request $request)
+
+    /**
+     * Rechercher les trajets en fonction de la route nationale choisi
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function trajetSearch(Request $request) : JsonResponse
     {
         $zone = Rn::findOrFail($request->zone);
         $categorie = Categorie::findOrFail($request->categorie);
-        $provinces = $zone->provinces;
+        $provinces = Province::all();
 
         $departCategories = CategorieDepart::whereIn('province_id', $provinces->pluck('id'))->where('categorie_id', $categorie->id)->get();
 
         $lists = "<ul>";
-        $options = '';
 
         foreach ($departCategories as $departCategorie)
         {
-            $lists .= "<li>{$departCategorie->depart->nom} - {$departCategorie->arrivee->nom}</li>";
-            //$options .= "<option value='{$departCategorie->depart->id}-{$departCategorie->arrivee->id}'>{$departCategorie->depart->nom} - {$departCategorie->arrivee->nom}</option>\n";
+            if (in_array($zone->id, $departCategorie->arrivee->zones->pluck('id')->toArray()))
+            {
+                $lists .= "<li>{$departCategorie->depart->nom} - {$departCategorie->arrivee->nom}</li>";
+            }
         }
         $lists .= '</ul>';
 
@@ -134,18 +144,28 @@ class TarifController extends Controller
 
         $transporteur = auth()->user();
 
-        try {
-            $transporteur->zones()->attach($data['zone']);
+        if ($transporteur->zones()->exists($data['zone']))
+        {
             $request->session()->flash("notification", [
-                "value" => "Zone de transporteur ajoutée" ,
-                "status" => "success"
-            ]);
-        }
-        catch (QueryException $e){
-            $request->session()->flash("notification", [
-                "value" => "Erreur de requete sal : {$e->getMessage()}" ,
+                "value" => "Ce zone existe déja dans votre liste actif" ,
                 "status" => "error"
             ]);
+        }
+        else
+        {
+            try {
+                $transporteur->zones()->attach($data['zone']);
+                $request->session()->flash("notification", [
+                    "value" => "Zone de transporteur ajoutée" ,
+                    "status" => "success"
+                ]);
+            }
+            catch (QueryException $e){
+                $request->session()->flash("notification", [
+                    "value" => "Erreur de requete sal : {$e->getMessage()}" ,
+                    "status" => "error"
+                ]);
+            }
         }
 
         return redirect()->back();

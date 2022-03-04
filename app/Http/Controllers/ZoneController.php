@@ -11,19 +11,26 @@ use App\Models\CategorieDepart;
 use App\Models\ZoneDistrict;
 use Illuminate\Http\Request;
 use App\Models\DepartCategorie;
+use App\Models\Province;
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Session;
 
 class ZoneController extends Controller
 {
     /**
-    * Constructeur qui definit les middlewares
-    */
+     * Contsructeur qui définit la middleware
+     */
     public function __construct()
     {
         $this->middleware('super-admin');
     }
 
-    public function index()
+    /**
+     * Page d'accueil de la zone
+     *
+     * @return View
+     */
+    public function index() : View
     {
         $rns = Rn::all();
         $villes = Ville::all();
@@ -31,6 +38,7 @@ class ZoneController extends Controller
 
         return view("zone.zoneIndex", compact("active_zone_index", "rns", "villes"));
     }
+
 
     public function ajouterCategorie(Request $request)
     {
@@ -118,9 +126,9 @@ class ZoneController extends Controller
     {
         $active_zone_index = "active";
         $rn = Rn::findOrFail($rnID);
-        $villes = Ville::all();
+        $villes = $rn->villes;
         $categories = Categorie::all();
-        $grandeVilles = $rn->grandeVilles;
+        $grandeVilles = Province::all();
         $itineraires = CategorieDepart::all();
 
         return view("zone.voirZone", [
@@ -154,35 +162,42 @@ class ZoneController extends Controller
         return redirect()->back();
     }
 
-    public function edit(Zone $zone, Request $request){
-
+    public function edit(Rn $zone, Request $request)
+    {
         $data = $request->validate([
-            "name" => "required" ,
-            "district" => "required"
+            "name" => ["required", "exists:rns,nom"] ,
+            "ville" => ["array"],
         ]);
 
-        if(count($data['district']) > 0  ){
+        $villesActuel = $zone->villes->pluck('id')->toArray();
+        $nouvellesVilles = $data['ville'];
 
-            Zone::where("id", $zone->id)->update(["name" => $data['name']]);
-            ZoneDistrict::where("zone_id", $zone->id)->delete();
-
-            foreach ($data['district'] as $key => $district) {
-
-                if( isset(District::find($district)->id) === true ){
-                    ZoneDistrict::create(['zone_id' => $zone->id, "district_id" => $district]);
-
-                    Session::put("notification", ["value" => "Zone modifiée" , "status" => "success" ]);
-
-                }
+        foreach ($villesActuel as $id)
+        {
+            if (!in_array($id, $nouvellesVilles))
+            {
+                $zone->villes()->detach($id);
             }
         }
+
+        foreach ($nouvellesVilles as $id)
+        {
+            if (!in_array($id, $villesActuel))
+            {
+                $zone->villes()->attach($id);
+            }
+        }
+
+        $request->session()->flash("notification", [
+            "value" => "Zone modifiée" , "status" => "success"
+        ]);
 
         return redirect()->back();
     }
 
-    public function modifier(Zone $zone)
+    public function modifier(Rn $zone)
     {
-        return response()->json(['zone' => $zone, 'district' => $zone->getDistrictId()]);
+        return response()->json(['rn' => $zone, 'villes' => $zone->villes->pluck('id')]);
     }
 
     public function ajouter(Request $request)

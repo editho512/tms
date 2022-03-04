@@ -25,6 +25,10 @@
 
 <style>
 
+    body {
+        overflow: hidden;
+    }
+
     *:not(i){
         font-family: 'Montserrat', sans-serif;
         font-weight: 500;
@@ -50,7 +54,7 @@
 
     .form-block {
         width: 100%;
-        height: 100%;
+        height: 60vh;
     }
 
     .logo {
@@ -91,13 +95,13 @@
 
     .button--secondary {
         color: #fff;
-        background-color: #42b0d5;
+        background-color: #49aba0;
         border-color: transparent;
         box-shadow: none;
     }
 
     .button--secondary:hover {
-        background-color: #33a1c5;
+        background-color: #3b9b90;
     }
 
 </style>
@@ -116,6 +120,7 @@
                     </ul>
                 </div>
                 @endif
+
                 <div class="form-block">
 
                     <div class="logo">
