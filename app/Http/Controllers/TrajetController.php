@@ -272,6 +272,16 @@ class TrajetController extends Controller
         $date_arrivee = $request->date_heure_arrivee === null ? null : Carbon::parse($request->date_heure_arrivee, 'EAT');
         $camion = Camion::findOrFail($request->camion_id);
 
+        if($camion->estDispoEntre($date_depart, $date_arrivee, $trajet ) !== true){
+
+            $request->session()->flash("notification", [
+                "value" => "Camion non disponible entre les dates que vous avez selectionné" ,
+                "status" => "error"
+            ]);
+
+            return redirect()->route('camion.voir', ['camion' => $camion->id, 'tab' => 2]);
+        }
+
         // Verifier si le trajet est affilié à une reservation tms mais que le transporteur à changer la date de depart
         if(isset($trajet->reservation->id) && strtotime($date_depart) != strtotime($trajet->reservation->date)  ){
             $request->session()->flash("notification", [
@@ -286,7 +296,7 @@ class TrajetController extends Controller
         {
             $chauffeur = Chauffeur::findOrFail($request->chauffeur);
 
-            if (!$chauffeur->estDispoEntre($date_depart, $date_arrivee) AND $request->etat !== Trajet::getEtat(2))
+            if (!$chauffeur->estDispoEntre($date_depart, $date_arrivee, $trajet) AND $request->etat !== Trajet::getEtat(2))
             {
                 $request->session()->flash("notification", [
                     "value" => "Chauffeur non disponible entre les dates que vous avez selectionné" ,

@@ -33,17 +33,23 @@ class Camion extends Model
         return (doubleval($entre) - doubleval($sortie));
     }
 
-    public function estDispoEntre(Carbon $date_depart, Carbon $date_arrivee){
-        $depart = Trajet::where("camion_id", $this->id)
-                            ->where("date_heure_depart", ">=", $date_depart->toDateTimeString() )
-                            ->where("date_heure_depart", "<=", $date_arrivee->toDateTimeString())
-                            ->get();
-                            
-        $arrivee = Trajet::where("camion_id", $this->id)
-                            ->where("date_heure_arrivee", ">=", $date_depart->toDateTimeString() )
-                            ->where("date_heure_arrivee", "<=", $date_arrivee->toDateTimeString())
-                            ->get();
+    public function estDispoEntre(Carbon $date_depart, Carbon $date_arrivee, $trajet = null){
 
+        $depart = Trajet::where("camion_id", $this->id)
+                ->where("date_heure_depart", ">=", $date_depart->toDateTimeString() )
+                ->where("date_heure_depart", "<=", $date_arrivee->toDateTimeString());
+    
+        $arrivee = Trajet::where("camion_id", $this->id)
+                ->where("date_heure_arrivee", ">=", $date_depart->toDateTimeString() )
+                ->where("date_heure_arrivee", "<=", $date_arrivee->toDateTimeString());
+
+        if($trajet != null){
+            $depart = $depart->where("id", "!=", $trajet->id);
+            $arrivee = $arrivee->where("id", "!=", $trajet->id);
+        }
+
+        $depart = $depart->get(); 
+        $arrivee = $arrivee->get();                  
         return !isset($depart[0]->id) && !isset($arrivee[0]->id);
     }
 

@@ -17,11 +17,6 @@ class Chauffeur extends Model
     ];
 
 
-    public function transporteur(){
-        return $this->hasOne(User::class, "id", "user_id");
-    }
-
-
     /**
      * Recuperer tous les chauffeurs disponibles de l'agence
      *
@@ -66,18 +61,25 @@ class Chauffeur extends Model
     }
 
 
-    public function estDispoEntre(Carbon $date_depart, Carbon $date_arrivee)
+    public function estDispoEntre(Carbon $date_depart, Carbon $date_arrivee , $trajet = null)
     {
         $depart = Trajet::where("chauffeur_id", $this->id)
                             ->where("date_heure_depart", ">=", $date_depart->toDateTimeString() )
-                            ->where("date_heure_depart", "<=", $date_arrivee->toDateTimeString())
-                            ->get();
-                            
+                            ->where("date_heure_depart", "<=", $date_arrivee->toDateTimeString());
+        
+      
+                        
         $arrivee = Trajet::where("chauffeur_id", $this->id)
-                            ->where("date_heure_arrivee", ">=", $date_depart->toDateTimeString() )
-                            ->where("date_heure_arrivee", "<=", $date_arrivee->toDateTimeString())
-                            ->get();
+                    ->where("date_heure_arrivee", ">=", $date_depart->toDateTimeString() )
+                    ->where("date_heure_arrivee", "<=", $date_arrivee->toDateTimeString());
+        
+        if($trajet != null){
+            $depart = $depart->where("id", "!=", $trajet->id);
+            $arrivee = $arrivee->where("id", "!=", $trajet->id);
+        }
 
+        $depart = $depart->get(); 
+        $arrivee = $arrivee->get();                  
         return !isset($depart[0]->id) && !isset($arrivee[0]->id);
     
     }

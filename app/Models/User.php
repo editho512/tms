@@ -102,11 +102,7 @@ class User extends Authenticatable
         return $this->hasMany(Camion::class);
     }
 
-    public function chauffeurs(){
-        return $this->hasMany(Chauffeur::class);
-    }
-
-
+ 
     public function chauffeurs() : HasMany
     {
         return $this->hasMany(Chauffeur::class);
