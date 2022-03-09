@@ -13,10 +13,10 @@
     }*/
 
     .collapsible {
-        width: 50px;
+        width: 55px;
         cursor: pointer;
         border-radius: 2px;
-        height: 50px;
+        height: 55px;
         display: none;
     }
 
@@ -103,7 +103,7 @@
         </li>
     </ul>
 
-    <button type="button" class="collapsible btn btn-info d-flex justify-content-center align-items-center"><i class="fa fa-bars fa-2x"></i></button>
+    <button type="button" class="collapsible btn btn-info text-center"><i class="fa fa-bars fa-2x"></i></button>
 
 </nav>
 
