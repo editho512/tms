@@ -65,6 +65,7 @@
                                                     <td>{{ $chauffeur->transporteur->name }}</td>
                                                 @endif
                                                 <td>{{ ucwords($chauffeur->name) }} @if ($chauffeur->disponible() === false) - <span class="badge badge-info">En cours de travail</span> @endif</td>
+                                               
                                                 <td>{{$chauffeur->phone}}</td>
                                                 <td>
                                                     {{$chauffeur->cin}}

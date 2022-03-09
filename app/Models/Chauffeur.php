@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Chauffeur extends Model
 {
@@ -86,5 +86,11 @@ class Chauffeur extends Model
     public function nombreTrajetEnAttente() : int
     {
         return $this->trajets()->where('etat', Trajet::getEtat(0))->count();
+    }
+
+
+    public function transporteur() : BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 }

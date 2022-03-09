@@ -3,17 +3,19 @@
 namespace App\Http\Controllers;
 
 use Session;
-use Carbon\Carbon;
-use App\Models\User;
+
 use App\Models\Camion;
 use App\Models\Trajet;
 use App\Models\District;
 use App\Models\Chauffeur;
 use App\Models\Itineraire;
-use App\Models\Reservation;
-use Illuminate\Http\Request;
 use App\Models\CategorieDepart;
+use App\Models\Reservation;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class ReservationController extends Controller
 {
@@ -34,6 +36,7 @@ class ReservationController extends Controller
         $reservations = null;
 
         $active_reservation_index = true;
+
         if($user->isAdmin())
         {
             $reservations = $user->reservationsTransporteur;
@@ -58,6 +61,15 @@ class ReservationController extends Controller
     public function accept(Request $request, Reservation $reservation)
     {
         $data = $request->all();
+        
+        if (!$reservation->siblings(true)->isEmpty()) {
+            request()->session()->flash("notification", [
+                "value" => "La réservation est déja prise par un autre transporteur" ,
+                "status" => "error"
+            ]);
+
+            return redirect()->back();
+        }
 
         if( isset($data["camion"]) === true && isset(Camion::find($data["camion"])->id) === true &&
             isset($data["chauffeur"]) === true && isset(Chauffeur::find($data["chauffeur"])->id) === true
@@ -91,7 +103,16 @@ class ReservationController extends Controller
 
             $reservation->status = Reservation::STATUS[1];
             $reservation->trajet_id = $trajet->id;
-            $reservation->update();
+            $update = $reservation->update();
+
+            if ($update)
+            {
+                foreach ($reservation->siblings() as $reservation)
+                {
+                    $reservation->status = Reservation::STATUS[5];
+                    $update = $reservation->update();
+                }
+            }
     
             request()->session()->flash("notification", [
                 "value" => "Réservation accepté" , "status" => "success"
@@ -157,20 +178,28 @@ class ReservationController extends Controller
 
     public function reserver(Request $request)
     {
-        $departId = intval($request->data['district']['depart']);
-        $arriveeId = intval($request->data['district']['arrivee']);
-        $transporteur = intval($request->data['transporteur']['id']);
-        $depart = $request->data['date_depart'] . ' ' . $request->data['heure_depart'];
-        $date_heure = Carbon::parse($depart, 'EAT')->toDateTimeString();
+        $transporteurs = $request->transporters;
+        $details = $request->reservationDetaisl;
 
-        $reservation = Reservation::create([
-            'depart_id' => $departId,
-            'client_id' => auth()->user()->id,
-            'arrivee_id' => $arriveeId,
-            'transporteur_id' => $transporteur,
-            'date' => $date_heure,
-            'status' => Reservation::STATUS[0],
-        ]);
+        $departId = intval($details['depart']);
+        $arriveeId = intval($details['arrivee']);
+        $date_heure = Carbon::parse($details['date_depart'] . ' ' . $details['heure_depart'], 'EAT')->toDateTimeString();
+
+        $reservation = false;
+        $numeroReservation = "RES-" . rand(100, 999) . '-' .date('s');
+
+        foreach ($transporteurs as $id => $transporteur)
+        {
+            $reservation = Reservation::create([
+                'numero' => $numeroReservation,
+                'depart_id' => $departId,
+                'client_id' => auth()->user()->id,
+                'arrivee_id' => $arriveeId,
+                'transporteur_id' => $id,
+                'date' => $date_heure,
+                'status' => Reservation::STATUS[0],
+            ]);
+        }
 
         if ($reservation)
         {

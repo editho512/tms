@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -10,22 +11,32 @@ class Reservation extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['depart_id', 'id', 'client_id', 'arrivee_id', 'transporteur_id', 'date', 'status'];
+    protected $fillable = ['depart_id', 'id', 'client_id', 'arrivee_id', 'transporteur_id', 'date', 'status', 'numero'];
 
-    CONST STATUS = ["en attente", "réservé", "livré", "annulé", "rejeté"];
+    CONST STATUS = ["en attente", "réservé", "livré", "annulé", "rejeté", 'indisponible'];
 
-    public function arrive(){
+    /**
+     * Arrivee d'un trajet
+     *
+     * @return void
+     */
+    public function arrive()
+    {
         return $this->hasOne(Ville::class, "id", "arrivee_id");
     }
 
-    public function depart(){
+    public function depart()
+    {
         return $this->hasOne(Province::class, "id", "depart_id");
     }
 
-    public function transporteur(){
+    public function transporteur()
+    {
         return $this->hasOne(User::class, "id", "transporteur_id");
     }
-    public function client(){
+
+    public function client()
+    {
         return $this->hasOne(User::class, "id", "client_id");
     }
 
@@ -57,13 +68,27 @@ class Reservation extends Model
 
     public function livrable()
     {
-        $dateDepart = Carbon::parse($this->date_depart, 'EAT');
+        $dateDepart = Carbon::parse($this->date, 'EAT');
         $now = Carbon::now();
 
         if ($dateDepart->lessThanOrEqualTo($now))
         {
-            return false;
+            return true;
         }
-        return true;
+        return false;
+    }
+
+    public function siblings(bool $accepted = false) : Collection
+    {
+        if ($accepted === true)
+        {
+            return $this->where('numero', $this->numero)->where('id', '<>', $this->id)->where('status', self::STATUS[1])->get();
+        }
+        return $this->where('numero', $this->numero)->where('id', '<>', $this->id)->get();
+    }
+
+    public function indisponible()
+    {
+        return $this->status === self::STATUS[5];
     }
 }

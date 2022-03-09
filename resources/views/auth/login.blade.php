@@ -188,14 +188,12 @@
 
                     <div class="d-flex mb-5 align-items-center">
                         <label class="control control--checkbox mb-0"><span class="caption">Se souvenir de moi</span>
-                            <input type="checkbox" checked="checked"/>
+                            <input type="checkbox" name="remember" checked="checked"/>
                             <div class="control__indicator"></div>
                         </label>
                         <span class="ml-auto"><a href="#" class="forgot-pass d-none">Mot de passe oublié ?</a></span>
                     </div>
-
                     <button type="submit" style="float: right;" type="submit" class="button button--secondary"><i class="fa fa-sign-in-alt mr-3"></i>Connexion</button>
-
                 </form>
             </div>
         </div>

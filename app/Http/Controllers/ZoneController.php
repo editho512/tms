@@ -5,12 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Rn;
 use App\Models\Zone;
 use App\Models\Ville;
+use App\Models\Province;
 use App\Models\Categorie;
-use App\Models\CategorieDepart;
 use App\Models\ZoneDistrict;
 use Illuminate\Http\Request;
+use App\Models\CategorieDepart;
 use App\Models\DepartCategorie;
-use App\Models\Province;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Session;
 
@@ -128,7 +128,7 @@ class ZoneController extends Controller
         $villes = $rn->villes;
         $categories = Categorie::all();
         $grandeVilles = Province::all();
-        $itineraires = CategorieDepart::all();
+        $itineraires = CategorieDepart::getAllIn($rnID);
 
         return view("zone.voirZone", [
             "active_zone_index" => $active_zone_index,

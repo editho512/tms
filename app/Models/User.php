@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
@@ -106,9 +107,16 @@ class User extends Authenticatable
     }
 
 
+    public function chauffeurs() : HasMany
+    {
+        return $this->hasMany(Chauffeur::class);
+    }
+
+
     public function prixCategorie(int $idCategorie, int $zone)
     {
         $categoriePrix = CategorieRnTransporteur::where('categorie_id', $idCategorie)->where('transporteur_id', $this->id)->where('rn_id', $zone)->first();
+
         if ($categoriePrix === null)
         {
             return 0;

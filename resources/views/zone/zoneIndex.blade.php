@@ -17,7 +17,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>rn de travail</h1>
+                    <h1>Les routes nationales</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -35,16 +35,12 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
-                    <div class="alert alert-danger">
-                        @if ($errors->any())
-                            @dump($errors->all())
-                        @endif
-                    </div>
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">Liste des zones de travail</h3>
-                            <button class="btn  btn-success float-right"  data-toggle="modal" id="nouveau-rn" data-backdrop="static" data-keyboard="false" data-target="#modal-ajouter-rn"><span class="fa fa-plus"></span>&nbsp;Ajouter</button>
-
+                            <button class="btn  btn-success float-right"  data-toggle="modal" id="nouveau-rn" data-backdrop="static" data-keyboard="false" data-target="#modal-ajouter-rn">
+                                <span class="fa fa-plus"></span>&nbsp;Ajouter
+                            </button>
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">

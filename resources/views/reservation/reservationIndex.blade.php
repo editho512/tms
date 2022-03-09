@@ -94,7 +94,7 @@
                                                             Mettre comme livré
                                                         </a>
                                                     @else
-                                                        @if (!$reservation->rejete() AND !$reservation->annule() AND !$reservation->enAttente())
+                                                        @if (!$reservation->rejete() AND !$reservation->annule() AND !$reservation->enAttente() AND !$reservation->livre() AND !$reservation->indisponible())
                                                             <span class="badge badge-warning p-2">En attente de date de livraison</span>
                                                         @endif
                                                     @endif
@@ -115,6 +115,10 @@
                                                         <i class="fa fa-eye"></i>
                                                     </button>
                                                     
+                                                    @endif
+
+                                                    @if ($reservation->indisponible())
+                                                        <div style="opacity: 0.7" class="badge badge-info p-2 text-center">Réservation déja prise par un autre transporteur</div>
                                                     @endif
 
                                                 </div>
