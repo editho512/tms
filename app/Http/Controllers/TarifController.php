@@ -43,7 +43,7 @@ class TarifController extends Controller
 
         foreach ($departCategories as $departCategorie)
         {
-            if (in_array($zone->id, $departCategorie->arrivee->zones->pluck('id')->toArray()))
+            if (/*in_array($zone->id, $departCategorie->arrivee->zones->pluck('id')->toArray())*/ in_array($zone->id, $departCategorie->depart->zones->pluck('id')->toArray()))
             {
                 $lists .= "<li>{$departCategorie->depart->nom} - {$departCategorie->arrivee->nom}</li>";
             }
@@ -73,10 +73,11 @@ class TarifController extends Controller
             $provinces = $zone->provinces;
             $departCategories = CategorieDepart::where('categorie_id', $categorie->id)->get();
             $tmp = [];
+            $mixte = [];
 
             foreach ($departCategories as $d)
             {
-                if (in_array($zone->id, $d->arrivee->zones->pluck('id')->toArray()))
+                if (in_array($zone->id, $d->arrivee->zones->pluck('id')->toArray()) AND in_array($zone->id, $d->depart->zones->pluck('id')->toArray()))
                 {
                     $tmp[] = $d;
                 }

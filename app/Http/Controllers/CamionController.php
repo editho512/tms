@@ -30,7 +30,18 @@ class CamionController extends Controller
     */
     public function index()
     {
-        $camions = auth()->user()->camions;
+        $user = auth()->user();
+        $camions = null;
+
+        if ($user->estSuperAdmin())
+        {
+            $camions = Camion::all();
+        }
+        else
+        {
+            $camions = $user->camions;
+        }
+
         $active_camion_index = "active";
 
         return view("Camion.camionIndex", compact("active_camion_index", "camions"));

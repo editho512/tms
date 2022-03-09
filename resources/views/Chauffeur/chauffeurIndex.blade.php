@@ -40,8 +40,9 @@
                         <div class="card">
                             <div class="card-header" >
                                 <h3 class="card-title">Liste des chauffeur</h3>
-                                <button class="btn  float-right" style="background: #007bff;color:white;" data-toggle="modal" id="nouveau-chauffeur" data-target="#modal-ajouter-chauffeur"><span class="fa fa-plus"></span>&nbsp;Ajouter</button>
-
+                                <button class="btn  float-right" style="background: #007bff;color:white;" data-toggle="modal" id="nouveau-chauffeur" data-target="#modal-ajouter-chauffeur">
+                                    <span class="fa fa-plus"></span>&nbsp;Ajouter
+                                </button>
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body">
@@ -49,6 +50,9 @@
                                     <thead>
                                     <tr>
                                         <th>Nom</th>
+                                        @if (auth()->user()->estSuperAdmin())
+                                            <th>Transporteur</th>
+                                        @endif
                                         <th>Téléphone</th>
                                         <th>CIN</th>
                                         <th>Actions</th>
@@ -58,6 +62,9 @@
                                         @forelse($chauffeurs as $chauffeur)
                                             <tr style='{{$chauffeur->blocked == true ? "color:gray;" : ""}}'>
                                                 <td>{{ ucwords($chauffeur->name) }} @if ($chauffeur->disponible() === false) - <span class="badge badge-info">En cours de travail</span> @endif</td>
+                                                @if (auth()->user()->estSuperAdmin())
+                                                    <td>{{ $chauffeur->transporteur->name }}</td>
+                                                @endif
                                                 <td>{{$chauffeur->phone}}</td>
                                                 <td>
                                                     {{$chauffeur->cin}}
@@ -89,13 +96,15 @@
                                         @endforelse
                                     </tbody>
                                     <tfoot>
-                                    <tr>
-                                        <th>Nom</th>
-                                        <th>Téléphone</th>
-                                        <th>CIN</th>
-                                        <th>Actions</th>
-
-                                    </tr>
+                                        <tr>
+                                            <th>Nom</th>
+                                            @if (auth()->user()->estSuperAdmin())
+                                                <th>Transporteur</th>
+                                            @endif
+                                            <th>Téléphone</th>
+                                            <th>CIN</th>
+                                            <th>Actions</th>
+                                        </tr>
                                     </tfoot>
                                 </table>
                             </div>

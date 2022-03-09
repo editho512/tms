@@ -19,194 +19,147 @@
 
 @section('content')
 
-<div class="content-wrapper" style="min-height: inherit!important;">
+<div class="child">
+    <div class="content">
+        <h5 class="text-uppercase text-white text-center w-100 mt-4">Rechercher un transporteur</h5>
 
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-        <div class="container-fluid">
-            <div class="mb-3">
-                <h1 style="color: #49aba0;" class="text-center text-uppercase">Rechercher un transporteur</h1>
-                <hr>
-            </div>
-        </div><!-- /.container-fluid -->
-    </section>
+        <form onsubmit="search()" action="{{ route('client.post.search') }}" method="post" class="mt-5">
 
-    <section class="content">
-        <div class="container-fluid">
-            <form onsubmit="search()" action="{{ route('client.post.search') }}" method="post">
+            @csrf
 
-                @csrf
+            <div class="row">
 
-                <div class="row">
+                {{-- Informations du départ --}}
 
-                    {{-- Informations du départ --}}
-
-                    <div class="col-md-6">
-                        <div class="card card-outline card-info">
-                            <div class="card-header">
-                                <h4 class="text-uppercase title">Départ</h4>
-                            </div>
-
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-sm-12 mb-4">
-                                        <select autocomplete="off" name="province-depart" id="province-depart" class="form-control select-destination select-search-depart" data-index=0>
-                                            <option value="0">Ville de départ</option>
-                                            @foreach ($provinces as $province)
-                                            <option value="{{ $province->id }}">{{ strtoupper($province->nom) }}</option>
-                                            @endforeach
-                                        </select>
-                                        @error('province-depart')
-                                        <span class="text-danger mt-2">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="card-footer">
-                                <div class="d-flex justify-content-between">
-                                    <p>Decrivez ci-dessus votre endroit de départ</p>
-                                    <button type="button" onclick="resetFields(this)" class="button button--secondary">Réinitialiser les champs</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- Informations d'arrivee --}}
-
-                    <div class="col-md-6">
-                        <div class="card card-outline card-info">
-                            <div class="card-header">
-                                <h4 class="text-uppercase title">Arrivée</h4>
-                            </div>
-
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-sm-6 mb-4">
-                                        <select onchange="//updatearrivee(this, 1)" autocomplete="off" name="region-arrivee" id="region-arrivee" class="form-control select-destination select-search-arrivee" data-index=1>
-                                            <option value="0">Région</option>
-                                            @foreach ($regions as $region)
-                                            <option value="{{ $region->id }}">{{ strtoupper($region->nom) }}</option>
-                                            @endforeach
-                                        </select>
-                                        @error('region-arrivee')
-                                        <span class="text-danger mt-2">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-
-                                    <div class="col-sm-6">
-                                        <select onchange="//updatearrivee(this, 2)" autocomplete="off" name="ville-arrivee" id="ville-arrivee" class="form-control select-destination select-search-arrivee"  data-index=2>
-                                            <option value="0">Ville d'arrivée</option>
-                                            @foreach ($villes as $ville)
-                                                <option value="{{ $ville->id }}">{{ $ville->nom }}</option>
-                                            @endforeach
-                                        </select>
-                                        @error('ville-arrivee')
-                                        <span class="text-danger mt-2">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="card-footer">
-                                <div class="d-flex justify-content-between">
-                                    <p>Decrivez ci-dessus votre endroit d'arrivée</p>
-                                    <button type="button" onclick="resetFields(this)" class="button button--secondary">Réinitialiser les champs</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-12">
-                        <div class="card card-outline card-secondary">
-                            <div class="card-header">
-                                <h4 class="text-uppercase">
-                                    Date et heure
-                                </h4>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-12 d-flex">
-                                        <div class="mr-2 w-100">
-                                            <label for="" class="form-label">Date</label>
-                                            <input onchange="removeRedBorder(this)" type="date" name="date_depart" id="" class="form-control">
-                                            @error('date_depart')
-                                            <span class="text-danger mt-2">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-                                        <div class="w-100">
-                                            <label for="" class="form-label">Heure</label>
-                                            <input onchange="removeRedBorder(this)" type="time" name="heure_depart" id="" class="form-control">
-                                            @error('heure_depart')
-                                            <span class="text-danger mt-2">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-12 d-flex justify-content-end mt-4">
-                                        <label for="" class="form-la">&nbsp;</label>
-                                        <button id="search-btn" type="submit" class="button button--secondary w-25 d-flex justify-content-center align-item-center">
-                                            <div id="icon" class="mr-3">
-                                                <i class="fa fa-search"></i>
-                                            </div>
-                                            <span>Rechercher mon transporteur</span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
+                <div class="col-md-11 col-sm-12 col-xs-12 col-xl-11 input">
+                    <select autocomplete="off" style="width: 100%!important" name="province-depart" id="province-depart" class="form-control select-destination select-search-depart" data-index=0>
+                        <option value="0">Ville de départ</option>
+                        @foreach ($provinces as $province)
+                        <option value="{{ $province->id }}">{{ strtoupper($province->nom) }}</option>
+                        @endforeach
+                    </select>
+                    @error('province-depart')
+                    <span class="text-danger mt-2">{{ $message }}</span>
+                    @enderror
                 </div>
-            </form>
 
-            <div class="alert alert-danger d-none" id="errors">
-
-            </div>
-
-            <div class="card card-outline card-info">
-                <div class="card-header d-flex justify-content-between">
-                    <h4 class="text-uppercase title">Liste des transporteurs disponibles</h4>
-                </div>
-                <div class="card-body">
-                    <table id="camions" class="table table-bordered table-striped">
-                        <thead>
-                            <tr>
-                                <th>Numéro</th>
-                                <th>Nom du transporteur</th>
-                                <th>Prix</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="transporteur">
-                            <tr>
-                                <td colspan="4" class="text-center">Aucun transporteur pour l'instant</td>
-                            </tr>
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <th>Numéro</th>
-                                <th>Nom du transporteur</th>
-                                <th>Prix</th>
-                                <th>Action</th>
-                            </tr>
-                        </tfoot>
-                    </table>
+                <div class="col-md-1 col-sm-12 col-xs-12 col-xl-1 btn-reset">
+                    <button type="button" onclick="resetFields(this)" class="btn btn-danger shadow w-100"><i class="fa fa-refresh"></i></button>
                 </div>
             </div>
 
-        </div>
-        <!-- /.card -->
+            {{-- Informations d'arrivee --}}
+
+            <div class="row mt-3">
+                <div class="col-md-6 col-sm-12 col-xs-12 col-xl-6 input">
+                    <select onchange="//updatearrivee(this, 1)" style="width: 100%!important" autocomplete="off" name="region-arrivee" id="region-arrivee" class="form-control select-destination select-search-arrivee" data-index=1>
+                        <option value="0">Région destination</option>
+                        @foreach ($regions as $region)
+                        <option value="{{ $region->id }}">{{ strtoupper($region->nom) }}</option>
+                        @endforeach
+                    </select>
+                    @error('region-arrivee')
+                    <span class="text-danger mt-2">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="col-md-5 col-sm-12 col-xs-12 col-xl-5 input">
+                    <select onchange="//updatearrivee(this, 2)" style="width: 100%!important" autocomplete="off" name="ville-arrivee" id="ville-arrivee" class="form-control select-destination select-search-arrivee"  data-index=2>
+                        <option value="0">Ville destination</option>
+                        @foreach ($villes as $ville)
+                        <option value="{{ $ville->id }}">{{ $ville->nom }}</option>
+                        @endforeach
+                    </select>
+                    @error('ville-arrivee')
+                    <span class="text-danger mt-2">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="col-md-1 col-sm-12 col-xs-12 col-xl-1 btn-reset">
+                    <button type="button" onclick="resetFields(this)" class="btn btn-danger shadow w-100"><i class="fa fa-refresh"></i></button>
+                </div>
+
+            </div>
+
+            <div class="row mt-3">
+                <div class="col-md-6 input">
+                    <div class="mr-2 w-100">
+                        <input onchange="removeRedBorder(this)" placeholder="Date de départ" type="text" name="date_depart" id="" class="form-control">
+                        @error('date_depart')
+                        <span class="text-danger mt-2">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
+                <div class="col-md-5 input">
+                    <div class="w-100">
+                        <input onchange="removeRedBorder(this)" placeholder="Heure de départ" type="time" name="heure_depart" id="" class="form-control">
+                        @error('heure_depart')
+                        <span class="text-danger mt-2">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="col-md-1 col-sm-12 col-xs-12 col-xl-1 btn-reset">
+                    <button type="button" onclick="resetFields(this)" class="btn btn-danger shadow w-100"><i class="fa fa-refresh"></i></button>
+                </div>
+            </div>
+
+            <div class="row mt-5">
+                <div class="col-md-9 col-xs-6 col-sm-6 col-xl-9"></div>
+                <div class="col-md-3 col-xs-6 col-sm-6 col-xl-3">
+                    <button id="search-btn" type="submit" class="button button--secondary w-100 d-flex justify-content-center align-item-center">
+                        <div id="icon" class="mr-3">
+                            <i class="fa fa-search"></i>
+                        </div>
+                        <span>Rechercher</span>
+                    </button>
+                </div>
+            </div>
+        </form>
     </div>
-    <!-- /.col -->
+
+    @php
+        $url = route('client.reserver')
+    @endphp
+
+    <div class="content mt-5 d-none" id="result">
+        <div class="d-flex justify-content-between res">
+            <h5 class="text-uppercase text-white w-100 mt-3">Lists des transporteurs</h5>
+            <button id="reserver-btn" onclick="reserverTest('{{ $url }}')" class="btn btn-danger d-flex justify-content-center align-items-center">
+                <span id="number">0</span>
+                <span id="text" class="d-none ml-3">Valider</span>
+            </button>
+        </div>
+
+        <div style="overflow-x: auto;">
+            <table id="transporteurs-lists" class="table table-bordered table-striped mt-5 text-white">
+                <thead class="text-uppercase">
+                    <tr class="text-center">
+                        <th>Numéro</th>
+                        <th>Nom du transporteur</th>
+                        <th>Prix</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="transporteur">
+                    <td>1</td>
+                    <td>RAKOTO</td>
+                    <td>2500000</td>
+                    <td>Delete</td>
+
+                </tbody>
+                <tfoot class="text-uppercase">
+                    <tr class="text-center">
+                        <th>Numéro</th>
+                        <th>Nom du transporteur</th>
+                        <th>Prix</th>
+                        <th>Action</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
 </div>
-<!-- /.row -->
-</div>
-<!-- /.container-fluid -->
-</section>
-<!-- /.content -->
-</div>
-<!-- /.content-wrapper -->
 
 @endsection
 
@@ -214,6 +167,79 @@
 @section('scripts')
 
 <script type="text/javascript">
+
+    let searchData = null // Les donées des recherches
+    let transporterIds = new Object()
+    let number = document.getElementById('number')
+    let count = parseInt(number.innerText)
+
+    const addToList = (button, data) => {
+        count = count + 1
+        if (count > 0) document.getElementById('text').classList.remove('d-none')
+
+        number.innerText = count
+        transporterIds[data.transporteur.id] = {
+            prix: data.prix,
+            name: data.transporteur.name
+        }
+
+        // Changer le texte du bouton
+        button.innerHTML = '<i class="fa fa-minus"></i>'
+        button.classList.remove('btn-primary')
+        button.classList.add('btn-danger')
+
+        button.setAttribute('onclick', 'removeToList(this, ' + JSON.stringify(data) + ')')
+    }
+
+    const removeToList = (button, data) => {
+        count = count - 1
+        if (parseInt(count) === 0) document.getElementById('text').classList.add('d-none')
+
+        number.innerText = count
+        delete transporterIds[data.transporteur.id]
+
+        // Changer le texte du bouton
+        button.innerHTML = '<i class="fa fa-plus"></i>'
+        button.classList.remove('btn-danger')
+        button.classList.add('btn-primary')
+
+        button.setAttribute('onclick', 'addToList(this, ' + JSON.stringify(data) + ')')
+    }
+
+    const reserverTest = (url) => {
+        window.event.preventDefault
+
+        if (Object.keys(transporterIds).length === 0) {
+            alert('Veuiller selectionner au moins un transporteur')
+            return false
+        }
+
+        let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+        fetch(url, {
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json, text-plain, */*",
+                "X-CSRF-TOKEN": token
+            },
+            method: 'post',
+            credentials: "same-origin",
+            body: JSON.stringify({
+                transporters: transporterIds,
+                reservationDetaisl: searchData,
+            })
+        })
+        .then((response) => {
+            return response.json()
+        })
+        .then(data => {
+            if (data.redirect === true) window.location.href = data.url
+        })
+        .catch(function(error) {
+            console.log(error);
+        });
+    }
+
 
     const resetFields = (button) => {
         let parent = button.parentElement.parentElement.parentElement
@@ -225,7 +251,6 @@
             }
         })
     }
-
 
     const removeRedBorder = (input) => {
         input.classList.remove('error')
@@ -282,17 +307,20 @@
             return response.json()
         })
         .then(data => {
-            if (data.errors) {
+            if (data.errors)
+            {
                 Object.keys(data.errors).forEach(key => {
                     let field = document.getElementsByName(key).item(0)
 
                     if (key == 'date_depart' || key == 'heure_depart') field.classList.add('error')
                     else field.parentElement.children.item(1).classList.add('error')
                 })
-            } else {
+            }
+            else
+            {
                 let tbody = document.getElementById('transporteur')
 
-                if (data.length > 0)
+                if (data.results.length > 0)
                 {
                     if (data.error)
                     {
@@ -300,9 +328,11 @@
                         return
                     }
 
+                    searchData = data.details
+                    document.getElementById('result').classList.remove('d-none')
                     tbody.innerHTML = ''
 
-                    data.forEach(element => {
+                    data.results.forEach(element => {
                         let transporteur = element.transporteur
 
                         let tr = document.createElement('tr')
@@ -314,7 +344,9 @@
                         id.innerHTML = transporteur.id
                         nom.innerHTML = transporteur.name.toUpperCase()
                         prix.innerHTML = element.prix
-                        action.innerHTML = "<button class='button button--secondary w-100' onclick='reserver(" + JSON.stringify(element) + ")'>Reserver</button>"
+                        c = ['d-flex', 'justify-content-center']
+                        action.classList.add(...c)
+                        action.innerHTML = "<button class='btn btn-primary' onclick='addToList(this," + JSON.stringify(element) + ")'><i class='fa fa-plus'></i></button>"
                         tr.appendChild(id)
                         tr.appendChild(nom)
                         tr.appendChild(prix)
@@ -330,12 +362,6 @@
             }
         })
     }
-
-    /*$(document).on("change", ".select-search-depart", function(e){
-        let index = parseInt($(this).attr("data-index"));
-        e.currentTarget.classList.remove('error')
-        updateDepart(e.currentTarget, index);
-    });*/
 
     $(document).on("change", ".select-search-arrivee", function(e){
         let index = parseInt($(this).attr("data-index"));
@@ -468,7 +494,6 @@
             }
             else if(type === 2) // Pour la selection des districts
             {
-                debugger
                 updateSelect(data.regions, regionArrivee, 'Région')
 
                 $('#region-arrivee').val(data.region.id).select2()
@@ -494,11 +519,22 @@
         });
     }
 
+
+    const elem = document.querySelector('input[name="date_depart"]');
+    const datepicker = new Datepicker(elem, {
+        autohide: false,
+        title: 'Selectionner la date de départ',
+        clearBtn: true,
+        language: 'fr',
+    });
+
 </script>
 
 <script>
     $(document).ready(function() {
-        $('.select-destination').select2();
+        $('.select-destination').select2({
+            width: 'style'
+        });
     });
 </script>
 

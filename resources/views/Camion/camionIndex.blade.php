@@ -48,7 +48,6 @@
                                     <tr>
                                         @if (auth()->user()->estSuperAdmin())
                                         <th>Transporteur</th>
-
                                         @endif
                                         <th>Désignation</th>
                                         <th>Numéro châssis</th>
@@ -63,7 +62,6 @@
                                     <tr style='{{$camion->blocked == true ? "color:gray;" : ""}}' >
                                         @if (auth()->user()->estSuperAdmin())
                                         <td>{{$camion->transporteur->name}}</td>
-
                                         @endif
                                         <td>
                                             {{ucwords($camion->name)}}

@@ -31,4 +31,20 @@ class CategorieDepart extends Model
     {
         return $this->hasOne(Categorie::class, "id", "categorie_id");
     }
+
+    public static function getAllIn(int $rnID)
+    {
+        $results = [];
+        $all = CategorieDepart::all();
+
+        foreach ($all as $categorie)
+        {
+            if (in_array($rnID, $categorie->depart->zones->pluck('id')->toArray()) AND in_array($rnID, $categorie->arrivee->zones->pluck('id')->toArray()))
+            {
+                $results[] = $categorie;
+            }
+        }
+
+        return collect($results);
+    }
 }

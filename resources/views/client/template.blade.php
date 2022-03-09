@@ -10,10 +10,6 @@
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="{{asset('assets/adminlte/plugins/fontawesome-free/css/all.min.css')}}">
-    <!-- Ionicons -->
-    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <!-- Tempusdominus Bbootstrap 4 -->
     <link rel="stylesheet" href="{{asset('assets/adminlte/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css')}}">
     <!-- iCheck -->
@@ -56,15 +52,145 @@
     <!-- Default theme -->
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css"/>
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.2.0/dist/css/datepicker-bs4.min.css">
+
     <style>
+
+        @media only screen and (max-width: 1600px) {
+            .navbar-light .navbar-nav:first-of-type {
+                width: 20%;
+            }
+
+            .navbar-light .navbar-nav:first-of-type .logo {
+                width: 20%;
+            }
+
+            .content {
+                width: 70vw!important;
+            }
+        }
+
+        @media only screen and (max-width: 1100px) {
+            .header-fixed {
+                padding-left: 10px!important;
+                padding-right: 10px!important;
+            }
+
+            .navbar-light .navbar-nav:first-of-type .logo {
+                width: 60px;
+            }
+
+            .content {
+                width: 80vw!important;
+            }
+        }
+
+        @media only screen and (max-width: 850px) {
+            .content {
+                width: 90vw!important;
+            }
+        }
+
+        @media only screen and (max-width: 766px) {
+
+            .content:first-of-type {
+                width: 80vw!important;
+                padding-left: 60px!important;
+                padding-right: 60px!important;
+                padding-bottom: 60px!important;
+            }
+
+            .content:last-of-type {
+                width: 90vw!important;
+                padding-left: 10px!important;
+                padding-right: 10px!important;
+                padding-bottom: 20px!important;
+                margin-bottom: 30px!important;
+            }
+
+            .btn-reset .btn {
+                margin-bottom: 30px!important;
+            }
+
+            .input {
+                margin-bottom: 10px;
+            }
+
+            .navbar-light .navbar-nav:first-of-type .logo {
+                width: 50px!important;
+            }
+        }
+
+        @media only screen and (max-width: 500px) {
+            .content {
+                width: 90vw!important;
+            }
+
+            .content:first-of-type {
+                padding-left: 15px!important;
+                padding-right: 15px!important;
+                padding-bottom: 30px!important;
+            }
+
+            .content:last-of-type {
+                padding-left: 8px!important;
+                padding-right: 8px!important;
+                padding-bottom: 10px!important;
+                margin-bottom: 80px!important;
+            }
+
+            .content:last-of-type table {
+                /*background: rgba(17, 91, 104, 0.315)!important;*/
+            }
+
+            body {
+                background-image: url('{{ asset("assets/images/bg-mobile.jpg") }}')!important;
+                background-repeat: no-repeat!important;
+                background-attachment: fixed!important;
+                background-position: center!important;
+                background-size: cover!important;
+            }
+
+            .navbar-light .navbar-nav:first-of-type .logo {
+                width: 50px!important;
+            }
+
+            .header-title {
+                font-size: 30px;
+            }
+
+            .res {
+                display: block!important;
+            }
+        }
+
+        .header-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+            margin: 0;
+            padding: 0;
+            color: #003d6d;
+        }
+
+        body {
+            background-image: url('{{ asset("assets/images/bg.jpg") }}');
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: center;
+            background-size: cover;
+        }
+
+        body, html {
+            padding: 0;
+            margin: 0;
+        }
 
         .button {
             font-size: 16px;
-            line-height: 24px;
             padding: 7px 19px 9px;
             text-decoration: none;
-            display: inline-block;
-            vertical-align: top;
             transition: all .2s ease-in-out;
             border: 1px solid transparent;
             border-radius: 5px;
@@ -72,14 +198,45 @@
             color: #141414;
             cursor: pointer;
             position: relative;
-            box-shadow: 2px 2px 2px rgb(114, 114, 114)!important;
+            box-shadow: 2px 2px 2px #111!important;
         }
 
         .button--secondary {
             color: #fff;
-            background-color: #49aba0;
+            background: linear-gradient(to right, #0082ceda, #008cd8a6);
             border-color: transparent;
             box-shadow: none;
+        }
+
+        .shadow {
+            box-shadow: 2px 2px 2px #111!important;
+        }
+
+        .button--primary {
+            color: #fff;
+            background-color: #349387e0;
+            border-color: transparent;
+            box-shadow: none;
+        }
+
+        .button--primary:hover {
+            background-color: #227469e0;
+        }
+
+        .button--danger {
+            color: #fff;
+            background-color: rgba(255, 51, 51, 0.836);
+            border-color: transparent;
+            box-shadow: none;
+        }
+
+        .button--danger:hover {
+            background-color: rgba(255, 0, 0, 0.842);
+        }
+
+        input {
+            background-color: #ececec !important;
+            box-shadow: 1px 1px 1px 1px #111!important;
         }
 
         .color-primary {
@@ -87,7 +244,13 @@
         }
 
         .button--secondary:hover {
-            background-color: #3b9b90;
+            background-color: #176097;
+        }
+
+        .select2-container--default .select2-selection--single {
+            background-color: #f1f0f0 !important;
+            box-shadow: 1px 1px 1px 1px #111;
+            min-width: 100%;
         }
 
         .select2-selection__rendered {
@@ -108,7 +271,7 @@
         }
 
         .error {
-            border: 1px solid red!important;
+            border: 1px solid rgb(253, 69, 69)!important;
             border-radius: 5px!important;
         }
 
@@ -151,6 +314,7 @@
         .has-treeview > .active{
             background-color: #49aba0 !important;
         }
+
         @media screen and (min-width: 576px) {
             #tableau_bord {
                 display: none !important;
@@ -164,6 +328,9 @@
         .main-footer {
             margin: 0!important;
             width: 100%;
+            position: fixed!important;
+            bottom: 0!important;
+            left: 0!important;
         }
 
         .flex {
@@ -188,7 +355,7 @@
             right: 0;
             width: 100%;
             box-shadow: 2px 2px 2px #49aba0;
-            opacity: 0,1!important;
+            background: rgba(255, 255, 255, 0.842);
             padding-left: 110px;
             padding-right: 110px;
         }
@@ -209,7 +376,32 @@
         }
 
         .sidebar-mini {
-            background: linear-gradient(to right, hsl(210, 32%, 93%), hsl(0, 54%, 97%))!important;
+            /*background: linear-gradient(to right, hsl(210, 32%, 93%), hsl(0, 54%, 97%))!important;*/
+        }
+
+        .content {
+            background: linear-gradient(to right, #022f2acc, #194e6398);
+            opacity: .9;
+            padding: 20px;
+            box-shadow: 1px 1px 1px 1px #d8d8d8;
+            border-radius: 5px;
+            width: 60vw;
+        }
+
+        .main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: inherit;
+            margin-top: 10%;
+            margin-bottom: 10%;
+        }
+
+        .child {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
     </style>
@@ -223,7 +415,7 @@
 
         @include('client.header')
 
-        <div id="content" style="margin-top: 15vh; margin-bottom:15vh;">
+        <div class="main" id="content">
             @yield('content')
         </div>
 
@@ -234,6 +426,15 @@
 
     @yield('modals')
 
+
+    <script src="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.2.0/dist/js/datepicker-full.min.js"></script>
+
+    <script>
+        window.addEventListener('resize', (e) => {
+            let menu = document.querySelector('.menu')
+            if (menu.style.maxHeight != 0) menu.style.maxHeight = 0
+        })
+    </script>
 
     <!-- jQuery -->
     <script src="{{asset('assets/adminlte/plugins/jquery/jquery.min.js')}}"></script>

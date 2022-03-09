@@ -13,13 +13,17 @@ class ChauffeurController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('admin');
-
+        $this->middleware('admins');
     }
 
     public function index() : View
     {
-        $chauffeurs = Chauffeur::all();
+        $user = auth()->user();
+        $chauffeurs = null;
+
+        if ($user->estSuperAdmin()) $chauffeurs = Chauffeur::all();
+        else $chauffeurs = $user->chauffeurs;
+
         $active_chauffeur_index = "active";
         return view("Chauffeur.chauffeurIndex", compact("active_chauffeur_index", "chauffeurs" ));
     }

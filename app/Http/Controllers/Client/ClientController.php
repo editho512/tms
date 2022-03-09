@@ -30,6 +30,7 @@ class ClientController extends Controller
      */
     public function search()
     {
+        //dd(Hash::make('Passw0rd.2022'));
         if (!auth()->user()->isClient()) {
             return redirect()->route('camion.liste');
         }
@@ -59,7 +60,7 @@ class ClientController extends Controller
         if (!auth()->user()->isClient()) {
             return redirect()->route('camion.liste');
         }
-        $reservations = auth()->user()->reservations;
+        $reservations = auth()->user()->reservations()->where('status', '<>', Reservation::STATUS[5])->get();
 
         return view('client.history', [
             'active' => 1,
@@ -122,12 +123,27 @@ class ClientController extends Controller
         $zonesDepart = $villeDepart->zones;
         $zonesArrivee = $villeArrivee->zones;
 
+        $departIDS = $zonesDepart->pluck('id')->toArray();
+        $arriveeIDS = $zonesArrivee->pluck('id')->toArray();
+
         if ($zonesDepart === Collection::empty() OR $zonesArrivee === Collection::empty())
         {
             return response()->json(['error' => 'Aucune transporteur disponible pour ce district']);
         }
 
-        $zoneTransporteurs = RnTransporteur::whereIn('rn_id', $zonesDepart->pluck('id'))->orWhereIn('rn_id', $zonesArrivee->pluck('id'))->get();
+        $zoneTransporteurs = null;
+        $ids = array_intersect($departIDS, $arriveeIDS);
+
+        if ($ids === [])
+        {
+            $zoneTransporteurs = RnTransporteur::whereIn('rn_id', $zonesDepart->pluck('id'))->orWhereIn('rn_id', $zonesArrivee->pluck('id'))->get(); // Si le transporteur travail sur la rn de depart et la rn d'arrivée
+        }
+        else
+        {
+            $zoneTransporteurs = RnTransporteur::whereIn('rn_id', $ids)->get();
+        }
+
+        //$zoneTransporteurs = RnTransporteur::whereIn('rn_id', $zonesDepart->pluck('id'))->orWhereIn('rn_id', $zonesArrivee->pluck('id'))->get();
         $departCategorie = CategorieDepart::where('province_id', $villeDepart->id)->where('ville_id', $villeArrivee->id)->first('categorie_id');
 
         if ($departCategorie === null)
@@ -150,7 +166,7 @@ class ClientController extends Controller
                     'depart' => $villeDepartID,
                     'date_depart' => $request->date_depart,
                     'heure_depart' => $request->heure_depart,
-                    'district' => [
+                    'villes' => [
                         'depart' => $villeDepartID,
                         'arrivee' => $villeArriveeID,
                     ],
@@ -158,7 +174,19 @@ class ClientController extends Controller
             }
         }
 
-        return response()->json($results);
+        $tmp = [];
+        if ($results !== [])
+        {
+            $tmp['results'] = $results;
+            $tmp['details'] = [
+                'depart' => $villeDepartID,
+                'date_depart' => $request->date_depart,
+                'heure_depart' => $request->heure_depart,
+                'arrivee' => $villeArriveeID,
+            ];
+        }
+
+        return response()->json($tmp);
     }
 
 
