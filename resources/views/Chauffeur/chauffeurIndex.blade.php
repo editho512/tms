@@ -40,14 +40,18 @@
                         <div class="card">
                             <div class="card-header" >
                                 <h3 class="card-title">Liste des chauffeur</h3>
-                                <button class="btn  float-right" style="background: #007bff;color:white;" data-toggle="modal" id="nouveau-chauffeur" data-target="#modal-ajouter-chauffeur"><span class="fa fa-plus"></span>&nbsp;Ajouter</button>
-
+                                <button class="btn  float-right" style="background: #007bff;color:white;" data-toggle="modal" id="nouveau-chauffeur" data-target="#modal-ajouter-chauffeur">
+                                    <span class="fa fa-plus"></span>&nbsp;Ajouter
+                                </button>
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body">
                                 <table id="chauffeurs" class="table table-bordered table-striped">
                                     <thead>
                                     <tr>
+                                        @if (auth()->user()->estSuperAdmin())
+                                            <th>Transporteur</th>
+                                        @endif
                                         <th>Nom</th>
                                         <th>Téléphone</th>
                                         <th>CIN</th>
@@ -57,6 +61,9 @@
                                     <tbody>
                                         @forelse($chauffeurs as $chauffeur)
                                             <tr style='{{$chauffeur->blocked == true ? "color:gray;" : ""}}'>
+                                                @if (auth()->user()->estSuperAdmin())
+                                                    <td>{{ $chauffeur->transporteur->name }}</td>
+                                                @endif
                                                 <td>{{ ucwords($chauffeur->name) }} @if ($chauffeur->disponible() === false) - <span class="badge badge-info">En cours de travail</span> @endif</td>
                                                 <td>{{$chauffeur->phone}}</td>
                                                 <td>
@@ -89,13 +96,15 @@
                                         @endforelse
                                     </tbody>
                                     <tfoot>
-                                    <tr>
-                                        <th>Nom</th>
-                                        <th>Téléphone</th>
-                                        <th>CIN</th>
-                                        <th>Actions</th>
-
-                                    </tr>
+                                        <tr>
+                                            @if (auth()->user()->estSuperAdmin())
+                                                <th>Transporteur</th>
+                                            @endif
+                                            <th>Nom</th>
+                                            <th>Téléphone</th>
+                                            <th>CIN</th>
+                                            <th>Actions</th>
+                                        </tr>
                                     </tfoot>
                                 </table>
                             </div>

@@ -19,6 +19,8 @@ class CreateReservationsTable extends Migration
             $table->bigInteger("depart_id")->unsigned()->index('i_fk_reservation_depart')->comment('Province (grande ville) de départ de la reservation');
             $table->bigInteger("arrivee_id")->unsigned()->index('i_fk_reservation_arrivee')->comment('Ville d\'arrivée de la reservation');
             $table->bigInteger("transporteur_id")->unsigned()->index('i_fk_reservation_transporteur')->comment('Identifiant du transporteur');
+            $table->bigInteger("trajet_id")->unsigned()->index('i_fk_reservation_trajet')->comment('Identifiant du trajet');
+
             $table->dateTime("date");
             $table->string("status");
             $table->timestamps();

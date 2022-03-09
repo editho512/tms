@@ -20,6 +20,7 @@ class CreateChauffeursTable extends Migration
             $table->string("cin")->nullable();
             $table->text("permis")->nullable();
             $table->boolean('blocked')->default(0);
+            $table->bigInteger('user_id');
             $table->timestamps();
         });
     }

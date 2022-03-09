@@ -46,9 +46,9 @@
                                     <tr>
                                         <th>Client</th>
                                         <th>Date</th>
+                                        <th>Statut</th>
                                         <th>Départ</th>
                                         <th>Arrivée</th>
-                                        <th>Statut</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -57,22 +57,37 @@
                                         <tr>
                                             <td>{{ ucfirst($reservation->client->name) }}</td>
                                             <td>{{ formatDate($reservation->date) }}</td>
+                                            <td class="text-center">
+                                                
+                                                @php
+                                                    $badge = "info";
+                                                    if($reservation->rejete() || $reservation->annule()){
+                                                        $badge = "danger";
+
+                                                    }else if($reservation->livre() || ($reservation->reserve() && $reservation->livrable())){
+                                                        $badge = "success";
+                                                        
+                                                    }else if(!$reservation->rejete() && !$reservation->annule() && !$reservation->enAttente()){
+                                                        $badge = "warning";
+                                                    }
+                                                @endphp
+
+                                                <div style="opacity: 0.7" class=" badge badge-pill badge-{{$badge}} p-2">
+                                                    {{ $reservation->status }}
+                                                </div>
+                                            </td>
                                             <td>{{ $reservation->depart->nom }}</td>
                                             <td>{{ $reservation->arrive->nom }}</td>
-                                            <td>{{ $reservation->status }}</td>
                                             <td class="row">
                                                 <div class="col-sm-12 text-center">
                                                     @if ($reservation->enAttente())
-                                                        <a class="btn btn-primary" href="{{route('reservation.accept', ['reservation' => $reservation->id])}}">
-                                                            <i class="fa fa-arrow-right mr-2"></i>
-                                                            Accepter
+                                                        <button class="btn btn-sm btn-primary valider-reservation" data-show="{{route('reservation.voir', ["reservation" => $reservation->id])}}" data-url="{{route('reservation.accept', ['reservation' => $reservation->id])}}">
+                                                            <i class="fa fa-arrow-right"></i>
+                                                        </button>
+                                                        <a href="{{ route('reservation.reject', ['reservation' => $reservation->id]) }}" class="btn btn-sm btn-danger">
+                                                            <i class="fa fa-times"></i>
                                                         </a>
-                                                        <a href="{{ route('reservation.reject', ['reservation' => $reservation->id]) }}" class="btn btn-danger">
-                                                            <i class="mr-2 fa">&#xf00d</i>
-                                                            Rejeter
-                                                        </a>
-                                                    @endif
-
+                                                        <!--
                                                     @if ($reservation->reserve() AND $reservation->livrable())
                                                         <a class="btn btn-success" href="{{route('reservation.livrer', ['reservation' => $reservation->id])}}">
                                                             <i class="fa fa-truck mr-3"></i>
@@ -91,9 +106,15 @@
                                                     @if ($reservation->livre())
                                                         <div style="opacity: 0.7" class="badge badge-success p-2 text-center">Marchandises livré</div>
                                                     @endif
+                                                    -->
 
-                                                    @if ($reservation->rejete())
-                                                        <div style="opacity: 0.7" class="badge badge-danger p-2">Vous avez rejetée la reservation</div>
+                                                    @else 
+                                                    <!--<div style="opacity: 0.7" class="badge badge-danger p-2">Vous avez rejetée la reservation</div>-->
+                                                    
+                                                    <button  class="btn btn-sm btn-info" >
+                                                        <i class="fa fa-eye"></i>
+                                                    </button>
+                                                    
                                                     @endif
 
                                                 </div>
@@ -110,9 +131,9 @@
                                     <tr>
                                         <th>Client</th>
                                         <th>Date</th>
+                                        <th>Statut</th>
                                         <th>Départ</th>
                                         <th>Arrivée</th>
-                                        <th>Statut</th>
                                         <th>Actions</th>
                                     </tr>
                                 </tfoot>
@@ -132,6 +153,80 @@
     <!-- /.content -->
 </div>
 <!-- /.content-wrapper -->
+
+<!---- modal pour valider reservation --->
+<div class="modal fade" id="modal-valider-reservation">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header modal-header-primary">
+                <h4 class="modal-title">Valider une reservation</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" >
+                <form  method="POST" action="#" name="form-valider-reservation" id="form-valider-reservation">
+                    @csrf
+
+                    <div class="card card-primary card-outline">
+                        <div class="card-body box-profile">
+
+                            <div class="row">
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-6 text-center" style="border-bottom: solid 2px rgba(128, 128, 128, 0.3);">
+                                    <h4 style="color:#808080"> <span class="badge badge-primary"></span></h4>
+                                </div>
+                                <div class="col-sm-3"></div>
+                            </div>
+                            <div class="row mt-2" style="border-bottom: solid 2px rgba(128, 128, 128, 0.3);">
+                                <div class="col-sm-12 text-center">
+                                    <h5 style="color:#808080"> <span class="badge badge-pill badge-info"></span> - <span class="badge badge-pill badge-success"></span></h5>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-sm-12 text-center">
+                                    <p class="date" style="color:#808080"></p>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-sm-4">
+                            <label for="camion">Camion :</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <select name="camion" class="form-control" id="camion-disponible">
+                                <option value=0>Camion disponible</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-sm-4">
+                            <label for="chauffeur">Chauffeur :</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <select name="chauffeur" class="form-control" id="chauffeur-disponible">
+                                <option value=0>Chauffeurs disponibles</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+                <button type="submit" id="button-ajouter-itineraire" form="form-valider-reservation"  class="float-right btn btn-primary">Valider</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!---- / modal pour ajouter itineraire-->
 
 
 @endsection
@@ -160,6 +255,33 @@
             "ordering": true,
             "info": false,
         });
+
+        $(document).on("click", ".valider-reservation", function (e) {
+            let url = $(this).attr("data-show");
+            let url_validate = $(this).attr("data-url");
+
+            $.get(url, {}, datatype="JSON").done(function (data) {
+
+                let option = '<option value=0 >Camions disponibles</option>';
+                $.each(data.camions, function(index, value){
+                    option += '<option value='+value.id+'>'+value.name+'</option>';
+                });
+
+                let optionChauffeur = '<option value=0 >Chauffeurs disponibles</option>';
+                $.each(data.chauffeurs, function(index, value){
+                    optionChauffeur += '<option value='+value.id+'>'+value.name+'</option>';
+                });
+
+                $("#modal-valider-reservation").find("h4 span").html(data.client)
+                    .end().find("form").attr("action", url_validate)
+                    .end().find("h5 .badge-info").html(data.depart)
+                    .end().find("h5 .badge-success").html(data.arrivee)
+                    .end().find("#camion-disponible").html(option)
+                    .end().find("#chauffeur-disponible").html(optionChauffeur)
+                    .end().find(".date").html(data.date)
+                    .end().modal("show");
+            })
+        })
 
     })
 </script>

@@ -39,9 +39,9 @@
                             <img class="rounded" style="max-width:200px !important;" alt="Photo de {{$camion->name}}" src="{{asset('storage/'.$camion->photo)}}">
                         </div>
                         <div class="col-sm-6" style="color: #023047">
-                            <h4 >{{$camion->marque}}</h4>
-                            <h5>{{$camion->model ." - ". $camion->annee}} </h5>
-                            <h6>{{$camion->numero_chassis}}</h6>
+                            <h4 class="mt-2">{{$camion->marque}}</h4>
+                            <h5 class="mt-2">{{$camion->model ." - ". $camion->annee}} </h5>
+                            <h6 class="mt-2">{{$camion->numero_chassis}}</h6>
                         </div>
 
                     </div>
@@ -54,12 +54,12 @@
 
         <div class="col-md-8 px-3">
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-lg-12">
                     <div class="info-box">
                         <span class="info-box-icon bg-primary"><i class="fa fa-id-card"></i></span>
                         <div class="info-box-content">
                             <span class="info-box-text">Chauffeur</span>
-                            <h5 class="info-box-number">
+                            <p class="info-box-number">
                                 @if ($camion->dernierTrajet() !== null)
                                     @if ($camion->dernierTrajet()->chauffeur !== null)
                                         {{ $camion->dernierTrajet()->chauffeur->name }}
@@ -69,37 +69,37 @@
                                 @else
                                     Aucun chauffeur
                                 @endif
-                            </h5>
+                            </p>
                         </div>
                         <!-- /.info-box-content -->
                     </div>
                     <!-- /.info-box -->
 
                 </div>
-                <div class="col-md-4">
+                <div class="col-lg-12">
                     <div class="info-box">
                         <span class="info-box-icon bg-info"><i class="fa fa-battery-half"></i></span>
                         <div class="info-box-content">
                             <span class="info-box-text">Carburant restant</span>
-                            <h5 class="info-box-number">{{$stock_carburant}}L</h5>
+                            <p class="info-box-number">{{$stock_carburant}}L</p>
                         </div>
                         <!-- /.info-box-content -->
                     </div>
                     <!-- /.info-box -->
 
                 </div>
-                <div class="col-md-4">
+                <div class="col-lg-12">
                     <div class="info-box">
                         <span class="info-box-icon bg-success"><i class="fa fa-road"></i></span>
                         <div class="info-box-content">
-                            <span class="info-box-text">Trajet</span>
-                            <h5 class="info-box-number">
+                            <span class="info-box-text">Trajet en cours</span>
+                            <p class="info-box-number">
                                 @if ($camion->dernierTrajet(true) !== null)
                                 {{ $camion->dernierTrajet(true)->nomItineraire() }}
                                 @else
-                                Aucun trajet en cours
+                                Aucun 
                                 @endif
-                            </h5>
+                            </p>
                         </div>
                         <!-- /.info-box-content -->
                     </div>
@@ -116,12 +116,12 @@
             <div class="card">
                 <nav>
                     <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                        <a style="color:#023047 !important;" class="nav-item nav-link active" id="nav-carburant-tab" data-toggle="tab" href="#nav-carburant" role="tab" aria-controls="nav-carburant" aria-selected="true">Carburants</a>
-                        <a style="color:#023047 !important;" class="nav-item nav-link " id="nav-trajet-tab" data-toggle="tab" href="#nav-trajet" role="tab" aria-controls="nav-trajet" aria-selected="false">Trajets</a>
+                        <a style="color:#023047 !important;" class="nav-item nav-link {{ ( isset($tab) === false || $tab == 1 ) ? 'active' : '' }} " id="nav-carburant-tab" data-toggle="tab" href="#nav-carburant" role="tab" aria-controls="nav-carburant" aria-selected="true">Carburants</a>
+                        <a style="color:#023047 !important;" class="nav-item nav-link {{ ( isset($tab) === true && intval($tab) === 2 ) ? 'active' : ''}} " id="nav-trajet-tab" data-toggle="tab" href="#nav-trajet" role="tab" aria-controls="nav-trajet" aria-selected="false">Trajets</a>
                     </div>
                 </nav>
                 <div class="tab-content" id="nav-tabContent">
-                    <div class="tab-pane fade show active" id="nav-carburant" role="tabpanel" aria-labelledby="nav-carburant-tab">
+                    <div class="tab-pane fade show {{( isset($tab) === false || $tab == 1 ) ? ' show active ' : '' }}" id="nav-carburant" role="tabpanel" aria-labelledby="nav-carburant-tab">
                         <div class="card-header">
                             <h3 class="card-title" style="color: gray;display:none;" >Flux des carburants</h3>
                             <button class="float-right btn btn-success" id="btn-modal-carburant" data-toggle="modal" data-target="#modal-carburant"><span class="fa fa-plus"></span>&nbsp;Ajouter</button>
@@ -180,7 +180,7 @@
                     </div>
 
                     {{-- Pour les trajets --}}
-                    <div class="tab-pane fade " id="nav-trajet" role="tabpanel" aria-labelledby="nav-trajet-tab">
+                    <div class="tab-pane fade {{ ( isset($tab) === true && intval($tab) === 2 ) ? ' show active ' : ''}} " id="nav-trajet" role="tabpanel" aria-labelledby="nav-trajet-tab">
                         <div class="card-header">
                             <h3 class="card-title" style="color: gray;display:none;" >Liste des trajets</h3>
                             <button class="float-right btn btn-success" id="btn-modal-trajet" data-toggle="modal" data-target="#modal-trajet"><span class="fa fa-plus"></span>&nbsp;Ajouter</button>
@@ -620,9 +620,9 @@
                             <label for="date">Départ :</label>
                         </div>
                         <div class="col-sm-8">
-                            <div class="input-group date" id="date_heure_depart" data-target-input="nearest">
+                            <div class="input-group date" id="date_heure_depart_modifier" data-target-input="nearest">
                                 <input type="text" class="form-control datetimepicker-input" id="modifier_date_heure_depart" data-target="#date_heure_depart" name="date_heure_depart" required="false" placeholder="Date et heure départ">
-                                <div class="input-group-append" data-target="#date_heure_depart" data-toggle="datetimepicker">
+                                <div class="input-group-append" data-target="#date_heure_depart_modifier" data-toggle="datetimepicker">
                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                 </div>
                             </div>
@@ -634,9 +634,9 @@
                             <label for="date">Arrivée :</label>
                         </div>
                         <div class="col-sm-8">
-                            <div class="input-group date_heure_arrivee" id="date_heure_arrivee" data-target-input="nearest">
+                            <div class="input-group date_heure_arrivee" id="date_heure_arrivee_modifier" data-target-input="nearest">
                                 <input type="text" class="form-control datetimepicker-input" id="modifier_date_heure_arrivee" data-target="#date_heure_arrivee" name="date_heure_arrivee" placeholder="Date et heure arrivée">
-                                <div class="input-group-append" data-target="#date_heure_arrivee" data-toggle="datetimepicker">
+                                <div class="input-group-append" data-target="#date_heure_arrivee_modifier" data-toggle="datetimepicker">
                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                 </div>
                             </div>
@@ -798,6 +798,7 @@
 <script src="{{asset('assets/adminlte/plugins/inputmask/min/jquery.inputmask.bundle.min.js')}}"></script>
 <script>
 
+
     var nb_itineraire_formulaire = 0;
 
     // Pour multiplier le nombre de champ pour ajouter un itinéraire
@@ -851,8 +852,7 @@
     })
 
     $(document).ready(function () {
-
-        $("#flux-carburants").DataTable({
+        $("#flux-carburants , #trajets ").DataTable({
             "responsive": true,
             "autoWidth": false,
             "searching": true,
@@ -897,14 +897,25 @@
 
     $(document).ready(function () {
 
-        $("#trajets").DataTable({
+        /* $("#trajets").DataTable({
             "responsive": true,
             "autoWidth": false,
             "searching": true,
             "paging": false,
             "ordering": true,
             "info": false,
-        });
+        });*/
+
+        
+        $(document).on("click","#nav-trajet-tab", function(){
+
+                resizeDataTable($("#trajets"), $("#nav-trajet")) ;
+        })
+
+        $(document).on("click","#nav-carburant-tab", function(){
+            
+                resizeDataTable($("#flux-carburants"), $("#nav-carburant")) ;
+        })
 
         $(document).on("click", ".modifier-trajet", function(){
             let url = $(this).attr("data-show-url");
@@ -932,6 +943,10 @@
                 $("#modal-modifier-trajet #modifier_date_heure_depart").val(data.trajet.date_heure_depart);
                 $("#modal-modifier-trajet #modifier_date_heure_arrivee").val(data.trajet.date_heure_arrivee);
                 $("#modal-modifier-trajet #modifier-etat").val(data.trajet.etat);
+
+                if(data.reservation.id != undefined){
+                    $("#modal-modifier-trajet #modifier_date_heure_depart").attr("readonly", "readonly");
+                }
 
             })
         })
@@ -979,6 +994,20 @@
         } else {
             carburant.classList.add('d-none')
         }
+    }
+
+    function resizeDataTable(element , content) {
+
+        setTimeout(function(){
+           let classes = content.attr("class").split(" ");
+           console.log(classes, jQuery.inArray("active", classes), jQuery.inArray("show", classes) !== -1);
+           if(jQuery.inArray("active", classes) !== -1 && jQuery.inArray("show", classes) !== -1 ){
+               let  table = element.DataTable();
+               table.columns.adjust().draw();
+           }else{
+                resizeDataTable(element, content)
+           }
+       }, 200);
     }
 
 

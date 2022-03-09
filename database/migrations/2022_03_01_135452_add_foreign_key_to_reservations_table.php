@@ -18,6 +18,8 @@ class AddForeignKeyToReservationsTable extends Migration
             $table->foreign(['transporteur_id'], 'i_fk_reservation_transporteur')->references(['id'])->on('users');
             $table->foreign(['depart_id'], 'i_fk_reservation_depart')->references(['id'])->on('provinces');
             $table->foreign(['arrivee_id'], 'i_fk_reservation_arrivee')->references(['id'])->on('villes');
+            $table->foreign(['trajet_id'], 'i_fk_reservation_trajet')->references(['id'])->on('trajets');
+
         });
     }
 
@@ -33,6 +35,8 @@ class AddForeignKeyToReservationsTable extends Migration
             $table->dropForeign('i_fk_reservation_transporteur');
             $table->dropForeign('i_fk_reservation_depart');
             $table->dropForeign('i_fk_reservation_arrivee');
+            $table->dropForeign('i_fk_reservation_trajet');
+
         });
     }
 }

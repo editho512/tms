@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
-use App\Models\Chauffeur;
-use Carbon\Carbon;
 use Exception;
+use Carbon\Carbon;
+use App\Models\Chauffeur;
+use App\Models\Reservation;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Trajet extends Model
 {
@@ -26,6 +27,8 @@ class Trajet extends Model
 
 
     private static $coleurs = [];
+
+   
 
 
     /**

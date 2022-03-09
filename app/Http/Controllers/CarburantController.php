@@ -52,6 +52,8 @@ class CarburantController extends Controller
         {
             dd("Une erreur est survenu, contactez l'administrateur. Message d'erreur : " , $e->getMessage());
         }
+        
+        return redirect()->route('camion.voir', ['camion' => $data['camion_id'], 'tab' => 1]);
     }
 
 
@@ -93,16 +95,16 @@ class CarburantController extends Controller
                         "status" => "error"
                 ]);
             }
-        return redirect()->back();
-
+        
+        return redirect()->route('camion.voir', ['camion' => $carburant->camion_id, 'tab' => 1]);
     }
 
     public function delete(Carburant $carburant){
         $carburant->delete();
 
         Session::put("notification", ["value" => "Carburant supprimé" ,"status" => "success"]);
-        return redirect()->back();
 
+        return redirect()->route('camion.voir', ['camion' => $carburant->camion_id, 'tab' => 1]);
     }
 
 

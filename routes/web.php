@@ -28,11 +28,14 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::get('/reservation', [App\Http\Controllers\ReservationController::class, 'index'])->name('reservation');
 
-Route::get('/reservation/accept/{reservation}', [App\Http\Controllers\ReservationController::class, 'accept'])->name('reservation.accept');
+Route::post('/reservation/accept/{reservation}', [App\Http\Controllers\ReservationController::class, 'accept'])->name('reservation.accept');
 
 Route::get('/reservation/reject/{reservation}', [App\Http\Controllers\ReservationController::class, 'reject'])->name('reservation.reject');
 
 Route::get('/reservation/livrer/{reservation}', [App\Http\Controllers\ReservationController::class, 'livrer'])->name('reservation.livrer');
+
+Route::get('/reservation/voir/{reservation}', [App\Http\Controllers\ReservationController::class, 'voir'])->name('reservation.voir');
+
 
 
 // -------------------- RESERVATIONS -------------- //
@@ -128,7 +131,7 @@ Route::prefix('trajet')->group(function() {
 
     Route::post('/ajouter', [App\Http\Controllers\TrajetController::class, 'add'])->name('trajet.ajouter');
 
-    Route::get('/voir/{trajet}/',  [App\Http\Controllers\TrajetController::class, 'voir'])->name("trajet.voir");
+    Route::get('/voir/{trajet}',  [App\Http\Controllers\TrajetController::class, 'voir'])->name("trajet.voir");
 
     Route::get('/supprimer/{trajet}',  [App\Http\Controllers\TrajetController::class, 'supprimer'])->name("trajet.supprimer");
 
@@ -148,20 +151,25 @@ Route::get('/Chauffeur', [App\Http\Controllers\ChauffeurController::class, 'inde
 
 
 // --------------------- CAMIONS -----------------//
-
-Route::get('/Camion/voir/{camion}/',  [App\Http\Controllers\CamionController::class, 'voir'])->name("camion.voir");
-
-Route::get('/Camion/delete/{camion}/{type?}',  [App\Http\Controllers\CamionController::class, 'delete'])->name("camion.delete");
-
-Route::get('/Camion/supprimer/{camion}',  [App\Http\Controllers\CamionController::class, 'supprimer'])->name("camion.supprimer");
-
-Route::patch('/Camion/update/{camion}', [App\Http\Controllers\CamionController::class, 'update'])->name('camion.update');
-
-Route::get('/Camion/modifier/{camion}', [App\Http\Controllers\CamionController::class, 'modifier'])->name('camion.modifier');
-
-Route::post('/Camion/ajouter', [App\Http\Controllers\CamionController::class, 'add'])->name('camion.ajouter');
-
 Route::get('/Camion', [App\Http\Controllers\CamionController::class, 'index'])->name('camion.liste');
+
+Route::middleware(['admin'])->group(function () {
+    //
+    Route::get('/Camion/voir/{camion}/{tab?}',  [App\Http\Controllers\CamionController::class, 'voir'])->name("camion.voir");
+    
+    Route::get('/Camion/delete/{camion}/{type?}',  [App\Http\Controllers\CamionController::class, 'delete'])->name("camion.delete");
+    
+    Route::get('/Camion/supprimer/{camion}',  [App\Http\Controllers\CamionController::class, 'supprimer'])->name("camion.supprimer");
+    
+    Route::patch('/Camion/update/{camion}', [App\Http\Controllers\CamionController::class, 'update'])->name('camion.update');
+    
+    Route::get('/Camion/modifier/{camion}', [App\Http\Controllers\CamionController::class, 'modifier'])->name('camion.modifier');
+    
+    Route::post('/Camion/ajouter', [App\Http\Controllers\CamionController::class, 'add'])->name('camion.ajouter');
+});
+
+
+
 
 
 // --------------------- UTILISATEUR -------------//

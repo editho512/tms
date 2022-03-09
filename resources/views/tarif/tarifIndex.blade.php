@@ -117,8 +117,8 @@
                             </div>
                             <!-- /.tab-pane -->
                             <div class=" tab-pane" id="categorie">
-                                <div class="card">
-                                    <div class="card-header card-header-success">
+                                <div class="card card-primary">
+                                    <div class="card-header ">
                                         <h3 class="card-title">Mes prix</h3>
                                     </div>
 

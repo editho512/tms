@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
-use App\Models\Chauffeur;
-use Carbon\Carbon;
 use Exception;
+use Carbon\Carbon;
+use App\Models\Chauffeur;
+use App\Models\Itineraire;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Trajet extends Model
 {
@@ -27,7 +28,10 @@ class Trajet extends Model
 
     private static $coleurs = [];
 
-
+    public function reservation(){
+        return $this->hasOne(Reservation::class, "trajet_id", "id");
+    }
+    
     /**
      * Methode qui retourne le nom de l'itineraire
      *
@@ -60,7 +64,8 @@ class Trajet extends Model
         return $this->belongsTo(Chauffeur::class, 'chauffeur_id', 'id');
     }
 
-
+    
+    
     /**
      * Accesseur pour l'etat d'un trajet
      * Si la clé est nulle, la methode retourne le tableau contenant tous les état

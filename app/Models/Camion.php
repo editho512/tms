@@ -15,6 +15,37 @@ class Camion extends Model
         'name', 'annee', 'model', 'marque', 'numero_chassis', 'photo', 'user_id',
     ];
 
+    public function CarburantRestant(){
+        $stock =  Carburant::where("camion_id", "=", $this->id)->groupBy("flux")->selectRaw("sum(quantite) as quantite, flux")->get();
+        $stock = $stock->toArray();
+        $entre = 0 ;
+        $sortie = 0;
+
+        foreach ($stock as $key => $value) {
+            # code...
+            if($value["flux"] == 0){
+                $entre = doubleval($value["quantite"]);
+            }else{
+                $sortie = doubleval($value["quantite"]);
+            }
+        }
+
+        return (doubleval($entre) - doubleval($sortie));
+    }
+
+    public function estDispoEntre(Carbon $date_depart, Carbon $date_arrivee){
+        $depart = Trajet::where("camion_id", $this->id)
+                            ->where("date_heure_depart", ">=", $date_depart->toDateTimeString() )
+                            ->where("date_heure_depart", "<=", $date_arrivee->toDateTimeString())
+                            ->get();
+                            
+        $arrivee = Trajet::where("camion_id", $this->id)
+                            ->where("date_heure_arrivee", ">=", $date_depart->toDateTimeString() )
+                            ->where("date_heure_arrivee", "<=", $date_arrivee->toDateTimeString())
+                            ->get();
+
+        return !isset($depart[0]->id) && !isset($arrivee[0]->id);
+    }
 
     public function transporteur(){
         return $this->hasOne(User::class, "id", "user_id");

@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Models\Camion;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -99,6 +101,10 @@ class User extends Authenticatable
         return $this->hasMany(Camion::class);
     }
 
+    public function chauffeurs(){
+        return $this->hasMany(Chauffeur::class);
+    }
+
 
     public function prixCategorie(int $idCategorie, int $zone)
     {
@@ -137,5 +143,43 @@ class User extends Authenticatable
     public function categorieRnTrans()
     {
         return $this->hasMany(CategorieRnTransporteur::class, 'transporteur_id', 'id');
+    }
+
+    public function CamionDisponible($date = null){
+
+        $camion = Camion::where("user_id", $this->id)->get();
+        $dispo = [];
+
+        if( $camion->count() > 0){
+            
+            $camions =  $camion->count() > 0 ? " camion_id IN (".implode(",", $camion->pluck("id")->toArray()).") AND " : "";
+    
+            $sql = 'SELECT distinct(camion_id) FROM trajets WHERE '.$camions.'  date_heure_depart IS NOT NULL AND date_heure_arrivee IS NOT NULL AND  date_heure_depart < "'.$date.'" AND date_heure_arrivee > "'.$date.'"   ';
+            
+            $indispo =  DB::select(DB::raw($sql));
+        }
+
+        $dispo = Camion::where("user_id", $this->id)->whereNotIn("id", array_column($indispo, 'camion_id'))->get();
+
+        return $dispo;
+    }
+
+    public function ChauffeurDisponible($date = null){
+
+        $chauffeur = Chauffeur::where("user_id", $this->id)->get();
+        $dispo = [];
+
+        if( $chauffeur->count() > 0){
+            
+            $chauffeurs =  $chauffeur->count() > 0 ? " chauffeur_id IN (".implode(",", $chauffeur->pluck("id")->toArray()).") AND " : "";
+    
+            $sql = 'SELECT distinct(chauffeur_id) FROM trajets WHERE '.$chauffeurs.'  date_heure_depart IS NOT NULL AND date_heure_arrivee IS NOT NULL AND  date_heure_depart < "'.$date.'" AND date_heure_arrivee > "'.$date.'"  ';
+            
+            $indispo =  DB::select(DB::raw($sql));
+        }
+
+        $dispo = Chauffeur::where("user_id", $this->id)->whereNotIn("id", array_column($indispo, 'chauffeur_id'))->get();
+
+        return $dispo;
     }
 }

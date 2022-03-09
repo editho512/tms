@@ -38,7 +38,9 @@
                     <div class="card">
                         <div class="card-header" >
                             <h3 class="card-title">Liste des Camions</h3>
-                            <button class="btn  float-right" style="background: #007bff;color:white;" data-toggle="modal" id="nouveau-camion" data-target="#modal-ajouter-camion"><span class="fa fa-plus"></span>&nbsp;Ajouter</button>
+                            @if (auth()->user()->estSuperAdmin() === false)
+                                <button class="btn  float-right" style="background: #007bff;color:white;" data-toggle="modal" id="nouveau-camion" data-target="#modal-ajouter-camion"><span class="fa fa-plus"></span>&nbsp;Ajouter</button>                                
+                            @endif
 
                         </div>
                         <!-- /.card-header -->
@@ -48,14 +50,15 @@
                                     <tr>
                                         @if (auth()->user()->estSuperAdmin())
                                         <th>Transporteur</th>
-
                                         @endif
                                         <th>Désignation</th>
                                         <th>Numéro châssis</th>
                                         <th>Modèle</th>
                                         <th>Marque</th>
                                         <th>Année</th>
+                                        @if (auth()->user()->estSuperAdmin() === false)
                                         <th>Actions</th>
+                                        @endif
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -74,6 +77,7 @@
                                         <td>{{$camion->model}}</td>
                                         <td>{{$camion->marque}}</td>
                                         <td>{{$camion->annee}}</td>
+                                        @if (auth()->user()->estSuperAdmin() === false )
                                         <td>
                                             <div class="row">
                                                 <div class="col-sm-12" style="text-align: center;">
@@ -96,10 +100,11 @@
                                                 </div>
                                             </div>
                                         </td>
+                                        @endif
                                     </tr>
                                     @empty
                                     <tr>
-                                        <td style="text-align: center" colspan="{{auth()->user()->estSuperAdmin() ? 7 : 6}}">
+                                        <td style="text-align: center" colspan="6">
                                             Aucun camion dans la liste
                                         </td>
                                     </tr>
@@ -115,7 +120,9 @@
                                         <th>Modèle</th>
                                         <th>Marque</th>
                                         <th>Année</th>
+                                        @if (auth()->user()->estSuperAdmin() === false)
                                         <th>Actions</th>
+                                        @endif
 
                                     </tr>
                                 </tfoot>

@@ -66,7 +66,7 @@
                     </a>
                 </li>
 
-
+               <!--
                 <li class="nav-item has-treeview @if(isset($active_depense_index)) menu-open @endif">
                     <a href="" class="nav-link @if(isset($active_depense_index)) {{$active_depense_index}} @endif">
                         <i class="nav-icon fas fa-dollar-sign"></i>
@@ -85,7 +85,7 @@
                             {{--<i class="right fas fa-angle-left"></i>--}}
                         </p>
                     </a>
-                </li>
+                </li>-->
 
                 <li class="nav-item has-treeview @if(isset($active_tarif_index)) menu-open @endif">
                     <a href="{{route('tarif')}}" class="nav-link @if(isset($active_tarif_index)) {{$active_tarif_index}} @endif">

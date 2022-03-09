@@ -2,13 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\District;
-use App\Models\Reservation;
-use App\Models\User;
-use Carbon\Carbon;
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\Request;
 use Session;
+use Carbon\Carbon;
+use App\Models\User;
+use App\Models\Camion;
+use App\Models\Trajet;
+use App\Models\District;
+use App\Models\Chauffeur;
+use App\Models\Itineraire;
+use App\Models\Reservation;
+use Illuminate\Http\Request;
+use App\Models\CategorieDepart;
+use Illuminate\Contracts\View\View;
 
 class ReservationController extends Controller
 {
@@ -49,21 +54,56 @@ class ReservationController extends Controller
     }
 
 
-    /**
-     * Accepter une reservation faite par un client
-     *
-     * @param Reservation $reservation La reservation concerné
-     * @return void
-     */
-    public function accept(Reservation $reservation)
+   
+    public function accept(Request $request, Reservation $reservation)
     {
-        $reservation->status = Reservation::STATUS[1];
-        $reservation->update();
+        $data = $request->all();
 
-        request()->session()->flash("notification", [
-            "value" => "Réservation accepté" , "status" => "success"
-        ]);
+        if( isset($data["camion"]) === true && isset(Camion::find($data["camion"])->id) === true &&
+            isset($data["chauffeur"]) === true && isset(Chauffeur::find($data["chauffeur"])->id) === true
+            ){
+            
+             $duree = CategorieDepart::where("province_id", $reservation->depart_id)->where("ville_id", $reservation->arrivee_id)->get();   
+            
+             $date_arrivee = date("Y-m-d h:i:s", strtotime($reservation->date) + (( intval($duree[0]->delais_approximatif ) * 60) * 60 ));
+            
+             $trajet = Trajet::create(
+                            [
+                                "depart" => $reservation->depart->nom ,
+                                "arrivee" => $reservation->arrive->nom ,
+                                "date_heure_depart" => $reservation->date ,
+                                "date_heure_arrivee" => $date_arrivee ,
+                                "etat" => Trajet::getEtat(0) ,
+                                "camion_id" => $data["camion"] ,
+                                "chauffeur_id" => $data["chauffeur"] ,
+                            ]
+                        );
 
+            Itineraire::create([
+                'nom' => $trajet->depart,
+                'id_trajet' => $trajet->id,
+            ]);
+
+            Itineraire::create([
+                'nom' => $trajet->arrivee,
+                'id_trajet' => $trajet->id,
+            ]);
+
+            $reservation->status = Reservation::STATUS[1];
+            $reservation->trajet_id = $trajet->id;
+            $reservation->update();
+    
+            request()->session()->flash("notification", [
+                "value" => "Réservation accepté" , "status" => "success"
+            ]);
+    
+        }else{
+
+            request()->session()->flash("notification", [
+                "value" => "Echec de l'opération" , "status" => "error"
+            ]);
+        }
+        
         return redirect()->back();
     }
 
@@ -140,5 +180,17 @@ class ReservationController extends Controller
             ]);
         }
     }
+
+    public function voir(Reservation $reservation){
+        $data['depart'] = $reservation->depart->nom;
+        $data['arrivee'] = $reservation->arrive->nom;
+        $data['client'] = ucwords($reservation->client->name);
+        $data['date'] = formatDate($reservation->date);
+        $data['camions'] = auth()->user()->CamionDisponible(date("Y-m-d h:i:s", strtotime($reservation->date)));
+        $data['chauffeurs'] = auth()->user()->ChauffeurDisponible(date("Y-m-d h:i:s", strtotime($reservation->date)));
+
+        return response()->json($data);
+    }
+
 
 }

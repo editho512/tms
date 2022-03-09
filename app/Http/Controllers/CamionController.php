@@ -29,8 +29,11 @@ class CamionController extends Controller
     * @return View
     */
     public function index()
-    {
-        $camions = auth()->user()->camions;
+    {   
+        $user = auth()->user();
+        
+        $camions = $user->isAdmin() === true ?  $user->camions : Camion::all() ;
+
         $active_camion_index = "active";
 
         return view("Camion.camionIndex", compact("active_camion_index", "camions"));
@@ -162,16 +165,16 @@ class CamionController extends Controller
         return redirect()->back();
     }
 
-    public function voir(Camion $camion)
+    public function voir(Camion $camion, $tab = 1)
     {
         if($camion->blocked == false){
             $active_camion_index = "active";
             $carburants = $camion->carburants;
-            $chauffeurs = Chauffeur::orderBy('name', 'asc')->get();
+            $chauffeurs = auth()->user()->chauffeurs;
 
-            $stock_carburant = $this->CarburantRestant($camion->id);
+            $stock_carburant = $camion->CarburantRestant();
 
-            return view("Camion.voirCamion", compact("active_camion_index", "camion", "carburants", "stock_carburant", "chauffeurs"));
+            return view("Camion.voirCamion", compact("active_camion_index", "tab", "camion", "carburants", "stock_carburant", "chauffeurs"));
         }
     }
 

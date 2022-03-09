@@ -13,8 +13,13 @@ class Chauffeur extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'phone', 'cin', 'permis'
+        'name', 'phone', 'cin', 'permis', 'user_id'
     ];
+
+
+    public function transporteur(){
+        return $this->hasOne(User::class, "id", "user_id");
+    }
 
 
     /**
@@ -61,17 +66,20 @@ class Chauffeur extends Model
     }
 
 
-    public function estDispoEntre(Carbon $depart, ?Carbon $arrivee)
+    public function estDispoEntre(Carbon $date_depart, Carbon $date_arrivee)
     {
-        $trajets = $this->trajets()->where('date_heure_depart', '>', $depart->toDateTimeString());
+        $depart = Trajet::where("chauffeur_id", $this->id)
+                            ->where("date_heure_depart", ">=", $date_depart->toDateTimeString() )
+                            ->where("date_heure_depart", "<=", $date_arrivee->toDateTimeString())
+                            ->get();
+                            
+        $arrivee = Trajet::where("chauffeur_id", $this->id)
+                            ->where("date_heure_arrivee", ">=", $date_depart->toDateTimeString() )
+                            ->where("date_heure_arrivee", "<=", $date_arrivee->toDateTimeString())
+                            ->get();
 
-        if ($arrivee !== null)
-        {
-            $trajets = $trajets->orWhere('date_heure_arrivee', '>', $arrivee->toDateTimeString());
-        }
-
-        if ($trajets->count() === 0) return true;
-        else return false;
+        return !isset($depart[0]->id) && !isset($arrivee[0]->id);
+    
     }
 
 
