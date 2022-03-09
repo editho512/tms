@@ -81,6 +81,18 @@ class TarifController extends Controller
                 {
                     $tmp[] = $d;
                 }
+                elseif (in_array($zone->id, $d->depart->zones->pluck('id')->toArray()) AND array_intersect($zones->pluck('id')->toArray(), $d->arrivee->zones->pluck('id')->toArray()) !== [])
+                {
+                    $mixte["MIXTE"][$d->categorie->nom .'-'. $categorieRn->prix][] = [
+                        'libelle' => $d->depart->nom . ' - ' . $d->arrivee->nom
+                    ];
+
+                    /*$mixte["MIXTE"][$d->categorie->id][] = [
+                        'nom' => $d->categorie->nom,
+                        'prix' => $categorieRn->prix,
+                        'data' => $d->depart->nom . ' - ' . $d->arrivee->nom,
+                    ];*/
+                }
             }
 
             if ($tmp !== [])
@@ -100,6 +112,7 @@ class TarifController extends Controller
             "categories" => $categories,
             'categorieRnTrans' => $categorieRnTrans,
             'datas' => $datas,
+            'mixte' => $mixte,
         ]);
     }
 

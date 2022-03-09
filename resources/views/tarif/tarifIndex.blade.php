@@ -138,6 +138,26 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
+                                                @foreach ($mixte as $key => $data)
+                                                    <tr>
+                                                        <td colspan="5" class="bg-secondary">{{ $key }}</td>
+                                                    </tr>
+                                                    @foreach ($data as $name => $d)
+                                                        <tr>
+                                                            <td>{{ explode('-', $name)[0] }}</td>
+                                                            <td>{{ explode('-', $name)[1] }}</td>
+                                                            <td>
+                                                            @foreach ($d as $details)
+                                                                <ul>
+                                                                    <li>{{ $details['libelle'] }}</li>
+                                                                </ul>
+                                                            @endforeach
+                                                            </td>
+                                                            <td>Aucune action</td>
+                                                        </tr>
+                                                    @endforeach
+                                                @endforeach
+
                                                 @forelse($datas as $rn => $categorieRnTrans)
                                                     <tr>
                                                         <td colspan="5" class="bg-secondary">{{ $rn }}</td>
@@ -388,7 +408,6 @@
 
 <!-- page script -->
 <script>
-
 
     $(document).ready(function(){
 

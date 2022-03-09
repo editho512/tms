@@ -307,6 +307,8 @@
             return response.json()
         })
         .then(data => {
+            let tbody = document.getElementById('transporteur')
+
             if (data.errors)
             {
                 Object.keys(data.errors).forEach(key => {
@@ -316,9 +318,12 @@
                     else field.parentElement.children.item(1).classList.add('error')
                 })
             }
+            else if (data.error) {
+                alert('Aucune transporteur trouvé')
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center">Aucune transporteur trouvé</td></tr>'
+            }
             else
             {
-                let tbody = document.getElementById('transporteur')
 
                 if (data.results.length > 0)
                 {
