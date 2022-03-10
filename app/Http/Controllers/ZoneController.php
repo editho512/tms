@@ -5,12 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Rn;
 use App\Models\Zone;
 use App\Models\Ville;
+use App\Models\VilleRn;
 use App\Models\Province;
 use App\Models\Categorie;
 use App\Models\ZoneDistrict;
 use Illuminate\Http\Request;
 use App\Models\CategorieDepart;
-use App\Models\DepartCategorie;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Session;
 
@@ -73,7 +73,7 @@ class ZoneController extends Controller
         return redirect()->back();
     }
 
-    public function supprimerCategorie(DepartCategorie $departCategorie)
+    public function supprimerCategorie(CategorieDepart $departCategorie)
     {
         $departCategorie->delete();
         Session::put("notification", ["value" => "Catégorie supprimé" , "status" => "success" ]);
@@ -121,14 +121,14 @@ class ZoneController extends Controller
     * @param int $rnId
     * @return void
     */
-    public function voirZone(int $rnID)
+    public function voirZone(int $zone)
     {
         $active_zone_index = "active";
-        $rn = Rn::findOrFail($rnID);
+        $rn = Rn::findOrFail($zone);
         $villes = $rn->villes;
         $categories = Categorie::all();
         $grandeVilles = Province::all();
-        $itineraires = CategorieDepart::getAllIn($rnID);
+        $itineraires = CategorieDepart::getAllIn($zone);
 
         return view("zone.voirZone", [
             "active_zone_index" => $active_zone_index,
@@ -151,9 +151,9 @@ class ZoneController extends Controller
         ]);
     }
 
-    public function supprimer(Zone $zone){
+    public function supprimer(Rn $zone){
 
-        ZoneDistrict::where("zone_id", $zone->id)->delete();
+        VilleRn::where("rn_id", $zone->id)->delete();
         $zone->delete();
 
         Session::put("notification", ["value" => "Zone supprimée" , "status" => "success" ]);
@@ -164,9 +164,10 @@ class ZoneController extends Controller
     public function edit(Rn $zone, Request $request)
     {
         $data = $request->validate([
-            "name" => ["required", "exists:rns,nom"] ,
+            "name" => ["required", "unique:rns,nom"] ,
             "ville" => ["array"],
         ]);
+
 
         $villesActuel = $zone->villes->pluck('id')->toArray();
         $nouvellesVilles = $data['ville'];
@@ -186,6 +187,9 @@ class ZoneController extends Controller
                 $zone->villes()->attach($id);
             }
         }
+
+        $zone->nom = $data["name"];
+        $zone->update();
 
         $request->session()->flash("notification", [
             "value" => "Zone modifiée" , "status" => "success"

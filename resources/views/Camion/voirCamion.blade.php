@@ -946,6 +946,7 @@
 
                 if(data.reservation.id != undefined){
                     $("#modal-modifier-trajet #modifier_date_heure_depart").attr("readonly", "readonly");
+                    $("#modal-modifier-trajet #content-itineraire input").attr("readonly", "readonly");
                 }
 
             })

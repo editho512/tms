@@ -348,54 +348,54 @@
                     </div>
                     <div class="col-sm-8 ">
                         <select  disabled name="depart"  class="form-control select-itineraire"   style="width:100% !important" placeholder="Nom des villes de départ"  autocomplete="off">
-                            {{-- @foreach ($villes as $ville)
-                                <option value={{$ville->ville->id}}>{{$ville->ville->nom}}</option>
-                                @endforeach --}}
-                            </select>
-                        </div>
-
+                            @foreach ($grandeVilles as $grandeVille)
+                            <option value={{ $grandeVille->id }}>{{ $grandeVille->nom }}</option>
+                            @endforeach
+                        </select>
                     </div>
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <label  for="arrive">Arrivé:</label>
-                        </div>
-                        <div class="col-sm-8 mt-2">
-                            <select  disabled name="arrive"  class="form-control select-itineraire "   style="width:100% !important" placeholder="Nom des villes d'arrivé"  autocomplete="off">
-                                {{-- @foreach ($allvilles as $item)
-                                    <option value={{$item->id}}>{{$item->nom}}</option>
-                                    @endforeach --}}
-                                </select>
-                            </div>
 
-                        </div>
-
-                        <div class="row">
-                            <div class="col-sm-4">
-                                <label  for="categorie">Catégorie :</label>
-                            </div>
-                            <div class="col-sm-8 mt-2">
-                                <select disabled  name="categorie"  class="form-control"   style="width:100% !important" placeholder="Nom des villes d'arrivé"  autocomplete="off">
-                                    {{-- @foreach ($categories as $categorie)
-                                        <option value={{$categorie->id}}>{{$categorie->nom}}</option>
-                                        @endforeach --}}
-                                    </select>
-                                </div>
-
-                            </div>
-                        </div>
-                        <div class="modal-footer justify-content-between">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
-                            <a href="">
-                                <button type="button" id="button-supprimer-itineraire"  class="float-right btn btn-danger">Supprimer</button>
-
-                            </a>
-                        </div>
-                    </div>
-                    <!-- /.modal-content -->
                 </div>
-                <!-- /.modal-dialog -->
+                <div class="row">
+                    <div class="col-sm-4">
+                        <label  for="arrive">Arrivé:</label>
+                    </div>
+                    <div class="col-sm-8 mt-2">
+                            <select  disabled name="arrive"  class="form-control select-itineraire "   style="width:100% !important" placeholder="Nom des villes d'arrivé"  autocomplete="off">
+                                @foreach ($villes as $ville)
+                                <option value={{ $ville->id }}>{{ $ville->nom }}</option>
+                                @endforeach
+                            </select>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-4">
+                        <label  for="categorie">Catégorie :</label>
+                    </div>
+                    <div class="col-sm-8 mt-2">
+                        <select disabled  name="categorie"  class="form-control"   style="width:100% !important" placeholder="Nom des villes d'arrivé"  autocomplete="off">
+                                    @foreach ($categories as $categorie)
+                                        <option value={{ $categorie->id }}>{{ $categorie->nom }}</option>
+                                    @endforeach
+                        </select>
+                    </div>
+
+                </div>
             </div>
-            <!---- / modal pour supprimer itineraire-->
+            <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+                    <a href="">
+                        <button type="button" id="button-supprimer-itineraire"  class="float-right btn btn-danger">Supprimer</button>
+
+                    </a>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!---- / modal pour supprimer itineraire-->
 
 
 

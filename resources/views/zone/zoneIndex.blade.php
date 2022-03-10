@@ -293,8 +293,8 @@
             $("#button-supprimer-rn").parent().attr("href", url_delete);
 
             $.get(url, {}, dataType="JSON").done(function (data) {
-                $("#modal-supprimer-rn ").find('input[name="name"]').val(data.rn.name);
-                $("#modal-supprimer-rn ").find('select').val(data.ville).change();
+                $("#modal-supprimer-rn ").find('input[name="name"]').val(data.rn.nom);
+                $("#modal-supprimer-rn ").find('select').val(data.villes).change();
             })
         })
 

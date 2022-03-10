@@ -86,16 +86,18 @@
                         </p>
                     </a>
                 </li>-->
-
-                <li class="nav-item has-treeview @if(isset($active_tarif_index)) menu-open @endif">
-                    <a href="{{route('tarif')}}" class="nav-link @if(isset($active_tarif_index)) {{$active_tarif_index}} @endif">
-                        <i class="nav-icon fas fa-money-bill"></i>
-                        <p>
-                            Tarifs
-                            {{--<i class="right fas fa-angle-left"></i>--}}
-                        </p>
-                    </a>
-                </li>
+                @if (auth()->user()->isAdmin())
+                    <li class="nav-item has-treeview @if(isset($active_tarif_index)) menu-open @endif">
+                        <a href="{{route('tarif')}}" class="nav-link @if(isset($active_tarif_index)) {{$active_tarif_index}} @endif">
+                            <i class="nav-icon fas fa-money-bill"></i>
+                            <p>
+                                Tarifs
+                                {{--<i class="right fas fa-angle-left"></i>--}}
+                            </p>
+                        </a>
+                    </li>
+                    
+                @endif
 
                 @if (auth()->user()->estSuperAdmin())
 
