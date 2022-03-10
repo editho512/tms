@@ -60,6 +60,7 @@ class ClientController extends Controller
         if (!auth()->user()->isClient()) {
             return redirect()->route('camion.liste');
         }
+
         $reservations = auth()->user()->reservations()->where('status', '<>', Reservation::STATUS[5])->get();
 
         return view('client.history', [
@@ -162,7 +163,7 @@ class ClientController extends Controller
             {
                 $results[] = [
                     'transporteur' => $transporteur,
-                    'prix' => $transporteur->prixCategorie($categorie->id, $zone->rn_id),
+                    'prix' => number_format($transporteur->prixCategorie($categorie->id, $zone->rn_id), 2, ",", " "),
                     'depart' => $villeDepartID,
                     'date_depart' => $request->date_depart,
                     'heure_depart' => $request->heure_depart,

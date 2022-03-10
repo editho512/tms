@@ -36,7 +36,7 @@
                 </thead>
                 <tbody>
                     @forelse ($reservations as $reservation)
-                    <tr>
+                    <tr @if ($reservation->same()->count() > 1) style="background: {{ $reservation->couleurs() }}" @endif>
                         <td><b>{{ $reservation->numero }}</b></td>
                         <td>{{ ucfirst($reservation->transporteur->name) }}</td>
                         <td>{{ $reservation->depart->nom }}</td>

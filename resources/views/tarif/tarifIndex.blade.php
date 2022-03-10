@@ -147,11 +147,11 @@
                                                             <td>{{ explode('-', $name)[0] }}</td>
                                                             <td>{{ explode('-', $name)[1] }}</td>
                                                             <td>
-                                                            @foreach ($d as $details)
                                                                 <ul>
-                                                                    <li>{{ $details['libelle'] }}</li>
+                                                                    @foreach ($d as $details)
+                                                                        <li>{{ $details['libelle'] }}</li>
+                                                                    @endforeach
                                                                 </ul>
-                                                            @endforeach
                                                             </td>
                                                             <td>Aucune action</td>
                                                         </tr>

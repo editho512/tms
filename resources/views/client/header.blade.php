@@ -103,7 +103,7 @@
         </li>
     </ul>
 
-    <button type="button" class="collapsible btn btn-info text-center"><i class="fa fa-bars fa-2x"></i></button>
+    <button style="box-shadow: 1px 1px 1px 1px rgb(97, 97, 97)" type="button" class="collapsible rounded btn btn-info text-center"><i class="fa fa-bars fa-2x"></i></button>
 
 </nav>
 
