@@ -60,6 +60,7 @@ class ClientController extends Controller
         if (!auth()->user()->isClient()) {
             return redirect()->route('camion.liste');
         }
+
         $reservations = auth()->user()->reservations()->where('status', '<>', Reservation::STATUS[5])->get();
 
         return view('client.history', [
@@ -152,25 +153,29 @@ class ClientController extends Controller
         }
 
         $categorie = $departCategorie->categorie;
+        $dateHeureDepart = Carbon::parse($request->date_depart . ' ' . $request->heure_depart)->toDateTimeString();
         $results = [];
 
         foreach ($zoneTransporteurs as $zone)
         {
             $transporteur = User::find($zone->user_id);
 
-            if ($transporteur->prixCategorie($categorie->id, $zone->rn_id) !== 0)
+            if (!$transporteur->CamionDisponible($dateHeureDepart)->isEmpty() AND !$transporteur->ChauffeurDisponible($dateHeureDepart)->isEmpty())
             {
-                $results[] = [
-                    'transporteur' => $transporteur,
-                    'prix' => $transporteur->prixCategorie($categorie->id, $zone->rn_id),
-                    'depart' => $villeDepartID,
-                    'date_depart' => $request->date_depart,
-                    'heure_depart' => $request->heure_depart,
-                    'villes' => [
+                if ($transporteur->prixCategorie($categorie->id, $zone->rn_id) !== 0)
+                {
+                    $results[] = [
+                        'transporteur' => $transporteur,
+                        'prix' => number_format($transporteur->prixCategorie($categorie->id, $zone->rn_id), 2, ",", " "),
                         'depart' => $villeDepartID,
-                        'arrivee' => $villeArriveeID,
-                    ],
-                ];
+                        'date_depart' => $request->date_depart,
+                        'heure_depart' => $request->heure_depart,
+                        'villes' => [
+                            'depart' => $villeDepartID,
+                            'arrivee' => $villeArriveeID,
+                        ],
+                    ];
+                }
             }
         }
 

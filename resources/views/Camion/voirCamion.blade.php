@@ -97,7 +97,7 @@
                                 @if ($camion->dernierTrajet(true) !== null)
                                 {{ $camion->dernierTrajet(true)->nomItineraire() }}
                                 @else
-                                Aucun 
+                                Aucun
                                 @endif
                             </p>
                         </div>
@@ -195,7 +195,7 @@
                                         <th>Date & heure départ</th>
                                         <th>Date & heure arrivée</th>
                                         <th>Chauffeur</th>
-                                        <th>Status</th>
+                                        <th>Statut</th>
                                         <th style="text-align:center;">Actions</th>
                                     </tr>
                                 </thead>
@@ -251,7 +251,7 @@
                                         <th>Date & heure départ</th>
                                         <th>Date & heure arrivée</th>
                                         <th>Chauffeur</th>
-                                        <th>Status</th>
+                                        <th>Statut</th>
                                         <th style="text-align:center;">Actions</th>
                                     </tr>
                                 </tfoot>
@@ -524,12 +524,12 @@
 
                     <div class="row mb-3" style="margin-top: 3px; ">
                         <div class="col-sm-4">
-                            <label for="etat">Status :</label>
+                            <label for="etat">Statut :</label>
                         </div>
                         <div class="col-sm-8">
 
                             <select name="etat" class="form-control" id="etat" onchange="checkCarburant(this, '{{ App\Models\Trajet::getEtat(2) }}')" required>
-                                <option value="">Selectionner le status</option>
+                                <option value="">Selectionner le Statut</option>
                                 @foreach (App\Models\Trajet::getEtat() as $status)
                                 <option value="{{ $status }}">{{ $status }}</option>
                                 @endforeach
@@ -645,11 +645,11 @@
 
                     <div class="row mb-3" style="margin-top: 3px; ">
                         <div class="col-sm-4">
-                            <label for="etat">Status :</label>
+                            <label for="etat">Statut :</label>
                         </div>
                         <div class="col-sm-8">
                             <select name="etat" class="form-control" id="modifier-etat" required>
-                                <option value="">Selectionner le status</option>
+                                <option value="">Selectionner le Statut</option>
                                 @foreach (App\Models\Trajet::getEtat() as $status)
                                     <option value="{{ $status }}">{{ $status }}</option>
                                 @endforeach
@@ -745,7 +745,7 @@
 
                     <div class="row mb-3" style="margin-top: 3px; ">
                         <div class="col-sm-4">
-                            <label for="etat">Status :</label>
+                            <label for="etat">Statut :</label>
                         </div>
                         <div class="col-sm-8">
                             <label class="form-control" id="supprimer-etat"></label>
@@ -906,14 +906,14 @@
             "info": false,
         });*/
 
-        
+
         $(document).on("click","#nav-trajet-tab", function(){
 
                 resizeDataTable($("#trajets"), $("#nav-trajet")) ;
         })
 
         $(document).on("click","#nav-carburant-tab", function(){
-            
+
                 resizeDataTable($("#flux-carburants"), $("#nav-carburant")) ;
         })
 

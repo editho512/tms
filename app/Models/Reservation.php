@@ -15,6 +15,8 @@ class Reservation extends Model
 
     CONST STATUS = ["en attente", "réservé", "livré", "annulé", "rejeté", 'indisponible'];
 
+    private static $couleurs = [];
+
     /**
      * Arrivee d'un trajet
      *
@@ -63,6 +65,45 @@ class Reservation extends Model
     public function rejete()
     {
         return $this->status === self::STATUS[4];
+    }
+
+    /**
+     * Memes numéro de reservation
+     *
+     * @return Collection
+     */
+    public function same(bool $enAttente = false) : Collection
+    {
+        if ($enAttente === true)
+        {
+            return $this->where('numero', $this->numero)->where('status', self::STATUS[0])->get();
+        }
+        return $this->where('numero', $this->numero)->get();
+    }
+
+
+    /**
+     * Couleurs
+     *
+     * @return void
+     */
+    public function couleurs()
+    {
+        $numero = $this->numero;
+
+        if (key_exists($numero, static::$couleurs))
+        {
+            return static::$couleurs[$numero];
+        }
+
+        $reservations = $this->same();
+
+        foreach ($reservations as $reservation)
+        {
+            static::$couleurs[$reservation->numero] = "#" . substr(str_repeat(str_shuffle('ABCDEF'), 1), 0, 6);
+        }
+
+        return static::$couleurs[$numero];
     }
 
 

@@ -51,7 +51,7 @@ class TrajetController extends Controller
 
         // Verifier si le camion a un trajet en cours ou non
         $camion = Camion::findOrFail($request->camion_id);
-        $chauffeur = Chauffeur::findOrFail($request->chauffeur);
+        $chauffeur = Chauffeur::find($request->chauffeur);
 
         if($camion->estDispoEntre($date_depart, $date_arrivee) !== true){
 
@@ -112,7 +112,7 @@ class TrajetController extends Controller
             //dd('La date de depart doit être spérieur a ce moment précis si la status est aprévoir');
         }
 
-        
+
 
         $verifierDate = true;
 
@@ -172,7 +172,7 @@ class TrajetController extends Controller
             ]);
 
             return redirect()->route('camion.voir', ['camion' => $camion->id, 'tab' => 2]);
-            
+
         }else if($request->etat === Trajet::getEtat(2)){
 
             $CarburantSortie = doubleval($camion->CarburantRestant()) - doubleval($request->carburantRestant);
