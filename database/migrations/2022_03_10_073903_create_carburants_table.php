@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateRnsTable extends Migration
+class CreateCarburantsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,12 @@ class CreateRnsTable extends Migration
      */
     public function up()
     {
-        Schema::create('rns', function (Blueprint $table) {
-            $table->id();
-            $table->string('nom', 255)->unique()->nullable(false);
+        Schema::create('carburants', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->double('quantite');
+            $table->boolean('flux')->default(false);
+            $table->timestamp('date')->nullable();
+            $table->integer('camion_id');
             $table->timestamps();
         });
     }
@@ -27,6 +30,6 @@ class CreateRnsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('rns');
+        Schema::dropIfExists('carburants');
     }
 }

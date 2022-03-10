@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddForeignKeyToProvinceRnsTable extends Migration
+class AddForeignKeysToProvinceRnsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,8 +14,8 @@ class AddForeignKeyToProvinceRnsTable extends Migration
     public function up()
     {
         Schema::table('province_rns', function (Blueprint $table) {
-            $table->foreign(['province_id'], 'i_fk_rn_province')->references(['id'])->on('provinces');
             $table->foreign(['rn_id'], 'i_fk_province_rn')->references(['id'])->on('rns');
+            $table->foreign(['province_id'], 'i_fk_rn_province')->references(['id'])->on('provinces');
         });
     }
 
@@ -27,7 +27,8 @@ class AddForeignKeyToProvinceRnsTable extends Migration
     public function down()
     {
         Schema::table('province_rns', function (Blueprint $table) {
-            //
+            $table->dropForeign('i_fk_province_rn');
+            $table->dropForeign('i_fk_rn_province');
         });
     }
 }
