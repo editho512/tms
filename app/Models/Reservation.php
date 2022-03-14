@@ -6,14 +6,19 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Reservation extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['depart_id', 'id', 'client_id', 'arrivee_id', 'transporteur_id', 'date', 'status', 'numero'];
+    protected $fillable = [
+        'depart_id', 'id', 'client_id', 'arrivee_id', 'transporteur_id', 'date', 'status', 'numero'
+    ];
 
-    CONST STATUS = ["en attente", "réservé", "livré", "annulé", "rejeté", 'indisponible'];
+    CONST STATUS = [
+        "en attente", "réservé", "livré", "annulé", "rejeté", 'indisponible', 'en retard'
+    ];
 
     /**
      * Tolérence en pourcentage
@@ -32,42 +37,89 @@ class Reservation extends Model
         return $this->hasOne(Ville::class, "id", "arrivee_id");
     }
 
-    public function depart()
+
+    /**
+     * Province de départ de la reservation
+     *
+     * @return HasOne
+     */
+    public function depart() : HasOne
     {
         return $this->hasOne(Province::class, "id", "depart_id");
     }
 
-    public function transporteur()
+    /**
+     * Transporteur pour la reservation
+     *
+     * @return HasOne
+     */
+    public function transporteur() : HasOne
     {
         return $this->hasOne(User::class, "id", "transporteur_id");
     }
 
-    public function client()
+
+    /**
+     * Client qui a fait la reservation
+     *
+     * @return HasOne
+     */
+    public function client() : HasOne
     {
         return $this->hasOne(User::class, "id", "client_id");
     }
 
-    public function enAttente()
+
+    /**
+     * Permet de determiner si la reservation est en attente
+     *
+     * @return boolean
+     */
+    public function enAttente() : bool
     {
         return $this->status === self::STATUS[0];
     }
 
-    public function annule()
+
+    /**
+     * Permet de determiner si la reservation est annulé par le client
+     *
+     * @return boolean
+     */
+    public function annule() : bool
     {
         return $this->status === self::STATUS[3];
     }
 
-    public function reserve()
+
+    /**
+     * Permet de determiner si la reservation est accépté par le transporteur
+     *
+     * @return boolean
+     */
+    public function reserve() : bool
     {
         return $this->status === self::STATUS[1];
     }
 
-    public function livre()
+
+    /**
+     * Permet de determiner si la reservation ou le colis est livré
+     *
+     * @return boolean
+     */
+    public function livre() : bool
     {
         return $this->status === self::STATUS[2];
     }
 
-    public function rejete()
+
+    /**
+     * Permet de determiner si la reservation est rejete par le transporteur
+     *
+     * @return boolean
+     */
+    public function rejete() : bool
     {
         return $this->status === self::STATUS[4];
     }
@@ -81,7 +133,7 @@ class Reservation extends Model
     {
         if ($enAttente === true)
         {
-            return $this->where('numero', $this->numero)->where('status', self::STATUS[0])->get();
+            return $this->where('numero', $this->numero)->where('status', self::STATUS[0])->orWhere('status', self::STATUS[6])->get();
         }
         return $this->where('numero', $this->numero)->get();
     }
@@ -124,6 +176,13 @@ class Reservation extends Model
         return false;
     }
 
+
+    /**
+     * Reservation qui a la meme numero que celle qui est actuelle
+     *
+     * @param boolean $accepted Si la reservation a rechercher est accepté
+     * @return Collection
+     */
     public function siblings(bool $accepted = false) : Collection
     {
         if ($accepted === true)
@@ -133,8 +192,25 @@ class Reservation extends Model
         return $this->where('numero', $this->numero)->where('id', '<>', $this->id)->get();
     }
 
-    public function indisponible()
+
+    /**
+     * Permet de determiner si une reservation est indisponible (accepté par un autre transporteur, indisponible pour l'autre)
+     *
+     * @return boolean
+     */
+    public function indisponible() : bool
     {
         return $this->status === self::STATUS[5];
+    }
+
+
+    /**
+     * Permet de determiner si une reservation est en rétard (la date de depart prevu par le client est dépassé)
+     *
+     * @return boolean
+     */
+    public function retard() : bool
+    {
+        return $this->status === self::STATUS[6];
     }
 }

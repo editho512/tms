@@ -15,12 +15,27 @@ use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Auth;
 
 class ClientController extends Controller
 {
     public function __construct()
     {
         $this->middleware('client');
+    }
+
+    public function updateReservationStatus()
+    {
+        $reservations = Auth::user()->reservations()->where('status', Reservation::STATUS[0])->get();
+
+        foreach ($reservations as $reservation)
+        {
+            if (Carbon::parse($reservation->date)->lessThan(Carbon::now()))
+            {
+                $reservation->status = Reservation::STATUS[6];
+                $reservation->update();
+            }
+        }
     }
 
     /**
@@ -57,6 +72,11 @@ class ClientController extends Controller
             $tmp = [];
             $selectedCount = 0;
             $activeIds = [];
+
+            if ($response["errors"])
+            {
+                return redirect()->back()->with('error', 'Cette réservation est déja en rétard');
+            }
 
             foreach ($response['results'] as $data)
             {
@@ -119,6 +139,7 @@ class ClientController extends Controller
             return redirect()->route('camion.liste');
         }
 
+        $this->updateReservationStatus();
         $reservations = auth()->user()->reservations()->where('status', '<>', Reservation::STATUS[5])->orderBy('numero')->get();
 
         return view('client.history', [

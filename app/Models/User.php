@@ -219,7 +219,7 @@ class User extends Authenticatable
      * @param string $dateArriveeApproximatif Date et heure d'arrivee approximatif
      * @return Collection
      */
-    public function CamionDisponible(string $dateDepart, string $dateArriveeApproximatif)
+    public function CamionDisponible(string $dateDepart, string $dateArriveeApproximatif = null)
     {
         $camions = $this->camions()->where('blocked', 0)->get();
         $camionsDisponibles = [];
@@ -242,9 +242,9 @@ class User extends Authenticatable
      * @param string $dateArriveeApproximatif Date et heure d'arrivee approximatif
      * @return Collection
      */
-    public function ChauffeurDisponible(string $dateDepart, string $dateArriveeApproximatif)
+    public function ChauffeurDisponible(string $dateDepart, string $dateArriveeApproximatif = null)
     {
-        $chauffeurs = $this->chauffeurs()->where('blocked', 0)->get('id');
+        $chauffeurs = $this->chauffeurs()->where('blocked', 0)->get();
         $chauffeursDisponibles = [];
 
         foreach ($chauffeurs as $chauffeur)

@@ -22,6 +22,12 @@
         </div>
 
         <div style="overflow-x: auto; overflow-y:auto">
+            @if (session()->has('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
+            @endif
+
             <table id="transports" class="table table-bordered table-striped bg-white">
                 <thead>
                     <tr>
@@ -42,11 +48,13 @@
                                 <div class="col-md-12 mb-3">
                                     <span>{{ $reservation->numero }}</span>
                                 </div>
-                                <div class="col-md-12">
-                                    <a href="{{ route('client.search', ['edit' => true, 'numero' => $reservation->numero]) }}" class="btn btn-primary">
-                                        <i class="fa fa-edit"></i>
-                                    </a>
-                                </div>
+                                @if ($reservation->enAttente())
+                                    <div class="col-md-12">
+                                        <a href="{{ route('client.search', ['edit' => true, 'numero' => $reservation->numero]) }}" class="btn btn-primary">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                    </div>
+                                @endif
                             </div>
                         </td>
                         <td>{{ ucfirst($reservation->transporteur->name) }}</td>
@@ -56,7 +64,7 @@
                         <td>{{ ucfirst($reservation->status) }}</td>
                         <td class="text-center">
                             @if ($reservation->enAttente())
-                            <a href="{{ route('client.reservation.annuler', [$reservation]) }}" class="btn btn-danger w-100" style="opacity: 0.8" type="button"><i class="mr-2 fa">&#xf00d</i>Annuler</a>
+                                <a href="{{ route('client.reservation.annuler', [$reservation]) }}" class="btn btn-danger w-100" style="opacity: 0.8" type="button"><i class="mr-2 fa">&#xf00d</i>Annuler</a>
                             @endif
                             @if ($reservation->reserve())
                                 @if ($reservation->livrable())
@@ -76,6 +84,10 @@
                             @endif
                             @if ($reservation->indisponible())
                                 <div style="opacity: 0.7" class="badge badge-info p-2 text-center">Réservation déja prise</div>
+                            @endif
+
+                            @if ($reservation->retard())
+                                <a href="#" class="btn btn-primary"><i class="fa fa-edit"></i></a>
                             @endif
                         </td>
                     </tr>
@@ -120,6 +132,7 @@
         else
         {
             let precedent = document.getElementsByClassName(index - 1)[0]
+            // precedent.querySelector('span').innerText
 
             if (precedent.innerHTML === td.innerHTML) {
                 count = count + 1

@@ -163,6 +163,7 @@
     let transporterIds = new Object()
     let number = document.getElementById('number')
     let count = parseInt(number.innerText)
+
     const addToList = (button, data) => {
         count = count + 1
         if (count > 0) document.getElementById('text').classList.remove('d-none')
@@ -189,6 +190,7 @@
         button.classList.add('btn-primary')
         button.setAttribute('onclick', 'addToList(this, ' + JSON.stringify(data) + ')')
     }
+
     const reserverTest = (url) => {
         window.event.preventDefault
         if (Object.keys(transporterIds).length === 0) {
@@ -196,6 +198,8 @@
             return false
         }
         let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        number.innerHTML = '<div class="spinner-border spinner-border-sm" role="status"><span class="sr-only">Loading...</span></div>'
+
         fetch(url, {
             headers: {
                 "Content-Type": "application/json",
@@ -210,6 +214,7 @@
             })
         })
         .then((response) => {
+            number.innerText = count.toString()
             return response.json()
         })
         .then(data => {
@@ -219,18 +224,32 @@
             console.log(error);
         });
     }
+
     const resetFields = (button) => {
-        let parent = button.parentElement.parentElement.parentElement
+
+        //button.parentElement.parentElement.children
+
+        let parent = button.parentElement.parentElement
         let selects = parent.querySelectorAll('select')
+        let inputs = parent.querySelectorAll('input')
+
         selects.forEach(select => {
             if (parseInt(select.value) > 0) {
                 $(select).prop('selectedIndex', 0).select2()
             }
         })
+
+        inputs.forEach(input => {
+            if (input.value != "") {
+                input.value = null
+            }
+        })
     }
+
     const removeRedBorder = (input) => {
         input.classList.remove('error')
     }
+
     const reserver = (data) => {
         window.event.preventDefault()
         let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
@@ -257,6 +276,7 @@
             console.log(error);
         });
     }
+
     const search = () => {
         window.event.preventDefault()
 
@@ -266,16 +286,15 @@
         }
 
         let form = window.event.target;
-        let url = form.getAttribute('action')
-        let method = form.getAttribute('method')
-        let data = new FormData(form)
         let loading = document.getElementById('icon')
         let btn = document.getElementById('search-btn')
+
         loading.innerHTML = '<div class="spinner-grow spinner-grow-sm" role="status"><span class="sr-only">Loading...</span></div>'
         btn.disabled = true
-        fetch(url, {
-            method: method,
-            body: data
+
+        fetch(form.getAttribute('action'), {
+            method: form.getAttribute('method'),
+            body: new FormData(form)
         })
         .then(response => {
             loading.innerHTML = '<i class="fa fa-search"></i>'
@@ -296,6 +315,13 @@
                 alert('Aucune transporteur trouvé')
                 tbody.innerHTML = '<tr><td colspan="4" class="text-center">Aucune transporteur trouvé</td></tr>'
             }
+            else if (data.length === 0)
+            {
+                alert('Aucun transporteur trouvé')
+                return false
+                //tbody.classList.remove('d-none')
+                //tbody.innerHTML = '<tr><td colspan="4" class="text-center">Aucun transporteur trouvé</td></tr>'
+            }
             else
             {
                 if (data.results.length > 0)
@@ -306,7 +332,15 @@
                         return
                     }
                     searchData = data.details
-                    document.getElementById('result').classList.remove('d-none')
+
+                    let result = document.getElementById('result')
+                    result.classList.remove('d-none')
+
+                    window.scrollTo({
+                        top: result.getBoundingClientRect().top,
+                        behavior: 'smooth',
+                    })
+
                     tbody.innerHTML = ''
                     data.results.forEach(element => {
                         let transporteur = element.transporteur
@@ -335,11 +369,13 @@
             }
         })
     }
+
     $(document).on("change", ".select-search-arrivee", function(e){
         let index = parseInt($(this).attr("data-index"));
         e.currentTarget.classList.remove('error')
         updateArrivee(e.currentTarget, index);
     });
+
     /**
     * Mettre a jour la listes des villes et des regions de départ
     */
@@ -405,6 +441,7 @@
             console.log(error);
         });
     }
+
     /**
     * Mettre a jour la listes des villes et des regions de départ
     */
@@ -450,6 +487,7 @@
             console.log(error);
         });
     }
+
     const updateSelect = (data, select, defaultSelection) => {
         select.innerHTML = null
         let defaultOption = document.createElement('option')
@@ -462,6 +500,7 @@
             select.appendChild(option)
         });
     }
+
     const elem = document.querySelector('input[name="date_depart"]');
     const datepicker = new Datepicker(elem, {
         autohide: false,

@@ -99,14 +99,29 @@ class Chauffeur extends Model
     }
 
 
-    public function aUnTrajetEntre(string $date_depart, string $date_arrivee)
+    public function aUnTrajetEntre(string $date_depart, ?string $date_arrivee)
     {
-        $sql = "SELECT trajets.id FROM trajets
-        WHERE ((trajets.date_heure_depart < ? AND trajets.date_heure_arrivee > ?) OR (trajets.date_heure_depart < ? AND trajets.date_heure_arrivee > ?))
-        AND trajets.etat <> ? AND trajets.etat <> ?
-        AND trajets.chauffeur_id = ?";
+        $trajets = collect();
 
-        $trajets = collect(DB::select($sql, [$date_depart, $date_depart, $date_arrivee, $date_arrivee, Trajet::getEtat(3), Trajet::getEtat(2),  $this->id]));
+        if ($date_arrivee === null)
+        {
+            $sql = "SELECT trajets.id FROM trajets
+            WHERE (trajets.date_heure_depart < ? AND trajets.date_heure_arrivee > ?)
+            AND trajets.etat <> ? AND trajets.etat <> ?
+            AND trajets.chauffeur_id = ?";
+
+            $trajets = collect(DB::select($sql, [$date_depart, $date_depart, Trajet::getEtat(3), Trajet::getEtat(2),  $this->id]));
+        }
+        else
+        {
+            $sql = "SELECT trajets.id FROM trajets
+            WHERE ((trajets.date_heure_depart < ? AND trajets.date_heure_arrivee > ?) OR (trajets.date_heure_depart < ? AND trajets.date_heure_arrivee > ?))
+            AND trajets.etat <> ? AND trajets.etat <> ?
+            AND trajets.chauffeur_id = ?";
+
+            $trajets = collect(DB::select($sql, [$date_depart, $date_depart, $date_arrivee, $date_arrivee, Trajet::getEtat(3), Trajet::getEtat(2),  $this->id]));
+        }
+
 
         if ($trajets->isEmpty()) return false;
         return true;

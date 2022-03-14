@@ -4,15 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\Rn;
 use App\Models\User;
-use App\Models\Categorie;
-use App\Models\CategorieDepart;
-use App\Models\CategorieRnTransporteur;
-use App\Models\Province;
 use App\Models\Ville;
-use Illuminate\Database\QueryException;
-use Illuminate\Http\JsonResponse;
+use App\Models\Province;
+use App\Models\Categorie;
 use Illuminate\Http\Request;
+use App\Models\CategorieDepart;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use App\Models\CategorieRnTransporteur;
+use Illuminate\Database\QueryException;
 
 class TarifController extends Controller
 {
@@ -43,7 +43,7 @@ class TarifController extends Controller
 
         foreach ($departCategories as $departCategorie)
         {
-            if (/*in_array($zone->id, $departCategorie->arrivee->zones->pluck('id')->toArray())*/ in_array($zone->id, $departCategorie->depart->zones->pluck('id')->toArray()))
+            if (in_array($zone->id, $departCategorie->arrivee->zones->pluck('id')->toArray()) AND in_array($zone->id, $departCategorie->depart->zones->pluck('id')->toArray()))
             {
                 $lists .= "<li>{$departCategorie->depart->nom} - {$departCategorie->arrivee->nom}</li>";
             }
