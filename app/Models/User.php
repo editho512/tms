@@ -152,7 +152,7 @@ class User extends Authenticatable
     public function CamionDisponible($date = null){
 
         $camion = Camion::where("user_id", $this->id)->get();
-        $dispo = [];
+        $dispo = collect();
 
         if( $camion->count() > 0){
             
@@ -161,9 +161,9 @@ class User extends Authenticatable
             $sql = 'SELECT distinct(camion_id) FROM trajets WHERE '.$camions.'  date_heure_depart IS NOT NULL AND date_heure_arrivee IS NOT NULL AND  date_heure_depart < "'.$date.'" AND date_heure_arrivee > "'.$date.'"   ';
             
             $indispo =  DB::select(DB::raw($sql));
+            $dispo = Camion::where("user_id", $this->id)->whereNotIn("id", array_column($indispo, 'camion_id'))->get();
         }
 
-        $dispo = Camion::where("user_id", $this->id)->whereNotIn("id", array_column($indispo, 'camion_id'))->get();
 
         return $dispo;
     }

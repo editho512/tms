@@ -4,15 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\Rn;
 use App\Models\User;
-use App\Models\Categorie;
-use App\Models\CategorieDepart;
-use App\Models\CategorieRnTransporteur;
-use App\Models\Province;
 use App\Models\Ville;
-use Illuminate\Database\QueryException;
-use Illuminate\Http\JsonResponse;
+use App\Models\Province;
+use App\Models\Categorie;
 use Illuminate\Http\Request;
+use App\Models\RnTransporteur;
+use App\Models\CategorieDepart;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use App\Models\CategorieRnTransporteur;
+use Illuminate\Database\QueryException;
+use Session;
 
 class TarifController extends Controller
 {
@@ -143,17 +145,18 @@ class TarifController extends Controller
         dd($ZoneTransporteur);
     }
 
-    public function supprimer(ZoneTransporteur $ZoneTransporteur){
-        $ZoneTransporteur->delete();
+    public function supprimer(Rn $ZoneTransporteur){
 
+        RnTransporteur::where("rn_id", $ZoneTransporteur->id)->where("user_id", auth()->user()->id)->delete();
+        
         Session::put("notification", ["value" => "Zone de transporteur supprimée" , "status" => "success" ]);
 
         return redirect()->back();
     }
 
-    public function modifier(ZoneTransporteur $ZoneTransporteur){
+    public function modifier(Rn $ZoneTransporteur){
 
-        return response()->json(["name" => $ZoneTransporteur->zone()->name]);
+        return response()->json(["name" => $ZoneTransporteur->nom]);
     }
 
 

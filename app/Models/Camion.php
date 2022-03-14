@@ -136,6 +136,6 @@ class Camion extends Model
      */
     public function stockCarburant() : int
     {
-        return $this->carburants()->where('flux', 0)->sum('quantite') - $this->carburants()->where('flux', 1)->sum('quantite');
+        return doubleval($this->carburants()->where('flux', 0)->sum('quantite') - $this->carburants()->where('flux', 1)->sum('quantite'));
     }
 }

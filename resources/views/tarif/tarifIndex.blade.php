@@ -69,7 +69,7 @@
                                     <div class="card-body">
                                         <div class="row mb-2">
                                             <div class="col-sm-12 text-right">
-                                                <button class="btn  float-right" style="background: #007bff;color:white;" data-toggle="modal" id="nouveau-zone" data-target="#modal-ajouter-zone"><span class="fa fa-plus"></span>&nbsp;Ajouter</button>
+                                                <button class="btn  float-right" style="background: #007bff;color:white;" data-toggle="modal" id="nouveau-zone" data-backdrop="static" data-keyboard="false" data-target="#modal-ajouter-zone"><span class="fa fa-plus"></span>&nbsp;Ajouter</button>
                                             </div>
                                         </div>
                                         <table id="itineraire-categorie" class="mt-2 table-principale table table-bordered table-striped">
@@ -77,7 +77,7 @@
                                                 <tr>
                                                     <th>Nom</th>
                                                     <th>Description</th>
-                                                    <th>Actions</th>
+                                                    <th>Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -88,25 +88,21 @@
                                                     <td>
                                                         <div class="row">
                                                             <div class="col-sm-12" style="text-align: center;">
-                                                                <button class="btn btn-primary btn-md btn-voir-zone-transporteur" data-show="{{route('zone.modifier', ['zone' => $zone->id ])}}" data-url="{{route('zone.edit', ['zone' => $zone->id ])}}"><span class="fa fa-edit"></span></button>
+                                                                <!--<button class="btn btn-primary btn-md btn-voir-zone-transporteur" data-show="{{route('zone.modifier', ['zone' => $zone->id ])}}" data-url="{{route('zone.edit', ['zone' => $zone->id ])}}"><span class="fa fa-edit"></span></button>-->
                                                                 <button class="btn btn-md btn-danger btn-supprimer-zone-transporteur" data-show="{{route('tarif.modifier', ['ZoneTransporteur' => $zone->id ])}}" data-url="{{route('tarif.supprimer', ['ZoneTransporteur' => $zone->id ])}}"><span class="fa fa-trash"></span></button>
                                                             </div>
                                                         </div>
                                                     </td>
                                                 </tr>
                                                 @empty
-                                                <tr>
-                                                    <td style="text-align: center" colspan="3">
-                                                        Aucune zone de travail dans la liste
-                                                    </td>
-                                                </tr>
+                                               
                                                 @endforelse
                                             </tbody>
                                             <tfoot>
                                                 <tr>
                                                     <th>Nom</th>
                                                     <th>Description</th>
-                                                    <th>Actions</th>
+                                                    <th>Action</th>
                                                 </tr>
                                             </tfoot>
                                         </table>
@@ -128,7 +124,7 @@
                                             <button data-toggle="modal" id="nouveau-prix" data-backdrop="static" data-keyboard="false" data-target="#modal-ajouter-prix" class="btn btn-primary"><i class="fa fa-plus"></i>Ajouter</button>
                                         </div>
 
-                                        <table class="mt-2 table-principale table table-bordered table-striped">
+                                        <table id="table-categorie-prix" class="mt-2 table-principale table table-bordered table-striped">
                                             <thead>
                                                 <tr>
                                                     <th>Catégorie</th>
@@ -177,11 +173,7 @@
                                                         </tr>
                                                     @endforeach
                                                 @empty
-                                                <tr>
-                                                    <td style="text-align: center" colspan="4">
-                                                        Aucun catégorie dans la liste
-                                                    </td>
-                                                </tr>
+                                               
                                                 @endforelse
                                             </tbody>
                                             <tfoot>
@@ -319,7 +311,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header modal-header-danger">
-                <h4 class="modal-title">Supprimer une zone de transporteur</h4>
+                <h4 class="modal-title">Supprimer une zone </h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -408,17 +400,19 @@
 
 <!-- page script -->
 <script>
-
-    $(document).ready(function(){
-
-        $(".table-principale").DataTable({
+    
+    $("#itineraire-categorie").DataTable({
             "responsive": true,
             "autoWidth": false,
             "searching": true,
             "paging": false,
             "ordering": true,
-            "info": false,
+            "info": false ,            
+            language: { url: "{{asset('assets/json/json_fr_fr.json')}}" }
         });
+    
+    $(document).ready(function(){
+      
 
         $(".select-zone").select2({
             placeholder: "Nom des zones"
@@ -445,6 +439,7 @@
             })
         })
 
+     
         $(document).on("click", ".btn-supprimer-zone-transporteur", function(e){
             let url = $(this).attr("data-show");
             let url_supprimer = $(this).attr("data-url");

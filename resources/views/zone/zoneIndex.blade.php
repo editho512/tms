@@ -278,6 +278,7 @@
             "paging": true,
             "ordering": true,
             "info": false,
+            language: { url: "{{asset('assets/json/json_fr_fr.json')}}" }
         });
         // ------------------ EVENTE ---------------
 

@@ -124,7 +124,7 @@
                     <div class="tab-pane fade show {{( isset($tab) === false || $tab == 1 ) ? ' show active ' : '' }}" id="nav-carburant" role="tabpanel" aria-labelledby="nav-carburant-tab">
                         <div class="card-header">
                             <h3 class="card-title" style="color: gray;display:none;" >Flux des carburants</h3>
-                            <button class="float-right btn btn-success" id="btn-modal-carburant" data-toggle="modal" data-target="#modal-carburant"><span class="fa fa-plus"></span>&nbsp;Ajouter</button>
+                            <button class="float-right btn btn-success" id="btn-modal-carburant" data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#modal-carburant"><span class="fa fa-plus"></span>&nbsp;Ajouter</button>
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
@@ -159,9 +159,7 @@
                                     @endforeach
 
                                     @else
-                                    <tr>
-                                        <td colspan="4" style="text-align: center;">Aucun flux de carburant</td>
-                                    </tr>
+                                   
                                     @endif
 
                                 </tbody>
@@ -183,7 +181,7 @@
                     <div class="tab-pane fade {{ ( isset($tab) === true && intval($tab) === 2 ) ? ' show active ' : ''}} " id="nav-trajet" role="tabpanel" aria-labelledby="nav-trajet-tab">
                         <div class="card-header">
                             <h3 class="card-title" style="color: gray;display:none;" >Liste des trajets</h3>
-                            <button class="float-right btn btn-success" id="btn-modal-trajet" data-toggle="modal" data-target="#modal-trajet"><span class="fa fa-plus"></span>&nbsp;Ajouter</button>
+                            <button class="float-right btn btn-success" id="btn-modal-trajet" data-backdrop="static" data-keyboard="false" data-toggle="modal" data-target="#modal-trajet"><span class="fa fa-plus"></span>&nbsp;Ajouter</button>
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
@@ -195,7 +193,8 @@
                                         <th>Date & heure départ</th>
                                         <th>Date & heure arrivée</th>
                                         <th>Chauffeur</th>
-                                        <th>Status</th>
+                                        <th>Statut</th>
+                                        <th>Carburant</th>
                                         <th style="text-align:center;">Actions</th>
                                     </tr>
                                 </thead>
@@ -225,23 +224,27 @@
                                                 @endif
                                             @endif
                                         </td>
+                                        <td class="row">
+                                            <div class="col-sm-12 text-center" >
+                                                <b>{{$trajet->carburantUtilise() > 0 ? $trajet->carburantUtilise() . "L" : "--"}}</b>
+                                            </div>
+                                        </td>
                                         <td>
                                             @if ($trajet->blocked == false)
+                                            <!--
                                             <a href="{{route('trajet.voir', ['trajet' => $trajet->id])}}">
                                                 <button class="btn btn-sm btn-info" ><span class="fa fa-eye"></span></button>
-                                            </a>
+                                            </a>-->
                                             @else
-                                            <button class="btn btn-sm btn-info" disabled><span class="fa fa-eye"></span></button>
+                                            <button class="btn btn-sm btn-info" disabled ><span class="fa fa-eye"></span></button>
                                             @endif
 
-                                            <button class="btn btn-sm btn-primary modifier-trajet" @if ($trajet->etat === App\Models\Trajet::getEtat(2)) disabled @endif  data-update-url="{{route('trajet.update', ['trajet' => $trajet->id])}}" data-show-url="{{route('trajet.modifier', ['trajet' => $trajet->id])}}"><span class="fa fa-edit"></span></button>
-                                            <button class="btn btn-sm btn-danger supprimer-trajet" data-url="{{route('trajet.supprimer', ['trajet' => $trajet->id])}}" data-delete-url="{{route('trajet.delete', ['trajet' => $trajet->id])}}"><span class="fa fa-trash"></span></button>
+                                            <button class="btn btn-sm btn-primary modifier-trajet" @if ($trajet->etat === App\Models\Trajet::getEtat(2) || $trajet->etat === App\Models\Trajet::getEtat(3)) disabled @endif  data-update-url="{{route('trajet.update', ['trajet' => $trajet->id])}}" data-show-url="{{route('trajet.modifier', ['trajet' => $trajet->id])}}"><span class="fa fa-edit"></span></button>
+                                            <button {{ isset($trajet->reservation->id) === true ? "disabled": "" }} class="btn btn-sm btn-danger supprimer-trajet" data-url="{{route('trajet.supprimer', ['trajet' => $trajet->id])}}" data-delete-url="{{route('trajet.delete', ['trajet' => $trajet->id])}}"><span class="fa fa-trash"></span></button>
                                         </td>
                                     </tr>
                                     @empty
-                                    <tr>
-                                        <td colspan="7" class="text-center">Aucune trajet pour ce camion</td>
-                                    </tr>
+                                   
                                     @endforelse
                                 </tbody>
                                 <tfoot>
@@ -251,7 +254,8 @@
                                         <th>Date & heure départ</th>
                                         <th>Date & heure arrivée</th>
                                         <th>Chauffeur</th>
-                                        <th>Status</th>
+                                        <th>Statut</th>
+                                        <th>Carburant</th>
                                         <th style="text-align:center;">Actions</th>
                                     </tr>
                                 </tfoot>
@@ -308,10 +312,10 @@
                             <label for="flux">Flux :</label>
                         </div>
                         <div class="col-sm-8">
-                            <select name="flux" class="form-control" id="">
+                            <select readonly="readonly" name="flux" class="form-control" id="">
                                 <option value=0 selected>Entrée</option>
-
-                                <option value=1>Sortie</option>
+                                <!--
+                                <option value=1>Sortie</option>-->
 
                                 {{-- <option value=1>Sortie</option> --}}
                             </select>
@@ -524,12 +528,12 @@
 
                     <div class="row mb-3" style="margin-top: 3px; ">
                         <div class="col-sm-4">
-                            <label for="etat">Status :</label>
+                            <label for="etat">Statut :</label>
                         </div>
                         <div class="col-sm-8">
 
-                            <select name="etat" class="form-control" id="etat" onchange="checkCarburant(this, '{{ App\Models\Trajet::getEtat(2) }}')" required>
-                                <option value="">Selectionner le status</option>
+                            <select name="etat" class="form-control" id="etat" onchange="checkCarburant(this)" required>
+                                <option value="">Selectionner le statut</option>
                                 @foreach (App\Models\Trajet::getEtat() as $status)
                                 <option value="{{ $status }}">{{ $status }}</option>
                                 @endforeach
@@ -538,7 +542,7 @@
                     </div>
 
 
-                    <div class="row mb-3 mt-3 d-none" id="carburant">
+                    <div class="row mb-3 mt-3 d-none carburant" id="carburant">
                         <div class="col-sm-4">
                             <label for="carburant-restant">Carburant restant :</label>
                         </div>
@@ -585,8 +589,8 @@
 <div class="modal fade" id="modal-modifier-trajet">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header modal-header-success">
-                <h4 class="modal-title">Modifier un flux de carburant</h4>
+            <div class="modal-header modal-header-primary">
+                <h4 class="modal-title">Modifier un un trajet</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -643,17 +647,28 @@
                         </div>
                     </div>
 
+                   
+
                     <div class="row mb-3" style="margin-top: 3px; ">
                         <div class="col-sm-4">
-                            <label for="etat">Status :</label>
+                            <label for="etat">Statut :</label>
                         </div>
                         <div class="col-sm-8">
-                            <select name="etat" class="form-control" id="modifier-etat" required>
-                                <option value="">Selectionner le status</option>
+                            <select name="etat" class="form-control" id="modifier-etat" required onchange="checkCarburant(this, '#modal-modifier-trajet')">
+                                <option value="">Selectionner le statut</option>
                                 @foreach (App\Models\Trajet::getEtat() as $status)
                                     <option value="{{ $status }}">{{ $status }}</option>
                                 @endforeach
                             </select>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3 mt-3 d-none carburant" >
+                        <div class="col-sm-4">
+                            <label for="carburant-restant">Carburant restant :</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control" name="carburantRestant" id="carburant-restant" placeholder="Quantité de carburant restant">
                         </div>
                     </div>
 
@@ -663,11 +678,7 @@
                         <div class="form-group">
                             <label for="nombre_itineraire">Itinéraires :</label>
                             <div id="itineraire_formulaire">
-                                <div class="row">
-                                    <div class="col-sm-12" style="padding-top:1%;" id="list-itineraire">
-                                        {{-- <input type="text" placeholder="Nom de l'itinéraire" class='form-control' value="test"> --}}
-                                    </div>
-                                </div>
+                                
                             </div>
                             <div class="mt-1 row">
                                 <div class="col-sm-12" style="text-align:right;">
@@ -683,7 +694,7 @@
             </div>
             <div class="modal-footer justify-content-between">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
-                <button type="submit" form="form-modifier-trajet" id="button-modifier-trajet" class="float-right btn btn-success">Modifier</button>
+                <button type="submit" form="form-modifier-trajet" id="button-modifier-trajet" class="float-right btn btn-primary">Modifier</button>
             </div>
         </div>
         <!-- /.modal-content -->
@@ -745,7 +756,7 @@
 
                     <div class="row mb-3" style="margin-top: 3px; ">
                         <div class="col-sm-4">
-                            <label for="etat">Status :</label>
+                            <label for="etat">Statut :</label>
                         </div>
                         <div class="col-sm-8">
                             <label class="form-control" id="supprimer-etat"></label>
@@ -759,7 +770,7 @@
                             <div id="itineraire_delete_formulaire">
                                 <div class="row">
                                     <div class="col-sm-12" style="padding-top:1%;" id="list-delete-itineraire">
-                                        {{-- <input type="text" placeholder="Nom de l'itinéraire" class='form-control' value="test"> --}}
+                                        <input type="text" placeholder="Nom de l'itinéraire" class='form-control' value="test"> 
                                     </div>
                                 </div>
                             </div>
@@ -770,7 +781,7 @@
             <div class="modal-footer justify-content-between">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
                 <div class="d-flex justify-content-between">
-                    <a href="" class="btn btn-warning mr-2">Bloquer</a>
+                    <a href="" class="d-none btn btn-warning mr-2">Bloquer</a>
                     <a href="">
                         <button type="button" form="form-supprimer-trajet" id="button-supprimer-trajet" class="float-right btn btn-danger">Supprimer</button>
                     </a>
@@ -814,9 +825,10 @@
 
         _this.find("#itineraire_formulaire")
         .append("<div id='itineraire_formulaire_added-"+
-        nb_itineraire_formulaire+"' class='row'>"+itineraire_formulaire
+        nb_itineraire_formulaire+"' class='row added'>"+itineraire_formulaire
         +"</div>").find(".row:last input").val("");
 
+        
     })
 
 
@@ -830,6 +842,21 @@
         if(nb_itineraire_formulaire < 3){
             $(".btn-itineraire-moins").hide(100);
         }
+
+        let data_itineraire = [];
+        _this.find("#itineraire_formulaire .row").each(function(){
+
+                let nom_itineraire = $(this).find("input:first").val();
+                
+                if(nom_itineraire != ''){
+                    data_itineraire.push({
+                        nom : nom_itineraire
+                    });
+                }
+
+            })
+
+        _this.parent().parent().parent().find(".itineraire_data").val(JSON.stringify(data_itineraire));
     })
 
     $(document).on("blur", "#content-itineraire input" , function(e){
@@ -840,15 +867,15 @@
         _this.find('#itineraire_formulaire .row').each(function(){
 
             let nom_itineraire = $(this).find("input:first").val();
-
+             
             if(nom_itineraire != ''){
                 data_itineraire.push({
-                    nom_itineraire : nom_itineraire
+                    nom : nom_itineraire
                 });
             }
         })
-        document.getElementById('content-itineraire').firstElementChild.value = JSON.stringify(data_itineraire)
-        //_this.parent().parent().parent().find(".itineraire_data").val(JSON.stringify(data_itineraire));
+        //document.getElementById('content-itineraire').firstElementChild.value = JSON.stringify(data_itineraire)
+        _this.parent().parent().parent().find(".itineraire_data").val(JSON.stringify(data_itineraire));
     })
 
     $(document).ready(function () {
@@ -858,14 +885,18 @@
             "searching": true,
             "paging": false,
             "ordering": true,
-            "info": false,
+            "info": false ,            
+            language: { url: "{{asset('assets/json/json_fr_fr.json')}}" }
         });
 
         $(document).on("click", ".modifier-carburant", function(){
             let url = $(this).attr("data-show-url");
             let url_update = $(this).attr("data-url")
 
-            $("#modal-modifier-carburant").modal("show");
+            $("#modal-modifier-carburant").modal({
+                backdrop: 'static',
+                keyboard: false
+            });
             $("#form-modifier-carburant").attr("action", url_update);
 
             $.get(url, {}, dataType="JSON").done(function (data) {
@@ -882,7 +913,10 @@
 
             $("#button-supprimer-carburant").parent().attr("href", url_delete);
 
-            $("#modal-supprimer-carburant").modal("show");
+            $("#modal-supprimer-carburant").modal({
+                backdrop: 'static',
+                keyboard: false
+            });
 
             $.get(url, {}, dataType="JSON").done(function (data) {
                 $("#modal-supprimer-carburant #supprimer_date").val(data.date).attr("disabled", true);
@@ -921,22 +955,39 @@
             let url = $(this).attr("data-show-url");
             let url_update = $(this).attr("data-update-url")
 
-            $("#modal-modifier-trajet").modal("show");
+            $("#modal-modifier-trajet").modal({
+                backdrop: 'static',
+                keyboard: false
+            });
             $("#form-modifier-trajet").attr("action", url_update);
 
             $.get(url, {}, dataType="JSON").done(function (data) {
                 let lists = document.getElementById('list-itineraire')
-                let itineraires = data.itineraires
-                lists.innerHTML = ''
+                let itineraires =  data.itineraires.sort( (teamA, teamB) => teamA.id - teamB.id  );
 
-                itineraires.forEach(itineraire => {
-                    input = document.createElement('input')
-                    input.value = itineraire.nom
-                    input.classList.add('form-control')
-                    input.classList.add('mb-2')
-                    input.setAttribute('placeholder', 'Nom de l\'itinéraire')
-                    lists.appendChild(input)
+                $("#form-modifier-trajet").find(".added").remove();
+              
+                itineraires.forEach((itineraire, index) => {
+                    let element = "";
+                    if(index === 0){
+                        element = '<div class="row added"><div class="col-sm-12" style="padding-top:1%;"><input type="text" placeholder="Nom de l\'itinéraire" class="form-control" value="' + itineraire.nom + '" required></div></div>'
+
+                    }else{
+                        element = '<div id="itineraire_formulaire_added-'+(index + 1 )+'" class="row added" >';
+                        element += '    <div class="col-sm-12" style="padding-top:1%;">';
+                        element +=      '   <input type="text" placeholder="Nom de l\'itinéraire" class="form-control" value="' + itineraire.nom + '" required="">';
+                        element +=  '   </div>';
+                        element += '</div>';
+
+
+                    }
+                    $("#form-modifier-trajet").find("#itineraire_formulaire").append(element);
+
                 })
+
+                if(itineraires.length >  1){
+                    $("#form-modifier-trajet .btn-itineraire-moins").show(100);
+                }
 
                 $("#modal-modifier-trajet #data-itineraire").val(JSON.stringify(data.itineraires));
                 $("#modal-modifier-trajet #modifier-chauffeur").val(data.trajet.chauffeur_id);
@@ -944,21 +995,41 @@
                 $("#modal-modifier-trajet #modifier_date_heure_arrivee").val(data.trajet.date_heure_arrivee);
                 $("#modal-modifier-trajet #modifier-etat").val(data.trajet.etat);
 
-                if(data.reservation.id != undefined){
+                console.log(data.reservation);
+
+                if(data.reservation != null){
                     $("#modal-modifier-trajet #modifier_date_heure_depart").attr("readonly", "readonly");
                     $("#modal-modifier-trajet #content-itineraire input").attr("readonly", "readonly");
+                    $("#modal-modifier-trajet .btn-itineraire-plus , #modal-modifier-trajet .btn-itineraire-moins").attr("disabled", true);
+                }else{
+                    $("#modal-modifier-trajet #modifier_date_heure_depart").removeAttr("readonly");
+                    $("#modal-modifier-trajet #content-itineraire input").removeAttr("readonly");
+                    $("#modal-modifier-trajet .btn-itineraire-plus , #modal-modifier-trajet .btn-itineraire-moins").removeAttr("disabled");
                 }
+
+                $("#modifier-etat").change();
+                if($("#modifier-etat option:selected").val() == '{{ App\Models\Trajet::getEtat(1) }}'){
+                    $("#modal-modifier-trajet #carburant-restant").val(data.trajet.carburant_depart);
+
+                }else if ($("#modifier-etat option:selected").val() == '{{ App\Models\Trajet::getEtat(2) }}'){
+                    $("#modal-modifier-trajet #carburant-restant").val(data.trajet.carburant_total);
+                }
+
 
             })
         })
 
         $(document).on("click", ".supprimer-trajet", function (e) {
+
             let url = $(this).prev().attr("data-show-url");
             let url_delete = $(this).attr("data-url");
 
             $("#button-supprimer-trajet").parent().attr("href", url_delete);
 
-            $("#modal-supprimer-trajet").modal("show");
+            $("#modal-supprimer-trajet").modal({
+                backdrop: 'static',
+                keyboard: false
+            });
 
             $.get(url, {}, dataType="JSON").done(function (data) {
                 let lists = document.getElementById('list-delete-itineraire')
@@ -986,11 +1057,13 @@
     })
 
 
-    const checkCarburant = function (select, wantStatus) {
-        let etat = select.value
-        let carburant = document.getElementById('carburant')
+    const checkCarburant = function (select, action) {
+        action = action === undefined ? "#modal-trajet" : action ;
 
-        if (etat == wantStatus) {
+        let etat = select.value
+        let carburant = document.querySelector(action + ' .carburant')
+
+        if (etat == '{{ App\Models\Trajet::getEtat(2) }}'|| etat == '{{ App\Models\Trajet::getEtat(1) }}' ) {
             carburant.classList.remove('d-none')
         } else {
             carburant.classList.add('d-none')
@@ -999,16 +1072,16 @@
 
     function resizeDataTable(element , content) {
 
-        setTimeout(function(){
-           let classes = content.attr("class").split(" ");
-           console.log(classes, jQuery.inArray("active", classes), jQuery.inArray("show", classes) !== -1);
-           if(jQuery.inArray("active", classes) !== -1 && jQuery.inArray("show", classes) !== -1 ){
-               let  table = element.DataTable();
-               table.columns.adjust().draw();
-           }else{
-                resizeDataTable(element, content)
-           }
-       }, 200);
+            setTimeout(function(){
+               let classes = content.attr("class").split(" ");
+               console.log(classes, jQuery.inArray("active", classes), jQuery.inArray("show", classes) !== -1);
+               if(jQuery.inArray("active", classes) !== -1 && jQuery.inArray("show", classes) !== -1 ){
+                   let  table = element.DataTable();
+                   table.columns.adjust().draw();
+               }else{
+                    resizeDataTable(element, content)
+               }
+           }, 200);
     }
 
 

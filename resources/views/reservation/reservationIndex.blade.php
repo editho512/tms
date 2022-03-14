@@ -110,13 +110,16 @@
 
                                                     @else 
                                                     <!--<div style="opacity: 0.7" class="badge badge-danger p-2">Vous avez rejetée la reservation</div>-->
-                                                    
-                                                    <button  class="btn btn-sm btn-info" >
-                                                        <i class="fa fa-eye"></i>
-                                                    </button>
+                                                 
+                                                    <a href="{{route('camion.voir', ["camion" => $reservation->trajet->camion->id, "tab" => 2])}}">
+                                                        <button  class="btn btn-sm btn-info" >
+                                                            <i class="fa fa-eye"></i>
+                                                        </button>
+
+                                                    </a>
                                                     
                                                     @endif
-
+                                                    
                                                     @if ($reservation->indisponible())
                                                         <div style="opacity: 0.7" class="badge badge-info p-2 text-center">Réservation déja prise par un autre transporteur</div>
                                                     @endif
@@ -258,6 +261,7 @@
             "paging": true,
             "ordering": true,
             "info": false,
+            language: { url: "{{asset('assets/json/json_fr_fr.json')}}" }
         });
 
         $(document).on("click", ".valider-reservation", function (e) {

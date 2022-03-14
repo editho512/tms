@@ -16,13 +16,14 @@ class Trajet extends Model
     use HasFactory;
 
     protected $fillable = [
-        'depart', 'date_heure_depart', 'arrivee', 'date_heure_arrivee', 'etat', 'camion_id', 'chauffeur_id',
+        'depart', 'date_heure_depart', 'arrivee', 'date_heure_arrivee', 'etat', 'camion_id', 'chauffeur_id', 'carburant_depart', 'carburant_total', 'carburant_id'
     ];
 
     private static $etat = [
         0 => 'A prévoir',
         1 => 'En cours',
         2 => 'Terminé',
+        3 => 'Annulé',
     ];
 
 
@@ -30,6 +31,17 @@ class Trajet extends Model
 
     public function reservation(){
         return $this->hasOne(Reservation::class, "trajet_id", "id");
+    }
+
+    public function viderTrajet(){
+
+        Itineraire::where("id_trajet", $this->id )->delete();
+    }
+
+    public function carburantUtilise(){
+        $carburant = doubleval($this->carburant_depart) - doubleval($this->carburant_total);
+
+        return $carburant;
     }
     
     /**
