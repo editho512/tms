@@ -28,12 +28,70 @@ class ClientController extends Controller
      *
      * @return View
      */
-    public function search()
+    public function search(Request $request)
     {
         //dd(Hash::make('Passw0rd.2022'));
         if (!auth()->user()->isClient()) {
             return redirect()->route('camion.liste');
         }
+
+        $edit = boolval($request->edit);
+
+        if ($edit)
+        {
+            $numero = $request->numero;
+            $reservation = Reservation::where('numero', $numero)->firstOrFail();
+
+            $siblings = $reservation->siblings()->pluck('transporteur_id')->toArray();
+            $siblings[] = $reservation->transporteur_id;
+
+            $request->merge([
+                "province-depart" => $reservation->depart_id,
+                "region-arrivee" => $reservation->arrive->region->id,
+                "ville-arrivee" => $reservation->arrivee_id,
+                "date_depart" => Carbon::parse($reservation->date)->toDateString(),
+                "heure_depart" => Carbon::parse($reservation->date)->toTimeString(),
+            ]);
+
+            $response = json_decode($this->postSearch($request)->getContent(), true);
+            $tmp = [];
+            $selectedCount = 0;
+            $activeIds = [];
+
+            foreach ($response['results'] as $data)
+            {
+                if (in_array($data['transporteur']['id'], $siblings))
+                {
+                    $data = [
+                        'transporteur' => array_merge(['selected' => true], $data['transporteur']),
+                        'prix' => $data['prix'],
+                        "depart" => $data['depart'],
+                        "date_depart" => $data['date_depart'],
+                        "heure_depart" => $data['heure_depart'],
+                        "villes" => $data['villes'],
+                    ];
+                    $selectedCount += 1;
+
+                    $activeIds[$data['transporteur']['id']] = [
+                        "prix" => $data['prix'],
+                        "name" => $data["transporteur"]["name"],
+                    ];
+                }
+                $tmp[] = $data;
+            }
+
+            $datas['results'] = $tmp;
+            $data['details'] = $response['details'];
+
+            return view('client.edit', [
+                'active' => 0,
+                'datas' => $datas,
+                'count' => $selectedCount,
+                'activeIds' => json_encode($activeIds),
+                'reservation' => $reservation,
+            ]);
+        }
+
 
         $provinces = Province::orderBy('nom', 'asc')->get();
         $regions = Region::orderBy('nom', 'asc')->get();
@@ -61,7 +119,7 @@ class ClientController extends Controller
             return redirect()->route('camion.liste');
         }
 
-        $reservations = auth()->user()->reservations()->where('status', '<>', Reservation::STATUS[5])->get();
+        $reservations = auth()->user()->reservations()->where('status', '<>', Reservation::STATUS[5])->orderBy('numero')->get();
 
         return view('client.history', [
             'active' => 1,
@@ -102,6 +160,9 @@ class ClientController extends Controller
 
     public function postSearch(Request $request)
     {
+        /*$int = CarbonPeriod::create('2018-04-21 12:00:00', '2018-04-22 12:00:00');
+        dd($int);*/
+
         $validator = Validator::make($request->all(), [
             "province-depart" => ['required', 'numeric', 'exists:provinces,id'],
             "region-arrivee" => ['required', 'numeric', 'exists:regions,id'],
@@ -145,7 +206,7 @@ class ClientController extends Controller
         }
 
         //$zoneTransporteurs = RnTransporteur::whereIn('rn_id', $zonesDepart->pluck('id'))->orWhereIn('rn_id', $zonesArrivee->pluck('id'))->get();
-        $departCategorie = CategorieDepart::where('province_id', $villeDepart->id)->where('ville_id', $villeArrivee->id)->first('categorie_id');
+        $departCategorie = CategorieDepart::where('province_id', $villeDepart->id)->where('ville_id', $villeArrivee->id)->first(['categorie_id', 'delais_approximatif']);
 
         if ($departCategorie === null)
         {
@@ -153,14 +214,21 @@ class ClientController extends Controller
         }
 
         $categorie = $departCategorie->categorie;
-        $dateHeureDepart = Carbon::parse($request->date_depart . ' ' . $request->heure_depart)->toDateTimeString();
+        $depart = Carbon::parse($request->date_depart . ' ' . $request->heure_depart);
+
+        $dateHeureDepart = $depart->toDateTimeString();
+
+        $tolerance = Reservation::TOLERENCE; // Marge de date d'arrivee approximatif
+
+        $dateArriveeApproximatif = $depart->addHours($departCategorie->delais_approximatif + ($departCategorie->delais_approximatif * $tolerance / 100))->toDateTimeString();
+
         $results = [];
 
         foreach ($zoneTransporteurs as $zone)
         {
             $transporteur = User::find($zone->user_id);
 
-            if (!$transporteur->CamionDisponible($dateHeureDepart)->isEmpty() AND !$transporteur->ChauffeurDisponible($dateHeureDepart)->isEmpty())
+            if (!$transporteur->CamionDisponible($dateHeureDepart, $dateArriveeApproximatif)->isEmpty() AND !$transporteur->ChauffeurDisponible($dateHeureDepart, $dateArriveeApproximatif)->isEmpty())
             {
                 if ($transporteur->prixCategorie($categorie->id, $zone->rn_id) !== 0)
                 {

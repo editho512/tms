@@ -15,6 +15,11 @@ class Reservation extends Model
 
     CONST STATUS = ["en attente", "réservé", "livré", "annulé", "rejeté", 'indisponible'];
 
+    /**
+     * Tolérence en pourcentage
+     */
+    CONST TOLERENCE = 50;
+
     private static $couleurs = [];
 
     /**

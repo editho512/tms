@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddForeignKeyToCamionsTable extends Migration
+class AddForeignKeysToVillesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddForeignKeyToCamionsTable extends Migration
      */
     public function up()
     {
-        Schema::table('camions', function (Blueprint $table) {
-            $table->foreign(['user_id'], 'i_fk_camion_transporteur')->references(['id'])->on('users');
+        Schema::table('villes', function (Blueprint $table) {
+            $table->foreign(['region_id'], 'i_fk_ville_region')->references(['id'])->on('regions');
         });
     }
 
@@ -25,8 +25,8 @@ class AddForeignKeyToCamionsTable extends Migration
      */
     public function down()
     {
-        Schema::table('camions', function (Blueprint $table) {
-            //
+        Schema::table('villes', function (Blueprint $table) {
+            $table->dropForeign('i_fk_ville_region');
         });
     }
 }

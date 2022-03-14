@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Carbon\CarbonPeriod;
+use Carbon\CarbonInterval;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Camion extends Model
 {
@@ -15,7 +18,14 @@ class Camion extends Model
         'name', 'annee', 'model', 'marque', 'numero_chassis', 'photo', 'user_id',
     ];
 
-    public function CarburantRestant(){
+
+    /**
+    * Recuperer la quantité de carburant restant d'un camion
+    *
+    * @return int
+    */
+    public function CarburantRestant() : int
+    {
         $stock =  Carburant::where("camion_id", "=", $this->id)->groupBy("flux")->selectRaw("sum(quantite) as quantite, flux")->get();
         $stock = $stock->toArray();
         $entre = 0 ;
@@ -33,27 +43,28 @@ class Camion extends Model
         return (doubleval($entre) - doubleval($sortie));
     }
 
-    public function estDispoEntre(Carbon $date_depart, Carbon $date_arrivee, $trajet = null){
-
+    public function estDispoEntre(Carbon $date_depart, Carbon $date_arrivee, $trajet = null)
+    {
         $depart = Trajet::where("camion_id", $this->id)
-                ->where("date_heure_depart", ">=", $date_depart->toDateTimeString() )
-                ->where("date_heure_depart", "<=", $date_arrivee->toDateTimeString());
-    
+        ->where("date_heure_depart", ">=", $date_depart->toDateTimeString() )
+        ->where("date_heure_depart", "<=", $date_arrivee->toDateTimeString());
+
         $arrivee = Trajet::where("camion_id", $this->id)
-                ->where("date_heure_arrivee", ">=", $date_depart->toDateTimeString() )
-                ->where("date_heure_arrivee", "<=", $date_arrivee->toDateTimeString());
+        ->where("date_heure_arrivee", ">=", $date_depart->toDateTimeString() )
+        ->where("date_heure_arrivee", "<=", $date_arrivee->toDateTimeString());
 
         if($trajet != null){
             $depart = $depart->where("id", "!=", $trajet->id);
             $arrivee = $arrivee->where("id", "!=", $trajet->id);
         }
 
-        $depart = $depart->get(); 
-        $arrivee = $arrivee->get();                  
+        $depart = $depart->get();
+        $arrivee = $arrivee->get();
         return !isset($depart[0]->id) && !isset($arrivee[0]->id);
     }
 
-    public function transporteur(){
+    public function transporteur()
+    {
         return $this->hasOne(User::class, "id", "user_id");
     }
 
@@ -116,10 +127,17 @@ class Camion extends Model
         return $this->hasMany(Carburant::class);
     }
 
-    public function aUnTrajetEntre(Carbon $depart, ?Carbon $arrivee)
+    public function aUnTrajetEntre(string $date_depart, string $date_arrivee)
     {
-        $trajets = $this->trajets()->where('date_heure_depart');
-        dd($trajets);
+        $sql = "SELECT trajets.id FROM trajets
+            WHERE ((trajets.date_heure_depart < ? AND trajets.date_heure_arrivee > ?) OR (trajets.date_heure_depart < ? AND trajets.date_heure_arrivee > ?))
+            AND trajets.etat <> ? AND trajets.etat <> ?
+            AND trajets.camion_id = ?";
+
+        $trajets = collect(DB::select($sql, [$date_depart, $date_depart, $date_arrivee, $date_arrivee, Trajet::getEtat(3), Trajet::getEtat(2),  $this->id]));
+
+        if ($trajets->isEmpty()) return false;
+        return true;
     }
 
 
@@ -130,10 +148,10 @@ class Camion extends Model
 
 
     /**
-     * Permet de calculer le stock de carburant d'un camion
-     *
-     * @return integer
-     */
+    * Permet de calculer le stock de carburant d'un camion
+    *
+    * @return integer
+    */
     public function stockCarburant() : int
     {
         return $this->carburants()->where('flux', 0)->sum('quantite') - $this->carburants()->where('flux', 1)->sum('quantite');

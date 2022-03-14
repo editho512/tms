@@ -23,6 +23,7 @@ class Trajet extends Model
         0 => 'A prévoir',
         1 => 'En cours',
         2 => 'Terminé',
+        3 => 'Annulé',
     ];
 
 
@@ -31,7 +32,7 @@ class Trajet extends Model
     public function reservation(){
         return $this->hasOne(Reservation::class, "trajet_id", "id");
     }
-    
+
     /**
      * Methode qui retourne le nom de l'itineraire
      *
@@ -64,8 +65,8 @@ class Trajet extends Model
         return $this->belongsTo(Chauffeur::class, 'chauffeur_id', 'id');
     }
 
-    
-    
+
+
     /**
      * Accesseur pour l'etat d'un trajet
      * Si la clé est nulle, la methode retourne le tableau contenant tous les état

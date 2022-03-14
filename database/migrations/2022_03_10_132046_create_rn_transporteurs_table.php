@@ -14,9 +14,9 @@ class CreateRnTransporteursTable extends Migration
     public function up()
     {
         Schema::create('rn_transporteurs', function (Blueprint $table) {
-            $table->primary(['user_id', 'rn_id'], 'rn_trans_id');
-            $table->bigInteger('user_id')->unsigned()->index('i_fk_transporteur')->comment('Identifiant du transporteur');
-            $table->bigInteger('rn_id')->unsigned()->index('i_fk_rn')->comment('Identifiant de la route nationale');
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('user_id')->index('i_fk_transporteur')->comment('Identifiant du transporteur');
+            $table->unsignedBigInteger('rn_id')->index('i_fk_rn')->comment('Identifiant de la route nationale');
             $table->timestamps();
         });
     }

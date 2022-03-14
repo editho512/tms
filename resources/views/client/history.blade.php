@@ -35,9 +35,20 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse ($reservations as $reservation)
+                    @forelse ($reservations as $key => $reservation)
                     <tr>
-                        <td @if ($reservation->same(true)->count() > 1) style="background: {{ $reservation->couleurs() }}" @endif><b>{{ $reservation->numero }}</b></td>
+                        <td id="first" class="{{ $key }}" @if ($reservation->same(true)->count() > 1) style="background: {{ $reservation->couleurs() }}" @endif>
+                            <div class="row text-center" style="">
+                                <div class="col-md-12 mb-3">
+                                    <span>{{ $reservation->numero }}</span>
+                                </div>
+                                <div class="col-md-12">
+                                    <a href="{{ route('client.search', ['edit' => true, 'numero' => $reservation->numero]) }}" class="btn btn-primary">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </td>
                         <td>{{ ucfirst($reservation->transporteur->name) }}</td>
                         <td>{{ $reservation->depart->nom }}</td>
                         <td>{{ $reservation->arrive->nom }}</td>
@@ -89,7 +100,48 @@
         </div>
     </div>
 </div>
+
 @section('scripts')
+
+<script>
+
+    let mustSpans = document.querySelectorAll('#first')
+    let sames = null
+    let parent = null
+    let count = 1
+
+    let removes = []
+
+    mustSpans.forEach((td, index) => {
+        if (parent === null)
+        {
+            parent = td
+        }
+        else
+        {
+            let precedent = document.getElementsByClassName(index - 1)[0]
+
+            if (precedent.innerHTML === td.innerHTML) {
+                count = count + 1
+                removes.push(td)
+            } else {
+                parent.setAttribute('rowspan', count)
+                parent = td
+                count = 1
+            }
+        }
+
+    });
+
+    parent.setAttribute('rowspan', count)
+
+    removes.forEach(element => {
+        element.remove()
+    });
+
+</script>
+
+
 <!-- DataTables -->
 <script src="{{asset('assets/adminlte/plugins/datatables/jquery.dataTables.min.js')}}"></script>
 <script src="{{asset('assets/adminlte/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js')}}"></script>

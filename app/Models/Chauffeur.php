@@ -3,10 +3,12 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\DB;
 
 class Chauffeur extends Model
 {
@@ -66,22 +68,22 @@ class Chauffeur extends Model
         $depart = Trajet::where("chauffeur_id", $this->id)
                             ->where("date_heure_depart", ">=", $date_depart->toDateTimeString() )
                             ->where("date_heure_depart", "<=", $date_arrivee->toDateTimeString());
-        
-      
-                        
+
+
+
         $arrivee = Trajet::where("chauffeur_id", $this->id)
                     ->where("date_heure_arrivee", ">=", $date_depart->toDateTimeString() )
                     ->where("date_heure_arrivee", "<=", $date_arrivee->toDateTimeString());
-        
+
         if($trajet != null){
             $depart = $depart->where("id", "!=", $trajet->id);
             $arrivee = $arrivee->where("id", "!=", $trajet->id);
         }
 
-        $depart = $depart->get(); 
-        $arrivee = $arrivee->get();                  
+        $depart = $depart->get();
+        $arrivee = $arrivee->get();
         return !isset($depart[0]->id) && !isset($arrivee[0]->id);
-    
+
     }
 
 
@@ -94,5 +96,20 @@ class Chauffeur extends Model
     public function transporteur() : BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+
+    public function aUnTrajetEntre(string $date_depart, string $date_arrivee)
+    {
+        $sql = "SELECT trajets.id FROM trajets
+        WHERE ((trajets.date_heure_depart < ? AND trajets.date_heure_arrivee > ?) OR (trajets.date_heure_depart < ? AND trajets.date_heure_arrivee > ?))
+        AND trajets.etat <> ? AND trajets.etat <> ?
+        AND trajets.chauffeur_id = ?";
+
+        $trajets = collect(DB::select($sql, [$date_depart, $date_depart, $date_arrivee, $date_arrivee, Trajet::getEtat(3), Trajet::getEtat(2),  $this->id]));
+
+        if ($trajets->isEmpty()) return false;
+        return true;
+
     }
 }

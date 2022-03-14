@@ -210,6 +210,47 @@ class ReservationController extends Controller
         }
     }
 
+    public function updateReservation(Request $request, Reservation $reservation)
+    {
+        $transporteurs = $request->transporters;
+
+        if (count($transporteurs) <= 0) return response()->json(["error" => "Vous devez selectionner au moins un transporteur"]);
+
+        $numeroReservation = $reservation->numero;
+
+        $siblings = $reservation->siblings()->pluck('transporteur_id')->toArray();
+        $siblings[] = $reservation->transporteur_id;
+
+        foreach ($transporteurs as $id => $transporteur)
+        {
+            if (!in_array($id, $siblings))
+            {
+                $reservation = Reservation::create([
+                    'numero' => $numeroReservation,
+                    'depart_id' => $reservation->depart_id,
+                    'client_id' => auth()->user()->id,
+                    'arrivee_id' => $reservation->arrivee_id,
+                    'transporteur_id' => $id,
+                    'date' => $reservation->date,
+                    'status' => Reservation::STATUS[0],
+                ]);
+            }
+        }
+
+        foreach ($siblings as $id)
+        {
+            if (!key_exists($id, $transporteurs))
+            {
+                Reservation::where('numero', $numeroReservation)->where('transporteur_id', $id)->delete();
+            }
+        }
+
+        return response()->json([
+            'redirect' => true,
+            'url' => route('client.transport.history'),
+        ]);
+    }
+
     public function voir(Reservation $reservation){
         $data['depart'] = $reservation->depart->nom;
         $data['arrivee'] = $reservation->arrive->nom;

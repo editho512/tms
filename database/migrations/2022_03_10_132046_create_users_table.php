@@ -14,7 +14,7 @@ class CreateUsersTable extends Migration
     public function up()
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id');
             $table->string('name');
             $table->string('email')->unique();
             $table->string('type')->nullable()->default('client');
@@ -35,5 +35,3 @@ class CreateUsersTable extends Migration
         Schema::dropIfExists('users');
     }
 }
-
-// $table->foreign(['numero_medicament_article'], 'fk_equivalent_medicament_article_medicament_vendre')->references(['numero_medicament_article'])->on('medicament_vendre');
