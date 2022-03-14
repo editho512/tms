@@ -57,11 +57,11 @@ class ReservationController extends Controller
     }
 
 
-   
+
     public function accept(Request $request, Reservation $reservation)
     {
         $data = $request->all();
-        
+
         if (!$reservation->siblings(true)->isEmpty()) {
             request()->session()->flash("notification", [
                 "value" => "La réservation est déja prise par un autre transporteur" ,
@@ -74,11 +74,11 @@ class ReservationController extends Controller
         if( isset($data["camion"]) === true && isset(Camion::find($data["camion"])->id) === true &&
             isset($data["chauffeur"]) === true && isset(Chauffeur::find($data["chauffeur"])->id) === true
             ){
-            
-             $duree = CategorieDepart::where("province_id", $reservation->depart_id)->where("ville_id", $reservation->arrivee_id)->get();   
-            
+
+             $duree = CategorieDepart::where("province_id", $reservation->depart_id)->where("ville_id", $reservation->arrivee_id)->get();
+
              $date_arrivee = date("Y-m-d h:i:s", strtotime($reservation->date) + (( intval($duree[0]->delais_approximatif ) * 60) * 60 ));
-            
+
              $trajet = Trajet::create(
                             [
                                 "depart" => $reservation->depart->nom ,
@@ -113,18 +113,18 @@ class ReservationController extends Controller
                     $update = $reservation->update();
                 }
             }
-    
+
             request()->session()->flash("notification", [
                 "value" => "Réservation accepté" , "status" => "success"
             ]);
-    
+
         }else{
 
             request()->session()->flash("notification", [
                 "value" => "Echec de l'opération" , "status" => "error"
             ]);
         }
-        
+
         return redirect()->back();
     }
 
@@ -183,7 +183,7 @@ class ReservationController extends Controller
 
         $departId = intval($details['depart']);
         $arriveeId = intval($details['arrivee']);
-        $date_heure = Carbon::parse($details['date_depart'] . ' ' . $details['heure_depart'], 'EAT')->toDateTimeString();
+        $date_heure = Carbon::parse($details['date_depart'] . ' ' . $details['heure_depart'])->toDateTimeString();
 
         $reservation = false;
         $numeroReservation = "RES-" . rand(100, 999) . '-' .date('s');
@@ -208,6 +208,47 @@ class ReservationController extends Controller
                 'url' => route('client.transport.history'),
             ]);
         }
+    }
+
+    public function updateReservation(Request $request, Reservation $reservation)
+    {
+        $transporteurs = $request->transporters;
+
+        if (count($transporteurs) <= 0) return response()->json(["error" => "Vous devez selectionner au moins un transporteur"]);
+
+        $numeroReservation = $reservation->numero;
+
+        $siblings = $reservation->siblings()->pluck('transporteur_id')->toArray();
+        $siblings[] = $reservation->transporteur_id;
+
+        foreach ($transporteurs as $id => $transporteur)
+        {
+            if (!in_array($id, $siblings))
+            {
+                $reservation = Reservation::create([
+                    'numero' => $numeroReservation,
+                    'depart_id' => $reservation->depart_id,
+                    'client_id' => auth()->user()->id,
+                    'arrivee_id' => $reservation->arrivee_id,
+                    'transporteur_id' => $id,
+                    'date' => $reservation->date,
+                    'status' => Reservation::STATUS[0],
+                ]);
+            }
+        }
+
+        foreach ($siblings as $id)
+        {
+            if (!key_exists($id, $transporteurs))
+            {
+                Reservation::where('numero', $numeroReservation)->where('transporteur_id', $id)->delete();
+            }
+        }
+
+        return response()->json([
+            'redirect' => true,
+            'url' => route('client.transport.history'),
+        ]);
     }
 
     public function voir(Reservation $reservation){

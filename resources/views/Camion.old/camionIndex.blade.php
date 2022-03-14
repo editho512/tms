@@ -91,12 +91,7 @@
                                         </td>
                                     </tr>
                                     @endforeach
-                                    @else
-                                    <tr>
-                                        <td style="text-align: center" colspan="6">
-                                            Aucun camion dans la liste
-                                        </td>
-                                    </tr>
+                                   
                                     @endif
                                 </tbody>
                                 <tfoot>

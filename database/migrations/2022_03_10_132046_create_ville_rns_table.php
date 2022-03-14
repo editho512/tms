@@ -14,9 +14,9 @@ class CreateVilleRnsTable extends Migration
     public function up()
     {
         Schema::create('ville_rns', function (Blueprint $table) {
-            $table->primary(['ville_id', 'rn_id'], 'ville_rn_id');
-            $table->bigInteger('ville_id')->unsigned()->index('i_fk_rn_ville')->comment('Identifiant de la ville');
-            $table->bigInteger('rn_id')->unsigned()->index('i_fk_ville_rn')->comment('Identifiant de la route nationale');
+            $table->increments('id');
+            $table->unsignedBigInteger('ville_id')->index('i_fk_rn_ville')->comment('Identifiant de la ville');
+            $table->unsignedBigInteger('rn_id')->index('i_fk_ville_rn')->comment('Identifiant de la route nationale');
             $table->timestamps();
         });
     }

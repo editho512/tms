@@ -34,7 +34,7 @@
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-
+                        <a href="{{ url()->previous() }}" class="btn btn-primary"><i class="fa fa-arrow-left mr-2"></i>Retour</a>
                     </ol>
                 </div>
             </div>
@@ -49,10 +49,8 @@
                 <div class="card-header">
                     <h4 class="text-center" >Les villes de la zone</h4>
                     <div class="card-tools">
-                        <!-- Buttons, labels, and many other things can be placed here! -->
-                        <!-- Here is a label for example -->
+
                     </div>
-                    <!-- /.card-tools -->
                 </div>
                 <div class="card-body box-profile">
                     <div class="row">

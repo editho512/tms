@@ -55,7 +55,9 @@
                                         <th>Nom</th>
                                         <th>Téléphone</th>
                                         <th>CIN</th>
+                                        @if (auth()->user()->isAdmin())
                                         <th>Actions</th>
+                                        @endif
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -73,6 +75,8 @@
                                                         <div class="badge badge-info">({{ $chauffeur->nombreTrajetEnAttente() }} - Trajet(s) en attente)</div>
                                                     @endif
                                                 </td>
+                                                @if (auth()->user()->isAdmin())
+
                                                 <td>
                                                     <div class="row" style="text-align: center;">
                                                         <div class="col-sm-12">
@@ -87,13 +91,10 @@
                                                         </div>
                                                     </div>
                                                 </td>
+                                                @endif
                                             </tr>
                                         @empty
-                                            <tr>
-                                                <td style="text-align: center" colspan="6">
-                                                    Aucun chauffeur dans la liste
-                                                </td>
-                                            </tr>
+                                            
                                         @endforelse
                                     </tbody>
                                     <tfoot>
@@ -104,7 +105,9 @@
                                             <th>Nom</th>
                                             <th>Téléphone</th>
                                             <th>CIN</th>
+                                            @if (auth()->user()->isAdmin())
                                             <th>Actions</th>
+                                            @endif
                                         </tr>
                                     </tfoot>
                                 </table>

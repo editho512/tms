@@ -14,10 +14,11 @@ class CreateProvinceRnsTable extends Migration
     public function up()
     {
         Schema::create('province_rns', function (Blueprint $table) {
-            $table->primary(['province_id', 'rn_id']);
-            $table->bigInteger('province_id')->unsigned()->index('i_fk_rn_province')->unsigned();
-            $table->bigInteger('rn_id')->unsigned()->index('i_fk_province_rn')->unsigned();
+            $table->unsignedBigInteger('province_id')->index('i_fk_rn_province');
+            $table->unsignedBigInteger('rn_id')->index('i_fk_province_rn');
             $table->timestamps();
+
+            $table->primary(['province_id', 'rn_id']);
         });
     }
 

@@ -6,15 +6,6 @@
 
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
-<style>
-
-
-    /*        color: hsl(210, 32%, 93%);*/
-    /*        color: hsl(210, 38%, 97%);*/
-    /*1fafca*/
-
-</style>
-
 @endsection
 
 @section('content')
@@ -176,45 +167,38 @@
     const addToList = (button, data) => {
         count = count + 1
         if (count > 0) document.getElementById('text').classList.remove('d-none')
-
         number.innerText = count
         transporterIds[data.transporteur.id] = {
             prix: data.prix,
             name: data.transporteur.name
         }
-
         // Changer le texte du bouton
         button.innerHTML = '<i class="fa fa-minus"></i>'
         button.classList.remove('btn-primary')
         button.classList.add('btn-danger')
-
         button.setAttribute('onclick', 'removeToList(this, ' + JSON.stringify(data) + ')')
     }
 
     const removeToList = (button, data) => {
         count = count - 1
         if (parseInt(count) === 0) document.getElementById('text').classList.add('d-none')
-
         number.innerText = count
         delete transporterIds[data.transporteur.id]
-
         // Changer le texte du bouton
         button.innerHTML = '<i class="fa fa-plus"></i>'
         button.classList.remove('btn-danger')
         button.classList.add('btn-primary')
-
         button.setAttribute('onclick', 'addToList(this, ' + JSON.stringify(data) + ')')
     }
 
     const reserverTest = (url) => {
         window.event.preventDefault
-
         if (Object.keys(transporterIds).length === 0) {
             alert('Veuiller selectionner au moins un transporteur')
             return false
         }
-
         let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        number.innerHTML = '<div class="spinner-border spinner-border-sm" role="status"><span class="sr-only">Loading...</span></div>'
 
         fetch(url, {
             headers: {
@@ -230,6 +214,7 @@
             })
         })
         .then((response) => {
+            number.innerText = count.toString()
             return response.json()
         })
         .then(data => {
@@ -240,14 +225,23 @@
         });
     }
 
-
     const resetFields = (button) => {
-        let parent = button.parentElement.parentElement.parentElement
+
+        //button.parentElement.parentElement.children
+
+        let parent = button.parentElement.parentElement
         let selects = parent.querySelectorAll('select')
+        let inputs = parent.querySelectorAll('input')
 
         selects.forEach(select => {
             if (parseInt(select.value) > 0) {
                 $(select).prop('selectedIndex', 0).select2()
+            }
+        })
+
+        inputs.forEach(input => {
+            if (input.value != "") {
+                input.value = null
             }
         })
     }
@@ -258,10 +252,8 @@
 
     const reserver = (data) => {
         window.event.preventDefault()
-
         let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         let url = '{{ route("client.reserver") }}'
-
         fetch(url, {
             headers: {
                 "Content-Type": "application/json",
@@ -287,19 +279,22 @@
 
     const search = () => {
         window.event.preventDefault()
-        let form = window.event.target;
-        let url = form.getAttribute('action')
-        let method = form.getAttribute('method')
-        let data = new FormData(form)
 
+        if (Object.keys(transporterIds).length > 0) {
+            alert ('Vous devez retirer d\'abord les transporteurs que vous avez selectionné')
+            return false;
+        }
+
+        let form = window.event.target;
         let loading = document.getElementById('icon')
         let btn = document.getElementById('search-btn')
+
         loading.innerHTML = '<div class="spinner-grow spinner-grow-sm" role="status"><span class="sr-only">Loading...</span></div>'
         btn.disabled = true
 
-        fetch(url, {
-            method: method,
-            body: data
+        fetch(form.getAttribute('action'), {
+            method: form.getAttribute('method'),
+            body: new FormData(form)
         })
         .then(response => {
             loading.innerHTML = '<i class="fa fa-search"></i>'
@@ -308,12 +303,10 @@
         })
         .then(data => {
             let tbody = document.getElementById('transporteur')
-
             if (data.errors)
             {
                 Object.keys(data.errors).forEach(key => {
                     let field = document.getElementsByName(key).item(0)
-
                     if (key == 'date_depart' || key == 'heure_depart') field.classList.add('error')
                     else field.parentElement.children.item(1).classList.add('error')
                 })
@@ -322,9 +315,15 @@
                 alert('Aucune transporteur trouvé')
                 tbody.innerHTML = '<tr><td colspan="4" class="text-center">Aucune transporteur trouvé</td></tr>'
             }
+            else if (data.length === 0)
+            {
+                alert('Aucun transporteur trouvé')
+                return false
+                //tbody.classList.remove('d-none')
+                //tbody.innerHTML = '<tr><td colspan="4" class="text-center">Aucun transporteur trouvé</td></tr>'
+            }
             else
             {
-
                 if (data.results.length > 0)
                 {
                     if (data.error)
@@ -332,20 +331,24 @@
                         tbody.innerHTML = '<tr><td colspan="4" class="text-center">' + data.error + '</td></tr>'
                         return
                     }
-
                     searchData = data.details
-                    document.getElementById('result').classList.remove('d-none')
-                    tbody.innerHTML = ''
 
+                    let result = document.getElementById('result')
+                    result.classList.remove('d-none')
+
+                    window.scrollTo({
+                        top: result.getBoundingClientRect().top,
+                        behavior: 'smooth',
+                    })
+
+                    tbody.innerHTML = ''
                     data.results.forEach(element => {
                         let transporteur = element.transporteur
-
                         let tr = document.createElement('tr')
                         let id = document.createElement('td')
                         let nom = document.createElement('td')
                         let prix = document.createElement('td')
                         let action = document.createElement('td')
-
                         id.innerHTML = transporteur.id
                         nom.innerHTML = transporteur.name.toUpperCase()
                         prix.innerHTML = element.prix
@@ -356,7 +359,6 @@
                         tr.appendChild(nom)
                         tr.appendChild(prix)
                         tr.appendChild(action)
-
                         tbody.appendChild(tr)
                     })
                 }
@@ -378,13 +380,10 @@
     * Mettre a jour la listes des villes et des regions de départ
     */
     const updateDepart = function(select, type = 0) {
-
         if (select.value === '') return false
-
         let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         let url = '{{ route("client.do-search") }}'
         let value = select.value
-
         fetch(url, {
             headers: {
                 "Content-Type": "application/json",
@@ -402,37 +401,27 @@
             return response.json()
         })
         .then(data => {
-
             let provinceDepart = document.getElementById('province-depart')
-
             if (type === 0) // Pour la selection des provinces
             {
                 regionDepart.innerHTML = null
-
                 $('#district-depart').prop('selectedIndex', 0).select2()
                 $('#commune-depart').prop('selectedIndex', 0).select2()
-
                 updateSelect(data.regions, regionDepart, 'Région')
             }
             else if(type === 1) // Pour la selection des regions
             {
                 districtDepart.innerHTML = null
-
                 $('#commune-depart').prop('selectedIndex', 0).select2()
-
                 updateSelect(data.districts, districtDepart, 'District')
-
                 $('#province-depart').val(data.province.id).select2()
                 $('#region-depart').val(data.region.id).select2()
-
             }
             else if(type === 2) // Pour la selection des districts
             {
                 communetDepart.innerHTML = null
-
                 updateSelect(data.regions, regionDepart, 'Région')
                 updateSelect(data.communes, communetDepart, 'Commune')
-
                 $('#province-depart').val(data.province.id).select2()
                 $('#region-depart').val(data.region.id).select2()
                 $('#district-depart').val(data.district.id).select2()
@@ -442,13 +431,11 @@
                 updateSelect(data.regions, regionDepart, 'Région')
                 updateSelect(data.districts, districtDepart, 'District')
                 updateSelect(data.communes, communetDepart, 'Commune')
-
                 $('#province-depart').val(data.province.id).select2()
                 $('#region-depart').val(data.region.id).select2()
                 $('#district-depart').val(data.district.id).select2()
                 $('#commune-depart').val(data.commune.id).select2()
             }
-
         })
         .catch(function(error) {
             console.log(error);
@@ -459,13 +446,10 @@
     * Mettre a jour la listes des villes et des regions de départ
     */
     const updateArrivee = function(select, type = 0) {
-
         if (select.value === '') return false
-
         let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         let url = '{{ route("client.do-search") }}'
         let value = select.value
-
         fetch(url, {
             headers: {
                 "Content-Type": "application/json",
@@ -483,24 +467,18 @@
             return response.json()
         })
         .then(data => {
-
             let regionArrivee = document.getElementById('region-arrivee')
             let villeArrivee = document.getElementById('ville-arrivee')
-
             if(type === 1) // Pour la selection des regions
             {
                 villeArrivee.innerHTML = null
-
                 $('#ville-arrivee').prop('selectedIndex', 0).select2()
                 updateSelect(data.villes, villeArrivee, 'Ville d\'arrivée')
-
                 $('#region-arrivee').val(data.region.id).select2()
-
             }
             else if(type === 2) // Pour la selection des districts
             {
                 updateSelect(data.regions, regionArrivee, 'Région')
-
                 $('#region-arrivee').val(data.region.id).select2()
                 $('#ville-arrivee').val(data.ville.id).select2()
             }
@@ -515,7 +493,6 @@
         let defaultOption = document.createElement('option')
         defaultOption.innerHTML = defaultSelection
         select.appendChild(defaultOption)
-
         data.forEach(region => {
             let option = document.createElement('option')
             option.value = region.id
@@ -524,7 +501,6 @@
         });
     }
 
-
     const elem = document.querySelector('input[name="date_depart"]');
     const datepicker = new Datepicker(elem, {
         autohide: false,
@@ -532,7 +508,6 @@
         clearBtn: true,
         language: 'fr',
     });
-
 </script>
 
 <script>

@@ -234,9 +234,7 @@
                                         </td>
                                     </tr>
                                     @empty
-                                    <tr>
-                                        <td colspan="7" class="text-center">Aucune trajet pour ce camion</td>
-                                    </tr>
+                                  
                                     @endforelse
                                 </tbody>
                                 <tfoot>

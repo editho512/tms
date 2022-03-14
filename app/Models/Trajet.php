@@ -39,9 +39,7 @@ class Trajet extends Model
     }
 
     public function carburantUtilise(){
-        $carburant = doubleval($this->carburant_depart) - doubleval($this->carburant_total);
-
-        return $carburant;
+        return doubleval($this->carburant_total);
     }
     
     /**
@@ -76,8 +74,8 @@ class Trajet extends Model
         return $this->belongsTo(Chauffeur::class, 'chauffeur_id', 'id');
     }
 
-    
-    
+
+
     /**
      * Accesseur pour l'etat d'un trajet
      * Si la clé est nulle, la methode retourne le tableau contenant tous les état

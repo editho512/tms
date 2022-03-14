@@ -11,7 +11,6 @@
         outline: none;
         font-size: 15px;
     }*/
-
     .collapsible {
         width: 55px;
         cursor: pointer;
@@ -19,33 +18,26 @@
         height: 55px;
         display: none;
     }
-
     @media only screen and (max-width: 900px) {
         .collapsible {
             display: block;
         }
-
         .header-fixed {
             padding-left: 50px!important;
             padding-right: 50px!important;
             display: flex;
             justify-content: space-between;
         }
-
         .nonable {
             display: none;
         }
     }
-
     @media only screen and (max-width: 500px) {
-
         .header-fixed {
             padding-left:10px!important;
             padding-right: 10px!important;
         }
     }
-
-
     /* Style the collapsible content. Note: hidden by default */
     .menu {
         padding: 0 18px;
@@ -103,7 +95,7 @@
         </li>
     </ul>
 
-    <button type="button" class="collapsible btn btn-info text-center"><i class="fa fa-bars fa-2x"></i></button>
+    <button style="box-shadow: 1px 1px 1px 1px rgb(97, 97, 97)" type="button" class="collapsible rounded btn btn-info text-center"><i class="fa fa-bars fa-2x"></i></button>
 
 </nav>
 
@@ -140,9 +132,7 @@
 <script>
     let coll = document.getElementsByClassName("collapsible")
     let content = document.getElementsByClassName("menu").item(0)
-
     let i;
-
     for (i = 0; i < coll.length; i++) {
         coll[i].addEventListener("click", function() {
             this.classList.toggle("active");

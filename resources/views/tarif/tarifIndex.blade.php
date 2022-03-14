@@ -460,6 +460,7 @@
 </script>
 
 <script>
+    
     function updateTrajets(select, url) {
         window.event.preventDefault();
         let zone = document.getElementById('zone')
@@ -480,9 +481,20 @@
         })
         .then((response) => response.json())
         .then((data) => {
+            let ul = new DOMParser().parseFromString(data.lists, 'text/html').firstChild.querySelector('ul')
+
             let trajet = document.getElementById('list-trajets')
             trajet.parentElement.classList.remove('d-none')
-            trajet.innerHTML = data.lists
+
+            if (ul.innerHTML === "")
+            {
+                trajet.innerHTML = "Aucun trajets pour cette catégorie"
+            }
+            else
+            {
+                trajet.innerHTML = data.lists
+            }
+
         })
         .catch((err) => {
             console.log(err)
@@ -504,7 +516,6 @@
             let trajet = document.getElementById('trajets')
             debugger
             trajet.innerHTML = data.options
-
         })
         .catch((err) => {
             alert('Une erreur s\'est produite')

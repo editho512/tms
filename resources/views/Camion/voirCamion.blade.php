@@ -97,7 +97,7 @@
                                 @if ($camion->dernierTrajet(true) !== null)
                                 {{ $camion->dernierTrajet(true)->nomItineraire() }}
                                 @else
-                                Aucun 
+                                Aucun
                                 @endif
                             </p>
                         </div>
@@ -940,14 +940,14 @@
             "info": false,
         });*/
 
-        
+
         $(document).on("click","#nav-trajet-tab", function(){
 
                 resizeDataTable($("#trajets"), $("#nav-trajet")) ;
         })
 
         $(document).on("click","#nav-carburant-tab", function(){
-            
+
                 resizeDataTable($("#flux-carburants"), $("#nav-carburant")) ;
         })
 

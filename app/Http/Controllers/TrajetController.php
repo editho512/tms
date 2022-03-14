@@ -121,7 +121,7 @@ class TrajetController extends Controller
             //dd('La date de depart doit être spérieur a ce moment précis si la status est aprévoir');
         }
 
-        
+
 
         $verifierDate = true;
 
@@ -317,6 +317,7 @@ class TrajetController extends Controller
 
         $date_depart = Carbon::parse(date("Y-m-d H:i:s", strtotime($request->date_heure_depart)), 'EAT');
         $date_arrivee = $request->date_heure_arrivee === null ? null : Carbon::parse(date("Y-m-d H:i:s", strtotime($request->date_heure_arrivee)), 'EAT');
+
 
         $camion = Camion::findOrFail($request->camion_id);
 

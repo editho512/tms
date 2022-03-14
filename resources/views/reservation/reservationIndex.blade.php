@@ -44,17 +44,25 @@
                             <table  class="table table-bordered table-striped table-principale">
                                 <thead>
                                     <tr>
+                                        @if (auth()->user()->estSuperAdmin())
+                                        <th>Transporteur</th>
+                                        @endif
                                         <th>Client</th>
                                         <th>Date</th>
                                         <th>Statut</th>
                                         <th>Départ</th>
                                         <th>Arrivée</th>
+                                        @if (auth()->user()->isAdmin())
                                         <th>Actions</th>
+                                        @endif
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @forelse ($reservations as $reservation)
                                         <tr>
+                                            @if (auth()->user()->estSuperAdmin())
+                                            <td>{{ucfirst($reservation->transporteur->name)}}</td>
+                                            @endif
                                             <td>{{ ucfirst($reservation->client->name) }}</td>
                                             <td>{{ formatDate($reservation->date) }}</td>
                                             <td class="text-center">
@@ -78,6 +86,8 @@
                                             </td>
                                             <td>{{ $reservation->depart->nom }}</td>
                                             <td>{{ $reservation->arrive->nom }}</td>
+                                            @if (auth()->user()->isAdmin())
+
                                             <td class="row">
                                                 <div class="col-sm-12 text-center">
                                                     @if ($reservation->enAttente())
@@ -110,14 +120,17 @@
 
                                                     @else 
                                                     <!--<div style="opacity: 0.7" class="badge badge-danger p-2">Vous avez rejetée la reservation</div>-->
-                                                 
-                                                    <a href="{{route('camion.voir', ["camion" => $reservation->trajet->camion->id, "tab" => 2])}}">
-                                                        <button  class="btn btn-sm btn-info" >
-                                                            <i class="fa fa-eye"></i>
-                                                        </button>
+                                                   
+                                                        @if (isset($reservation->trajet->camion->id) === true)
+                                                            
+                                                        <a href="{{route('camion.voir', ["camion" => $reservation->trajet->camion->id, "tab" => 2])}}">
+                                                            <button  class="btn btn-sm btn-info" >
+                                                                <i class="fa fa-eye"></i>
+                                                            </button>
 
-                                                    </a>
-                                                    
+                                                        </a>
+                                                        
+                                                        @endif
                                                     @endif
                                                     
                                                     @if ($reservation->indisponible())
@@ -126,22 +139,25 @@
 
                                                 </div>
                                             </td>
+                                            @endif
                                         </tr>
                                     @empty
 
-                                        <td style="text-align: center" colspan="6">
-                                            Aucune reservation
-                                        </td>
                                     @endforelse
                                 </tbody>
                                 <tfoot>
                                     <tr>
+                                        @if (auth()->user()->estSuperAdmin())
+                                        <th>Transporteur</th>
+                                        @endif
                                         <th>Client</th>
                                         <th>Date</th>
                                         <th>Statut</th>
                                         <th>Départ</th>
                                         <th>Arrivée</th>
+                                        @if (auth()->user()->isAdmin())
                                         <th>Actions</th>
+                                        @endif
                                     </tr>
                                 </tfoot>
                             </table>

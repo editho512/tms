@@ -103,6 +103,8 @@ Route::prefix('client')->group(function() {
 
     Route::post('/reserver', [ReservationController::class, 'reserver'])->name('client.reserver');
 
+    Route::post('/update-reservation/{reservation}', [ReservationController::class, 'updateReservation'])->name('client.reservation.update');
+
     Route::get('/annuler-reservation/{reservation}', [ClientController::class, 'annulerReservation'])->name('client.reservation.annuler');
 
 });
@@ -156,15 +158,15 @@ Route::get('/Camion', [App\Http\Controllers\CamionController::class, 'index'])->
 Route::middleware(['admin'])->group(function () {
     //
     Route::get('/Camion/voir/{camion}/{tab?}',  [App\Http\Controllers\CamionController::class, 'voir'])->name("camion.voir");
-    
+
     Route::get('/Camion/delete/{camion}/{type?}',  [App\Http\Controllers\CamionController::class, 'delete'])->name("camion.delete");
-    
+
     Route::get('/Camion/supprimer/{camion}',  [App\Http\Controllers\CamionController::class, 'supprimer'])->name("camion.supprimer");
-    
+
     Route::patch('/Camion/update/{camion}', [App\Http\Controllers\CamionController::class, 'update'])->name('camion.update');
-    
+
     Route::get('/Camion/modifier/{camion}', [App\Http\Controllers\CamionController::class, 'modifier'])->name('camion.modifier');
-    
+
     Route::post('/Camion/ajouter', [App\Http\Controllers\CamionController::class, 'add'])->name('camion.ajouter');
 });
 

@@ -3,11 +3,13 @@
 namespace App\Models;
 
 use App\Models\Camion;
+use Illuminate\Database\Eloquent\Collection;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -102,88 +104,186 @@ class User extends Authenticatable
         return $this->hasMany(Camion::class);
     }
 
- 
+
     public function chauffeurs() : HasMany
     {
         return $this->hasMany(Chauffeur::class);
     }
 
 
-    public function prixCategorie(int $idCategorie, int $zone)
+    /**
+     * Recuperer le prix d'un caégorie d'un transporteur en fonction de la zone de travail
+     *
+     * @param integer $idCategorie
+     * @param integer $zone
+     * @return void
+     */
+    public function prixCategorie(int $idCategorie, int $zone) : float
     {
         $categoriePrix = CategorieRnTransporteur::where('categorie_id', $idCategorie)->where('transporteur_id', $this->id)->where('rn_id', $zone)->first();
 
         if ($categoriePrix === null)
         {
-            return 0;
+            return 0.0;
         }
-        return $categoriePrix->prix;
+        return doubleval($categoriePrix->prix);
     }
 
-    public function isSameAs(User $user)
+
+    /**
+     * Detecter si un utilisateur est le meme que l'utilisateur passé en parametre
+     *
+     * @param User $user
+     * @return boolean
+     */
+    public function isSameAs(User $user) : bool
     {
         if ($this->id === $user->id) return true;
         return false;
     }
 
 
-    public function reservations()
+    /**
+     * Recuperer tous les reserations d'un client
+     *
+     * @return HasMany
+     */
+    public function reservations() : HasMany
     {
         return $this->hasMany(Reservation::class, 'client_id', 'id');
     }
 
-    public function reservationsTransporteur()
+
+    /**
+     * Recuperer tous les reservation d'un transporteur
+     *
+     * @return HasMany
+     */
+    public function reservationsTransporteur() : HasMany
     {
         return $this->hasMany(Reservation::class, 'transporteur_id', 'id');
     }
 
 
-    public function zones()
+    /**
+     * Recuperer tous les zones de transport d'un transporteur
+     *
+     * @return BelongsToMany
+     */
+    public function zones() : BelongsToMany
     {
         return $this->belongsToMany(Rn::class, 'rn_transporteurs', 'user_id', 'rn_id');
     }
 
 
-    public function categorieRnTrans()
+    /**
+     * Recuperer les categories et les prix d'un transporteurainsi que la zone choisi
+     *
+     * @return HasMany
+     */
+    public function categorieRnTrans() : HasMany
     {
         return $this->hasMany(CategorieRnTransporteur::class, 'transporteur_id', 'id');
     }
 
-    public function CamionDisponible($date = null){
 
-        $camion = Camion::where("user_id", $this->id)->get();
+    /**
+     * Recuperer tous les camions disponibles d'un transporteur en fonction d'une date
+     *
+     * @param string $date Date et heure de départ de la reservation du client
+     * @param string $dateArriveeApproximatif Date et heure d'arrivee approximatif
+     * @return Collection
+     */
+    /*
+    public function CamionDisponible(string $date, string $dateArriveeApproximatif)
+    {
+        $camion = Camion::where("user_id", $this->id)->where('blocked', 0)->get();
         $dispo = collect();
 
-        if( $camion->count() > 0){
-            
+        if( $camion->count() > 0)
+        {
             $camions =  $camion->count() > 0 ? " camion_id IN (".implode(",", $camion->pluck("id")->toArray()).") AND " : "";
-    
+
             $sql = 'SELECT distinct(camion_id) FROM trajets WHERE '.$camions.'  date_heure_depart IS NOT NULL AND date_heure_arrivee IS NOT NULL AND  date_heure_depart < "'.$date.'" AND date_heure_arrivee > "'.$date.'"   ';
-            
+
             $indispo =  DB::select(DB::raw($sql));
             $dispo = Camion::where("user_id", $this->id)->whereNotIn("id", array_column($indispo, 'camion_id'))->get();
         }
 
-
         return $dispo;
-    }
+    }*/
 
-    public function ChauffeurDisponible($date = null){
+    /**
+     * Recuperer tous les camions disponibles d'un transporteur en fonction d'une date
+     *
+     * @param string $date Date et heure de départ de la reservation du client
+     * @param string $dateArriveeApproximatif Date et heure d'arrivee approximatif
+     * @return Collection
+     */
+    public function CamionDisponible(string $dateDepart, string $dateArriveeApproximatif = null)
+    {
+        $camions = $this->camions()->where('blocked', 0)->get();
+        $camionsDisponibles = [];
 
-        $chauffeur = Chauffeur::where("user_id", $this->id)->get();
-        $dispo = [];
-
-        if( $chauffeur->count() > 0){
-            
-            $chauffeurs =  $chauffeur->count() > 0 ? " chauffeur_id IN (".implode(",", $chauffeur->pluck("id")->toArray()).") AND " : "";
-    
-            $sql = 'SELECT distinct(chauffeur_id) FROM trajets WHERE '.$chauffeurs.'  date_heure_depart IS NOT NULL AND date_heure_arrivee IS NOT NULL AND  date_heure_depart < "'.$date.'" AND date_heure_arrivee > "'.$date.'"  ';
-            
-            $indispo =  DB::select(DB::raw($sql));
+        foreach ($camions as $camion)
+        {
+            if ($camion->aUnTrajetEntre($dateDepart, $dateArriveeApproximatif) === false)
+            {
+                $camionsDisponibles[] = $camion;
+            }
         }
 
-        $dispo = Chauffeur::where("user_id", $this->id)->whereNotIn("id", array_column($indispo, 'chauffeur_id'))->get();
+        return collect($camionsDisponibles);
+    }
+
+        /**
+     * Recuperer tous les chauffeurs disponibles d'un transporteur en fonction d'une date
+     *
+     * @param string $date Date et heure de départ du client
+     * @param string $dateArriveeApproximatif Date et heure d'arrivee approximatif
+     * @return Collection
+     */
+    public function ChauffeurDisponible(string $dateDepart, string $dateArriveeApproximatif = null)
+    {
+        $chauffeurs = $this->chauffeurs()->where('blocked', 0)->get();
+        $chauffeursDisponibles = [];
+
+        foreach ($chauffeurs as $chauffeur)
+        {
+            if ($chauffeur->aUnTrajetEntre($dateDepart, $dateArriveeApproximatif) === false)
+            {
+                $chauffeursDisponibles[] = $chauffeur;
+            }
+        }
+
+        return collect($chauffeursDisponibles);
+    }
+
+
+    /**
+     * Recuperer tous les chauffeurs disponibles d'un transporteur en fonction d'une date
+     *
+     * @param string $date Date et heure de départ du client
+     * @param string $dateArriveeApproximatif Date et heure d'arrivee approximatif
+     * @return Collection
+     */
+    /*public function ChauffeurDisponible(string $date, string $dateArriveeApproximatif)
+    {
+
+        $chauffeur = Chauffeur::where("user_id", $this->id)->where('blocked', 0)->get();
+        $dispo = collect();
+
+        if( $chauffeur->count() > 0){
+
+            $chauffeurs =  $chauffeur->count() > 0 ? " chauffeur_id IN (".implode(",", $chauffeur->pluck("id")->toArray()).") AND " : "";
+
+            $sql = 'SELECT distinct(chauffeur_id) FROM trajets WHERE '.$chauffeurs.'  date_heure_depart IS NOT NULL AND date_heure_arrivee IS NOT NULL AND  date_heure_depart < "'.$date.'" AND date_heure_arrivee > "'.$date.'"  ';
+
+            $indispo =  DB::select(DB::raw($sql));
+            $dispo = Chauffeur::where("user_id", $this->id)->whereNotIn("id", array_column($indispo, 'chauffeur_id'))->get();
+        }
+
 
         return $dispo;
-    }
+    }*/
 }

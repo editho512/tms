@@ -187,6 +187,7 @@
                         }
 
                         alertify.set('notifier','position', 'bottom-right');
+                        alertify.set('notifier','delay', 15);
                         if(notif.status == "success"){
                             alertify.success(notif.value);
                         }else{
