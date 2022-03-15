@@ -166,6 +166,8 @@
     let number = document.getElementById('number')
     let count = parseInt(number.innerText)
 
+    let defaultVilles = JSON.parse('<?= json_encode($villes) ?>')
+
     const addToList = (button, data) => {
         count = count + 1
         if (count > 0) document.getElementById('text').classList.remove('d-none')
@@ -234,6 +236,8 @@
         let parent = button.parentElement.parentElement
         let selects = parent.querySelectorAll('select')
         let inputs = parent.querySelectorAll('input')
+
+        updateSelect(defaultVilles, document.getElementById('ville-arrivee'), 'Ville destination')
 
         selects.forEach(select => {
             if (parseInt(select.value) > 0) {
@@ -378,77 +382,17 @@
         updateArrivee(e.currentTarget, index);
     });
 
-    /**
-    * Mettre a jour la listes des villes et des regions de départ
-    */
-    const updateDepart = function(select, type = 0) {
-        if (select.value === '') return false
-        let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        let url = '{{ route("client.do-search") }}'
-        let value = select.value
-        fetch(url, {
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json, text-plain, */*",
-                "X-CSRF-TOKEN": token
-            },
-            method: 'post',
-            credentials: "same-origin",
-            body: JSON.stringify({
-                type: type,
-                id: parseInt(value),
-            })
-        })
-        .then((response) => {
-            return response.json()
-        })
-        .then(data => {
-            let provinceDepart = document.getElementById('province-depart')
-            if (type === 0) // Pour la selection des provinces
-            {
-                regionDepart.innerHTML = null
-                $('#district-depart').prop('selectedIndex', 0).select2()
-                $('#commune-depart').prop('selectedIndex', 0).select2()
-                updateSelect(data.regions, regionDepart, 'Région')
-            }
-            else if(type === 1) // Pour la selection des regions
-            {
-                districtDepart.innerHTML = null
-                $('#commune-depart').prop('selectedIndex', 0).select2()
-                updateSelect(data.districts, districtDepart, 'District')
-                $('#province-depart').val(data.province.id).select2()
-                $('#region-depart').val(data.region.id).select2()
-            }
-            else if(type === 2) // Pour la selection des districts
-            {
-                communetDepart.innerHTML = null
-                updateSelect(data.regions, regionDepart, 'Région')
-                updateSelect(data.communes, communetDepart, 'Commune')
-                $('#province-depart').val(data.province.id).select2()
-                $('#region-depart').val(data.region.id).select2()
-                $('#district-depart').val(data.district.id).select2()
-            }
-            else if(type === 3) // Pour la selection des communes
-            {
-                updateSelect(data.regions, regionDepart, 'Région')
-                updateSelect(data.districts, districtDepart, 'District')
-                updateSelect(data.communes, communetDepart, 'Commune')
-                $('#province-depart').val(data.province.id).select2()
-                $('#region-depart').val(data.region.id).select2()
-                $('#district-depart').val(data.district.id).select2()
-                $('#commune-depart').val(data.commune.id).select2()
-            }
-        })
-        .catch(function(error) {
-            console.log(error);
-        });
-    }
 
     /**
     * Mettre a jour la listes des villes et des regions de départ
     */
     const updateArrivee = function(select, type = 0) {
-        if (select.value === '') return false
+        if (select.value == '' || isNaN(parseInt(select.value)) || parseInt(select.value) == 0)
+        {
+            updateSelect(defaultVilles, document.getElementById('ville-arrivee'), 'Ville destination');
+            return false
+        }
+
         let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         let url = '{{ route("client.do-search") }}'
         let value = select.value
@@ -475,12 +419,12 @@
             {
                 villeArrivee.innerHTML = null
                 $('#ville-arrivee').prop('selectedIndex', 0).select2()
-                updateSelect(data.villes, villeArrivee, 'Ville d\'arrivée')
+                updateSelect(data.villes, villeArrivee, 'Ville destination')
                 $('#region-arrivee').val(data.region.id).select2()
             }
             else if(type === 2) // Pour la selection des districts
             {
-                updateSelect(data.regions, regionArrivee, 'Région')
+                updateSelect(data.regions, regionArrivee, 'Région destination')
                 $('#region-arrivee').val(data.region.id).select2()
                 $('#ville-arrivee').val(data.ville.id).select2()
             }
