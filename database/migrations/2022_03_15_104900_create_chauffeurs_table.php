@@ -20,8 +20,8 @@ class CreateChauffeursTable extends Migration
             $table->string('cin')->nullable();
             $table->text('permis')->nullable();
             $table->boolean('blocked')->default(false);
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->timestamps();
-            $table->unsignedBigInteger('user_id')->index('user_id')->comment('Identifiant du transporteur où travaille le chauffeur');
         });
     }
 
