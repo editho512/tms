@@ -31,6 +31,8 @@ class ChauffeurController extends Controller
     public function add(Request $request){
 
         $data = $request->except("permis");
+
+        $data['user_id'] = auth()->user()->id;
         $chauffeur = Chauffeur::create($data);
 
         if( $request->file('permis') !== null){
@@ -67,6 +69,7 @@ class ChauffeurController extends Controller
     public function update(Request $request, Chauffeur $chauffeur){
 
         $data = $request->except("permis");
+        $chauffeur->user_id = auth()->user()->id;
         $chauffeur->name = $data["name"];
         $chauffeur->phone = $data["phone"];
         $chauffeur->cin = $data["cin"];

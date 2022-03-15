@@ -285,6 +285,7 @@
 
     const search = () => {
         window.event.preventDefault()
+        document.getElementById('message').innerHTML = null
 
         if (Object.keys(transporterIds).length > 0) {
             alert ('Vous devez retirer d\'abord les transporteurs que vous avez selectionné')
