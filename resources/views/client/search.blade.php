@@ -96,9 +96,11 @@
             </div>
 
             <div class="row mt-5">
-                <div class="col-md-9 col-xs-6 col-sm-6 col-xl-9"></div>
+                <div class="col-md-9 col-xs-6 col-sm-6 col-xl-9" id="message">
+
+                </div>
                 <div class="col-md-3 col-xs-6 col-sm-6 col-xl-3">
-                    <button id="search-btn" type="submit" class="button button--secondary w-100 d-flex justify-content-center align-item-center">
+                    <button id="search-btn" type="submit" class="button button--secondary w-100 d-flex justify-content-center align-items-center">
                         <div id="icon" class="mr-3">
                             <i class="fa fa-search"></i>
                         </div>
@@ -317,7 +319,7 @@
             }
             else if (data.length === 0)
             {
-                alert('Aucun transporteur trouvé')
+                document.getElementById('message').innerHTML = '<div style="padding-top: 8px;padding-bottom:8px; box-shadow:1px 1px black" class="alert alert-danger text-center rounded">Aucun transporteur trouvé</div>'
                 return false
                 //tbody.classList.remove('d-none')
                 //tbody.innerHTML = '<tr><td colspan="4" class="text-center">Aucun transporteur trouvé</td></tr>'
