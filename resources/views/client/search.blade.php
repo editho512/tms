@@ -314,8 +314,8 @@
                 })
             }
             else if (data.error) {
-                alert('Aucune transporteur trouvé')
-                tbody.innerHTML = '<tr><td colspan="4" class="text-center">Aucune transporteur trouvé</td></tr>'
+                document.getElementById('message').innerHTML = '<div style="padding-top: 8px;padding-bottom:8px; box-shadow:1px 1px black" class="alert alert-danger text-center rounded">Aucun transporteur trouvé</div>'
+                return false
             }
             else if (data.length === 0)
             {
