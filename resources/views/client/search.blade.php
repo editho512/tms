@@ -314,7 +314,6 @@
                 })
             }
             else if (data.error) {
-                alert('Aucune transporteur trouvé')
                 tbody.innerHTML = '<tr><td colspan="4" class="text-center">Aucune transporteur trouvé</td></tr>'
             }
             else if (data.length === 0)
