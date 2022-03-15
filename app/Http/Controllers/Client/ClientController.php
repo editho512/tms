@@ -73,7 +73,7 @@ class ClientController extends Controller
             $selectedCount = 0;
             $activeIds = [];
 
-            if (key_exists("errors", $response))
+            if ($response["errors"])
             {
                 return redirect()->back()->with('error', 'Cette réservation est déja en rétard');
             }
